@@ -1,0 +1,14 @@
+version: '3.1'
+services:
+  db:
+    image: postgres:13.1-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    #   volumes:
+    #     - ./pg_data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: john
+      POSTGRES_PASSWORD: 1234
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
