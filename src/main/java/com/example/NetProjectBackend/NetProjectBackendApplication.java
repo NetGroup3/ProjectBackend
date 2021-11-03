@@ -8,7 +8,13 @@ public class NetProjectBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NetProjectBackendApplication.class, args);
-		System.out.println("Hallo World! from dev-02");
-	}
 
+		System.out.println("Hello world");
+		System.out.println("press ctr+d for copy this line down");
+
+		System.out.println("press ctr+y for remove this line");
+
+
+
+	}
 }
