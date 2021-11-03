@@ -13,7 +13,5 @@ public class NetProjectBackendApplication {
 		System.out.println("press ctr+d for copy this line down");
 
 		System.out.println("press ctr+y for remove this line");
-
-
 	}
 }
