@@ -1,10 +1,12 @@
 package com.example.NetProjectBackend.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Time;
 
 @Data
+@AllArgsConstructor
 public class Client {
     private int id;
     private String nickname;
