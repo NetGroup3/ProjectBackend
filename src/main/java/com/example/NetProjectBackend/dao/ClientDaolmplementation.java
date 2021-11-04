@@ -52,8 +52,13 @@ public class ClientDaolmplementation implements ClientDao {
 
     @Override
     public Client read(int id) {
-
-        return null;
+        Client client = null;
+        try {
+            person = jdbcTemplate.queryForObject("select * from person where id = ?", new Object[]{id}, ROW_MAPPER);
+        } catch (DataAccessException dataAccessException) {
+            LOGGER.debug("Couldn't find entity of type Person with id {}", id);
+        }
+        return client;
     }
 
     @Override
@@ -63,6 +68,6 @@ public class ClientDaolmplementation implements ClientDao {
 
     @Override
     public void delete(Client client) {
-
+        jdbcTemplate.update("delete from client where id = ?", id);
     }
 }
