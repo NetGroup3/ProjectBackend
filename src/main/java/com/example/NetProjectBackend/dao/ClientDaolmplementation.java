@@ -54,7 +54,7 @@ public class ClientDaolmplementation implements ClientDao {
     public Client read(int id) {
         Client client = null;
         try {
-            person = jdbcTemplate.queryForObject("select * from person where id = ?", new Object[]{id}, ROW_MAPPER);
+            person = jdbcTemplate.queryForObject("select * from client where id = ?", new Object[]{id}, ROW_MAPPER);
         } catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with id {}", id);
         }
