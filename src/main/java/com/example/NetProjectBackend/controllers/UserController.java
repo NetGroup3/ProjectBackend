@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {               //add validation
 
-    private UserRepository userRepository;  //replace with @Service layer
+    private final UserRepository userRepository;  //replace with @Service layer
 
     UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
