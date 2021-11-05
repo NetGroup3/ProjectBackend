@@ -6,10 +6,9 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ClientDao {
-    Collection<Client> getAll();
-    List<Integer> findClientById(int id);
+    List<Client> getAll();
     void create(Client client);
     Client read(int id);
     void update(Client client);
-    void delete(Client client);
+    void delete(int id);
 }
