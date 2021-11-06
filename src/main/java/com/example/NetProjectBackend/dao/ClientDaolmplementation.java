@@ -20,7 +20,7 @@ public class ClientDaolmplementation implements ClientDao {
     private static final String SELECT_ALL_FROM_CLIENT = "SELECT * FROM CLIENT";
     private static final String SELECT_ALL_FROM_CLIENT_WHERE_ID = "SELECT * FROM CLIENT WHERE ID = ?";
     private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_CLIENT = "";
+    private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?2, nickname = ?3, firstname = ?4, lastName = ?5, email = ?6 WHERE id = ?1";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDao.class);
@@ -63,10 +63,10 @@ public class ClientDaolmplementation implements ClientDao {
         assert jdbcTemplate.update(INSERT_INTO_CLIENT_VALUES, client.getId(), client.getPassword(), client.getNickname(), client.getFirstName(), client.getLastName(), client.getEmail()) > 0;
     }
 
-    //                     NEED EDITS
+    //                     NEED CHECK
     @Override
     public void update(Client client) {
-        assert jdbcTemplate.update("update client set name = ?2, email = ?3 where id = ?1", client.getId(), client.getPassword(), client.getNickname(), client.getFirstName(), client.getLastName(), client.getEmail()) > 0;
+        assert jdbcTemplate.update(UPDATE_CLIENT, client.getId(), client.getPassword(), client.getNickname(), client.getFirstName(), client.getLastName(), client.getEmail()) > 0;
     }
 
     //                     NEED CHECK
