@@ -1,23 +1,33 @@
 package com.example.NetProjectBackend.models;
 
+import java.sql.Time;
+
 public class User {
     
     int id;
-    String email;
     String nickname;
-    String name;
-    String surname;
-    String role;
     String password;
+    String firstname;
+    String lastname;
+    String email;
+    Time timestamp;
+    String picture;
+    boolean status;
+    int role;
 
-    User(int id, String email, String nickname, String name, String surname, String role, String password) {
+
+    public User(int id, String nickname, String password, String firstname, String lastname, String email, Time timestamp, String picture, boolean status, int role) {
         this.id = id;
-        this.email = email;
         this.nickname = nickname;
-        this.name = name;
-        this.surname = surname;
-        this.role = role;
         this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.timestamp = timestamp;
+        this.picture = picture;
+        this.status = status;
+        this.role = role;
+
     }
 
     public int getId() {
@@ -38,22 +48,22 @@ public class User {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
-    public String getName() {
-        return name;
+    public String getFirstname() {
+        return firstname;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
-    public String getSurname() {
-        return surname;
+    public String getLastname() {
+        return lastname;
     }
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
-    public String getRole() {
+    public int getRole() {
         return role;
     }
-    public void setRole(String role) {
+    public void setRole(int role) {
         this.role = role;
     }
     public String getPassword() {
@@ -61,6 +71,9 @@ public class User {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+    public String getPicture () {
+        return this.picture;
     }
 
 }
