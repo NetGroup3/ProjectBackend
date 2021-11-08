@@ -1,5 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
+import java.time.OffsetDateTime;
+
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
@@ -34,6 +36,11 @@ public class UserController {               //add validation
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
+
+        //move to @Service or elsewhere
+        user.setTimestamp(OffsetDateTime.now());
+        //
+
         User userCreated = userRepository.create(user);
         if (userCreated == null) {
             return ResponseEntity.badRequest().build();
