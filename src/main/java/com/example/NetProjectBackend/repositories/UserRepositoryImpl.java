@@ -1,8 +1,5 @@
 package com.example.NetProjectBackend.repositories;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.User;
 
@@ -17,13 +14,10 @@ public class UserRepositoryImpl implements UserRepository {
         this.userDao = userDao;
     }
 
-
-
-
     @Override
     public User create(User user) {
-        userDao.create(user);
-        return userDao.read(user.getId());
+        int id = userDao.create(user);
+        return userDao.read(id);
     }
 
     @Override

@@ -5,10 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -18,8 +25,8 @@ public class UserDaolmpl implements UserDao {
 
     private static final String SELECT_ALL_FROM_CLIENT = "SELECT * FROM CLIENT";
     private static final String SELECT_ALL_FROM_CLIENT_WHERE_ID = "SELECT * FROM CLIENT WHERE ID = ?";
-    private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (nickname, password, firstname, lastname, email) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, nickname = ?, firstname = ?, lastName = ?, email = ?, picture = ? WHERE id = ?";
+    private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, firstname, lastname, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
+    private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, firstname = ?, lastName = ?, email = ?, picture = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
@@ -27,12 +34,11 @@ public class UserDaolmpl implements UserDao {
     private static User mapClientRow(ResultSet rs, int rowNum) throws SQLException {
         return new User(
                 rs.getInt("id"),
-                rs.getString("nickname"),
                 rs.getString("password"),
                 rs.getString("firstname"),
                 rs.getString("lastName"),
                 rs.getString("email"),
-                rs.getTime("timestamp"),
+                rs.getObject("timestamp", OffsetDateTime.class),
                 rs.getString("picture"),
                 rs.getBoolean("status"),
                 rs.getInt("role")
@@ -62,14 +68,32 @@ public class UserDaolmpl implements UserDao {
     //                     NEED CHECK
     @Override
     public int create(User user) {
-        //assert jdbcTemplate.update(INSERT_INTO_CLIENT_VALUES, user.getNickname(), user.getPassword(),  user.getFirstname(), user.getLastname(), user.getEmail()) > 0;
-        return jdbcTemplate.update(INSERT_INTO_CLIENT_VALUES, user.getNickname(), user.getPassword(),  user.getFirstname(), user.getLastname(), user.getEmail());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+        new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(INSERT_INTO_CLIENT_VALUES, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, user.getPassword());
+                ps.setString(2, user.getFirstname());
+                ps.setString(3, user.getLastname());
+                ps.setString(4, user.getEmail());
+                ps.setObject(5, user.getTimestamp());
+                ps.setBoolean(6, user.getStatus());
+                ps.setInt(7, user.getRole());
+                return ps;
+            }
+        }, keyHolder);
+
+        return keyHolder.getKey().intValue();
+
+        //assert jdbcTemplate.update(INSERT_INTO_CLIENT_VALUES, user.getPassword(),  user.getFirstname(), user.getLastname(), user.getEmail(), user.getTimestamp(), user.getStatus(), user.getRole()) > 0;
+        //return jdbcTemplate.update(INSERT_INTO_CLIENT_VALUES, user.getPassword(),  user.getFirstname(), user.getLastname(), user.getEmail(), user.getTimestamp(), user.getStatus(), user.getRole());
     }
 
     //                     NEED CHECK
     @Override
     public void update(User user) {
-        jdbcTemplate.update(UPDATE_CLIENT, user.getPassword(), user.getNickname(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getPicture(), user.getId());
+        jdbcTemplate.update(UPDATE_CLIENT, user.getPassword(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getPicture(), user.getId());
     }
 
     //                     NEED CHECK
