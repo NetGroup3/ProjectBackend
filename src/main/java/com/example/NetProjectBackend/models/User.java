@@ -10,22 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    
+    private int id;
+    private String password;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private OffsetDateTime timestamp;
+    private String picture;
+    private boolean status;
+    private int role;
 
-    int id;
-    String password;
-    String firstname;
-    String lastname;
-    String email;
-    OffsetDateTime timestamp;
-    String picture;
-    boolean status;
-    int role;
 
-    public boolean getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
 }
