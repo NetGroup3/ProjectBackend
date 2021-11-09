@@ -6,14 +6,7 @@ import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -25,18 +18,23 @@ public class UserController {               //add validation
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/{id}")
+    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public ResponseEntity<User> getUser(@PathVariable int id) {
+        System.out.println("users_GET");
         User user = userRepository.read(id);
+
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<User> createUser(@RequestBody User user) {
 
+        System.out.println("users_POST");
+        System.out.println("try to create user");
+        System.out.println(user.toString());
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
         //
@@ -50,6 +48,7 @@ public class UserController {               //add validation
     
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody User user) {
+        System.out.println("users_PUT");
         User userUpdated = userRepository.update(user);
         if (userUpdated == null) {
             return ResponseEntity.notFound().build();
@@ -59,6 +58,7 @@ public class UserController {               //add validation
 
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable int id) {
+        System.out.println("users_DELETE");
         User userDeleted = userRepository.delete(id);
         if (userDeleted == null) {
             return ResponseEntity.notFound().build();
