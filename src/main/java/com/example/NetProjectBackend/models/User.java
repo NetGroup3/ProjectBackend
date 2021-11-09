@@ -9,15 +9,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class User {
     
-    int id;
-    String password;
-    String firstname;
-    String lastname;
-    String email;
-    OffsetDateTime timestamp;
-    String picture;
-    boolean status;
-    int role;
+    private int id;
+    private String password;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private OffsetDateTime timestamp;
+    private String picture;
+    private boolean status;
+    private int role;
 
     public boolean getStatus() {
         return this.status;
