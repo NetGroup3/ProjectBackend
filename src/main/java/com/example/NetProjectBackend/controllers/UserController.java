@@ -67,7 +67,7 @@ public class UserController {               //add validation
         return ResponseEntity.ok(userDeleted);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/{email}")
+    @RequestMapping(method = RequestMethod.GET, params = "/{email}")
     public ResponseEntity<User> getUser(@PathVariable String email) {
 
         List<User> users = userRepository.getAll();
