@@ -2,6 +2,8 @@ package com.example.NetProjectBackend.controllers;
 
 import java.time.OffsetDateTime;
 
+import javax.websocket.server.PathParam;
+
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
@@ -19,9 +21,20 @@ public class UserController {               //add validation
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public ResponseEntity<User> getUser(@PathVariable int id) {
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
         System.out.println("users_GET");
-        User user = userRepository.read(id);
+        User user = userRepository.readById(id);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/")
+    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+        System.out.println("users_GET");
+        User user = userRepository.readByEmail(email);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -35,6 +48,7 @@ public class UserController {               //add validation
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
+        
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
         //
