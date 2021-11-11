@@ -5,6 +5,8 @@ import com.example.NetProjectBackend.models.User;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
@@ -44,7 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
         return user;
     }
 
-    public list<User> getAll(){
+    public List<User> getAll(){
         return userDao.getAll();
     }
 }

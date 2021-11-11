@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
@@ -70,9 +71,9 @@ public class UserController {               //add validation
     public ResponseEntity<User> getUser(@PathVariable String email) {
 
         List<User> users = userRepository.getAll();
-        User findUser;
+        User findUser = null;
         for (User user: users){
-            if(user.contains(email)){
+            if(user.getEmail()==email){
                 findUser = user;
             }
         }
@@ -81,7 +82,7 @@ public class UserController {               //add validation
             return ResponseEntity.notFound().build();
         }
         System.out.println("link for recovery password");
-        return ResponseEntity.ok(email);
+        return ResponseEntity.ok(findUser);
     }
 
 
