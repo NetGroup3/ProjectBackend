@@ -43,4 +43,8 @@ public class UserRepositoryImpl implements UserRepository {
         userDao.delete(id);
         return user;
     }
+
+    public list<User> getAll(){
+        return userDao.getAll();
+    }
 }

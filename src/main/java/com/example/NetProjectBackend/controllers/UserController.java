@@ -66,4 +66,24 @@ public class UserController {               //add validation
         return ResponseEntity.ok(userDeleted);
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/{email}")
+    public ResponseEntity<User> getUser(@PathVariable String email) {
+
+        List<User> users = userRepository.getAll();
+        User findUser;
+        for (User user: users){
+            if(user.contains(email)){
+                findUser = user;
+            }
+        }
+
+        if (findUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+        System.out.println("link for recovery password");
+        return ResponseEntity.ok(email);
+    }
+
+
+
 }

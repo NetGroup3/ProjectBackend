@@ -7,4 +7,5 @@ public interface UserRepository {
     public User read(int id);
     public User update(User user);
     public User delete(int id);
+    public List<User> getAll();
 }
