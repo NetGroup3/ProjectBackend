@@ -5,6 +5,8 @@ import com.example.NetProjectBackend.models.User;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
@@ -17,30 +19,40 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User create(User user) {
         int id = userDao.create(user);
-        return userDao.read(id);
+        return userDao.readById(id);
     }
 
     @Override
-    public User read(int id) {
-        return userDao.read(id);
+    public User readById(int id) {
+        return userDao.readById(id);
+    }
+
+    @Override
+    public User readByEmail(String email) {
+        return userDao.readByEmail(email);
     }
 
     @Override
     public User update(User user) {
-        if (userDao.read(user.getId()) == null) {
+        if (userDao.readById(user.getId()) == null) {
             return null;
         }
         userDao.update(user);
-        return userDao.read(user.getId());
+        return userDao.readById(user.getId());
     }
 
     @Override
     public User delete(int id) {
-        User user = userDao.read(id);
+        User user = userDao.readById(id);
         if (user == null) {
             return null;
         }
         userDao.delete(id);
         return user;
+    }
+
+    @Override
+    public List<User> getAll(){
+        return userDao.getAll();
     }
 }
