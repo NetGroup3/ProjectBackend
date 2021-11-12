@@ -2,8 +2,6 @@ package com.example.NetProjectBackend.controllers;
 
 import java.time.OffsetDateTime;
 
-import javax.websocket.server.PathParam;
-
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
