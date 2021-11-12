@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -44,7 +45,7 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("email"),
                 rs.getObject("timestamp", OffsetDateTime.class),
                 rs.getString("picture"),
-                rs.getBoolean("status"),
+                rs.getString("status"),
                 rs.getInt("role")
         );
     }
@@ -82,7 +83,7 @@ public class UserDaoImpl implements UserDao {
                 ps.setString(3, user.getLastname());
                 ps.setString(4, user.getEmail());
                 ps.setObject(5, user.getTimestamp());
-                ps.setBoolean(6, user.getStatus());
+                ps.setString(6, user.getStatus());
                 ps.setInt(7, user.getRole());
                 return ps;
             }

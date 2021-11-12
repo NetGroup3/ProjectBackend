@@ -18,8 +18,7 @@ public class User {
     private String email;
     private OffsetDateTime timestamp;
     private String picture;
-    private boolean status;
+    private String status;
     private int role;
-
 
 }
