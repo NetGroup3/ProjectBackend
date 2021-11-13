@@ -63,7 +63,7 @@ public class UserDaoImpl implements UserDao {
     public User readById(int id) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_ID, new Object[]{id}, UserDaoImpl::mapClientRow);
+            user = jdbcTemplate.queryForObject(SELECT_BY_ID, UserDaoImpl::mapClientRow, id);
         }
         catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with id {}", id);
@@ -75,7 +75,7 @@ public class UserDaoImpl implements UserDao {
     public User readByEmail(String email) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL, new Object[]{email}, UserDaoImpl::mapClientRow);
+            user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL, UserDaoImpl::mapClientRow, email);
         }
         catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with email {}", email);

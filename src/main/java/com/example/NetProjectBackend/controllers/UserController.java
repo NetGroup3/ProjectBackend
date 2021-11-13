@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.websocket.server.PathParam;
 
-import javax.websocket.server.PathParam;
-
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
