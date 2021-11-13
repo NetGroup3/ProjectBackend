@@ -1,15 +1,12 @@
 package com.example.NetProjectBackend.controllers;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import javax.websocket.server.PathParam;
-
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
