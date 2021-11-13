@@ -20,6 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User create(User user) {
         int id = userDao.create(user);
         return userDao.readById(id);
+
     }
 
     @Override

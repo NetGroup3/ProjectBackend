@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.websocket.server.PathParam;
 
+import javax.websocket.server.PathParam;
+
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
@@ -49,7 +51,6 @@ public class UserController {               //add validation
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
-
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
         //
@@ -80,6 +81,7 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(userDeleted);
     }
+  
     @GetMapping("/getUsers")
     public List<User> getUsers(){
         return userRepository.getAll();
