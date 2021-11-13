@@ -1,6 +1,9 @@
 package com.example.NetProjectBackend.controllers;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+
+import javax.websocket.server.PathParam;
 
 import javax.websocket.server.PathParam;
 
@@ -48,7 +51,6 @@ public class UserController {               //add validation
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
-        
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
         //
@@ -59,7 +61,7 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(userCreated);
     }
-    
+
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         System.out.println("users_PUT");
@@ -79,5 +81,9 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(userDeleted);
     }
-
+  
+    @GetMapping("/getUsers")
+    public List<User> getUsers(){
+        return userRepository.getAll();
+    }
 }
