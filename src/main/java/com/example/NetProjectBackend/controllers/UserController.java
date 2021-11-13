@@ -83,7 +83,7 @@ public class UserController {               //add validation
         return ResponseEntity.ok(userDeleted);
     }
     @GetMapping("/get")
-    public ResponseEntity<List<User>> getUsers(){
+    public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
         users = userRepository.getAll();
         System.out.println(users);
@@ -91,11 +91,11 @@ public class UserController {               //add validation
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(users);
+    }
+    @GetMapping("/getUsers")
+    public List<User> getUsers(){
+        return userRepository.getAll();
 
-//    @GetMapping("/getUsers")
-//    public List<User> getUsers(){
-//        return userRepository.getAll();
-//
-//    }
+    }
 
-}}
+}
