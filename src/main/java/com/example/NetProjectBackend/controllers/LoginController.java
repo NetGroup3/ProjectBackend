@@ -53,10 +53,13 @@ public class LoginController {
         System.out.println(user.toString());
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
+
+        if(userRepository.readByEmail(user.getEmail())!=null){ //есть ли пользователь с таким имейлом?
+            return ResponseEntity.badRequest().build();
+        }
         User userCreated = userRepository.create(user);
         if (userCreated == null) {
-
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build(); // если юзер по каким-то причинам не создался
         }
         mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", user.getEmail());
         return ResponseEntity.ok(userCreated);
@@ -71,8 +74,7 @@ public class LoginController {
         System.out.println(email);
         String decoded = new String(Base64.getDecoder().decode(email));
 
-        User user = userRepository.readByEmail(email);
-        if(user == null){
+        if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
             mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", email);
@@ -80,6 +82,4 @@ public class LoginController {
         }
         return ResponseEntity.ok(200);
     }
-
-
 }
