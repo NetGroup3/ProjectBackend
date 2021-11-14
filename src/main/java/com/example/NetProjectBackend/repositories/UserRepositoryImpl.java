@@ -1,15 +1,12 @@
 package com.example.NetProjectBackend.repositories;
 
 import com.example.NetProjectBackend.dao.UserDao;
+import com.example.NetProjectBackend.models.ERole;
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -22,9 +19,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(User user) {
+        user.setRole(ERole.USER.name());
+        user.setStatus(EStatus.NOT_VERIFY.name());
         int id = userDao.create(user);
         return userDao.readById(id);
-
     }
 
     @Override
