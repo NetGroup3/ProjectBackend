@@ -2,11 +2,13 @@ package com.example.NetProjectBackend.controllers;
 
 import java.time.OffsetDateTime;
 
-import javax.websocket.server.PathParam;
-
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
+import com.example.NetProjectBackend.services.HashPasswordService;
+import com.example.NetProjectBackend.services.password.BCryptHash;
+import com.example.NetProjectBackend.services.password.HashPassword2;
+import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,13 +44,24 @@ public class UserController {               //add validation
         return ResponseEntity.ok(user);
     }
 
+
+    HashPassword2 hashPassword2;
+    HashPassword hashPassword;
+    HashPasswordService hashPasswordService;
+    BCryptHash bCryptHash;
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<User> createUser(@RequestBody User user) {
 
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
-        
+
+//        hashPassword2.doHashing(user.getPassword());
+//        hashPassword.getHashPassword(user.getPassword());
+//        hashPasswordService.getPasswordHash(user);
+        user.setPassword(bCryptHash.getHashPassword(user.getPassword()));
+
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
         //
