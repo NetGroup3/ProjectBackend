@@ -50,7 +50,6 @@ public class UserController {               //add validation
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<User> createUser(@RequestBody User user) {
-
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
