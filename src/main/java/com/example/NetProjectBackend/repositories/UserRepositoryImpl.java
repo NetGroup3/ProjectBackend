@@ -1,11 +1,15 @@
 package com.example.NetProjectBackend.repositories;
 
 import com.example.NetProjectBackend.dao.UserDao;
+import com.example.NetProjectBackend.models.ERole;
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
 
 import com.example.NetProjectBackend.services.password.HashPassword2;
 import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -23,6 +27,8 @@ public class UserRepositoryImpl implements UserRepository {
     public User create(User user) {
 //        hashPassword.doHashing(user.getPassword());
 //        passwordHash.getHashPassword(user);
+        user.setRole(ERole.USER.name());
+        user.setStatus(EStatus.NOT_VERIFY.name());
         int id = userDao.create(user);
         return userDao.readById(id);
     }
@@ -55,4 +61,10 @@ public class UserRepositoryImpl implements UserRepository {
         userDao.delete(id);
         return user;
     }
+
+    @Override
+    public List<User> getAll(){
+        return userDao.getAll();
+    }
+
 }

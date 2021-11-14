@@ -1,7 +1,14 @@
 package com.example.NetProjectBackend.models;
 
-public enum ERole {
-    ROLE_USER,
-    ROLE_MODERATOR,
-    ROLE_ADMIN
+import org.springframework.security.core.GrantedAuthority;
+
+public enum ERole implements GrantedAuthority {
+    USER,
+    MODERATOR,
+    ADMIN;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }
