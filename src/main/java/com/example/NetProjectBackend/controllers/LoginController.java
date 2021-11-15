@@ -3,7 +3,7 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.services.mail.Mail;
-import com.example.NetProjectBackend.services.password.BCryptHash;
+import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,36 +34,19 @@ public class LoginController {
         System.out.println(authHeader);
         String decoded = new String(Base64.getDecoder().decode(authHeader));
 
-        System.out.println(decoded);
-
-        String[] subStr;
-
-        subStr = decoded.split(":");
-
-        System.out.println(subStr[0]);
-        System.out.println(subStr[1]);
-
+        String[] subStr = decoded.split(":");
         User user = userRepository.readByEmail(subStr[0]);
-
 
         if(user == null){
             System.out.println("USER == NULL");
             return ResponseEntity.notFound().build();
         }
 
-        //пока без хеша
-        if(Objects.equals(user.getPassword(), subStr[1])){
-            System.out.println("user login ok");
-            return ResponseEntity.ok(user);
-        }
-
         /** We compare the hash of the password from a DB and the hash entered by the user */
-/*        System.out.println(user.getPassword());
-        System.out.println(BCryptHash.getHashPassword(subStr[1]));
         if(Objects.equals(user.getPassword(), HashPassword.getHashPassword(subStr[1]))){
             System.out.println("user login ok");
             return ResponseEntity.ok(user);
-        }*/
+        }
 
         return ResponseEntity.notFound().build();
     }
