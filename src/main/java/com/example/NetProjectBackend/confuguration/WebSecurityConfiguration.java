@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.confuguration;
 
-import com.example.NetProjectBackend.repositories.UserService;
+import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.service.JwtTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
