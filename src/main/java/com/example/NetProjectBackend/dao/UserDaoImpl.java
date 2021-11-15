@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.dao;
 
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public class UserDaoImpl implements UserDao {
     private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, first_name, last_name, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
     private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, first_name = ?, last_name = ?, email = ?, image_id = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
+    private static final String UPDATE_STATUS = "UPDATE CLIENT SET status = ? WHERE id = ?";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
@@ -127,5 +129,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(int id) {
         jdbcTemplate.update(DELETE_CLIENT, id);
+    }
+
+    @Override
+    public void changeStatus(EStatus status, int id) {
+        jdbcTemplate.update(UPDATE_STATUS, EStatus.ACTIVE.getAuthority(), id);
     }
 }

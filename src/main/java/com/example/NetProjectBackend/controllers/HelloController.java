@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-/*    final private Mail mail;
+    //final private Mail mail;
 
-    public HelloController(Mail mail) {
-        this.mail = mail;
-    }*/
+    //public HelloController(Mail mail) {
+    //    this.mail = mail;
+    //}
 
     @GetMapping("/hello")
     public String getHello(){
-  //      mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", "d.averianoff@gmail.com");
+        //mail.confirmationCode("https://ourproject.space/code?param=", "d.averianoff@gmail.com");
         return "hello world!!";
     }
 }

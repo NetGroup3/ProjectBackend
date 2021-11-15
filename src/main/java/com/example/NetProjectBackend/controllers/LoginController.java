@@ -1,6 +1,8 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.services.password.HashPassword;
@@ -14,13 +16,15 @@ import java.util.Objects;
 @RestController
 public class LoginController {
 
+    private final Mail mail;
     private final UserRepository userRepository;
     private final UserService userService;
 
 
-    LoginController(UserRepository userRepository, UserService userService) {
+    LoginController(UserRepository userRepository, UserService userService, Mail mail) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.mail = mail;
     }
 
 
@@ -48,15 +52,58 @@ public class LoginController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/signup")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        return userService.create(user);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        System.out.println(user.toString());
+        //move to @Service or elsewhere
+        user.setTimestamp(OffsetDateTime.now());
+
+        if(userRepository.readByEmail(user.getEmail())!=null){ //есть ли пользователь с таким имейлом?
+            return ResponseEntity.badRequest().build();
+        }
+        User userCreated = userRepository.create(user);
+        if (userCreated == null) {
+            return ResponseEntity.badRequest().build(); // если юзер по каким-то причинам не создался
+        }
+        mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+        return ResponseEntity.ok(userCreated);
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
-    public ResponseEntity<?> recoveryPassword(@RequestBody String email) {
+    public ResponseEntity<Integer> recovery(@RequestHeader(value = "Authorization") String email) {
         System.out.println("recovery");
-        return userService.recovery(email);
+
+        Map<String, String> returnValue = new HashMap<>();
+        returnValue.put("Authorization", email);
+        System.out.println(email);
+        String decoded = new String(Base64.getDecoder().decode(email));
+
+        if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
+            return ResponseEntity.notFound().build();
+        } else {
+            if (!mail.recoveryCode("https://ourproject.space/code?param=", email))
+                return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(200);
     }
 
-
+    @RequestMapping(method = RequestMethod.GET, path = "/code")
+    public ResponseEntity<Integer> code(@RequestParam String param) {
+        Verify verify = mail.readByCode(param);
+        if (verify == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User user = userRepository.readById(verify.getUserId());
+        if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
+            String newPassword = userRepository.randomPassword();
+            if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
+                userRepository.changePassword(user, newPassword);
+            } else {
+                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            }
+        } else {
+            userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+        }
+        mail.deleteCode(verify.getUserId());
+        return ResponseEntity.ok(200);
+    }
 }
