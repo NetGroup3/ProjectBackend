@@ -15,10 +15,6 @@ public interface UserRepository {
     public User update(User user);
     public User delete(int id);
     public List<User> getAll();
-
     void changeStatus(EStatus status, int id);
-
     void changePassword(User user, String password);
-
-    String randomPassword();
 }

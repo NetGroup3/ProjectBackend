@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -61,7 +62,7 @@ public class UserService implements UserDetailsService {
         }
         User user = userRepository.readById(verify.getUserId());
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
-            String newPassword = userRepository.randomPassword();
+            String newPassword = randomPassword();
             if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
                 userRepository.changePassword(user, newPassword);
             } else {
@@ -87,5 +88,17 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("User %s is not found", login));
         }
         return new org.springframework.security.core.userdetails.User(u.getEmail(), u.getPassword(), true, true, true, true, new HashSet<>());
+    }
+
+    private String randomPassword() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

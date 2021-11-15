@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.websocket.server.PathParam;
-
-import javax.websocket.server.PathParam;
 
 import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;

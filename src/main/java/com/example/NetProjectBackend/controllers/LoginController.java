@@ -1,8 +1,6 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
-import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.services.mail.Mail;
@@ -10,7 +8,6 @@ import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.Objects;
 
