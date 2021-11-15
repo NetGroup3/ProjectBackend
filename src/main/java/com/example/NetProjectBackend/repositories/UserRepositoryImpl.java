@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
-import com.example.NetProjectBackend.services.password.BCryptHash;
+import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(User user) {
-        // user.setPassword(BCryptHash.getHashPassword(user.getPassword()));
+        user.setPassword(HashPassword.getHashPassword(user.getPassword()));
         user.setRole(ERole.USER.name());
         user.setStatus(EStatus.NOT_VERIFY.name());
         int id = userDao.create(user);
