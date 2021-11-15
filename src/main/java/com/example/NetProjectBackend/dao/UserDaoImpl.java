@@ -24,12 +24,13 @@ public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
 
     private static final String SELECT_ALL_FROM_CLIENT = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT";
-    //select id, password, firstname, lastname, email, timestamp, picture, status, role from client where id=26;
     private static final String SELECT_BY_ID = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE ID = ?";
     private static final String SELECT_BY_EMAIL = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE email = ?";
+
     private static final String SELECT_BY_NAME = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE name = ?";
     //INSERT INTO public.client (id, password, firstname, lastname, email, timestamp, picture, status, role)
     //              VALUES (DEFAULT, 'pasword_1234', 'John_firstname', 'miller_last_name', '1@1.com', '2020-08-10 10:41:22.276000 +00:00', 'picture_url', false, 10)
+
     private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, first_name, last_name, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
     private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, first_name = ?, last_name = ?, email = ?, image_id = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
@@ -63,7 +64,7 @@ public class UserDaoImpl implements UserDao {
     public User readById(int id) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_ID, new Object[]{id}, UserDaoImpl::mapClientRow);
+            user = jdbcTemplate.queryForObject(SELECT_BY_ID, UserDaoImpl::mapClientRow, id);
         }
         catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with id {}", id);
@@ -75,7 +76,7 @@ public class UserDaoImpl implements UserDao {
     public User readByEmail(String email) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL, new Object[]{email}, UserDaoImpl::mapClientRow);
+            user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL, UserDaoImpl::mapClientRow, email);
         }
         catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with email {}", email);
