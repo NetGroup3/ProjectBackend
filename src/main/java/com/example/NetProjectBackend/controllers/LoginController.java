@@ -4,14 +4,12 @@ import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
-import com.example.NetProjectBackend.services.mail.Mail;
+import com.example.NetProjectBackend.service.UserService;
+import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -20,34 +18,37 @@ public class LoginController {
 
     private final Mail mail;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    LoginController(UserRepository userRepository, Mail mail) {
-        this.mail = mail;
+
+    LoginController(UserRepository userRepository, UserService userService, Mail mail) {
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.mail = mail;
     }
 
 
     @GetMapping( path = "/login")
     public ResponseEntity<User> login(@RequestHeader(value = "Authorization") String authHeader) {
         System.out.println("login");
-        Map<String, String> returnValue = new HashMap<>();
-        returnValue.put("Authorization", authHeader);
         System.out.println(authHeader);
         String decoded = new String(Base64.getDecoder().decode(authHeader));
 
-        String[] subStr;
-        subStr = decoded.split(":");
-        System.out.println(subStr);
+        String[] subStr = decoded.split(":");
         User user = userRepository.readByEmail(subStr[0]);
+
         if(user == null){
+            System.out.println("USER == NULL");
             return ResponseEntity.notFound().build();
         }
-        else if(Objects.equals(user.getPassword(), subStr[1])){
+
+        /* We compare the hash of the password from a DB and the hash entered by the user */
+        if(Objects.equals(user.getPassword(), HashPassword.getHashPassword(subStr[1]))){
+            System.out.println("user login ok");
             return ResponseEntity.ok(user);
         }
-        else {
-            return ResponseEntity.noContent().build();
-        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/signup")
