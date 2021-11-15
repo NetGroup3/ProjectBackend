@@ -1,6 +1,8 @@
 package com.example.NetProjectBackend.service;
 
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.services.mail.Mail;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -26,7 +29,6 @@ public class UserService implements UserDetailsService {
 
     /**Sign Up */
     public ResponseEntity<?> create (User user){
-        System.out.println(user.toString());
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
 
@@ -37,22 +39,40 @@ public class UserService implements UserDetailsService {
         if (userCreated == null) {
             return ResponseEntity.badRequest().build(); // если юзер по каким-то причинам не создался
         }
-        System.out.println("send mail");
-        mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", user.getEmail());
-        return ResponseEntity.noContent().build();
+        mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+        return ResponseEntity.ok(userCreated);
     }
 
     /** Recovery Password */
     public ResponseEntity<?> recovery (String email){
-        System.out.println(email);
-
         if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
-            System.out.println("send mail");
-            mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", email);
+            if (!mail.recoveryCode("https://ourproject.space/code?param=", email))
+                return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(200);
+    }
+
+    /** Code processing */
+    public ResponseEntity<?> code (String param) {
+        Verify verify = mail.readByCode(param);
+        if (verify == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User user = userRepository.readById(verify.getUserId());
+        if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
+            String newPassword = randomPassword();
+            if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
+                userRepository.changePassword(user, newPassword);
+            } else {
+                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            }
+        } else {
+            userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+        }
+        mail.deleteCode(verify.getUserId());
+        return ResponseEntity.ok(200);
     }
 
 
@@ -68,5 +88,17 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException(String.format("User %s is not found", login));
         }
         return new org.springframework.security.core.userdetails.User(u.getEmail(), u.getPassword(), true, true, true, true, new HashSet<>());
+    }
+
+    private String randomPassword() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 }

@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.websocket.server.PathParam;
-
-import javax.websocket.server.PathParam;
 
 import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;
@@ -39,7 +36,7 @@ public class AdminController {               //add validation
         user.setTimestamp(OffsetDateTime.now());
         //
         User userCreated = userRepository.create(user);
-        userCreated.setRole(ERole.ROLE_MODERATOR.name());
+        userCreated.setRole(ERole.MODERATOR.name());
         if (userCreated == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -71,7 +68,7 @@ public class AdminController {               //add validation
         users = userRepository.getAll();
         List<User> moderators = new ArrayList<>();
         for (User user:users) {
-            if(Objects.equals(user.getRole(), ERole.ROLE_MODERATOR.name())){
+            if(Objects.equals(user.getRole(), ERole.MODERATOR.name())){
                 moderators.add(user);
             }
         }
