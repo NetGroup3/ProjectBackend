@@ -1,16 +1,13 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.repositories.UserRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.websocket.server.PathParam;
-
-import com.example.NetProjectBackend.models.User;
-import com.example.NetProjectBackend.repositories.UserRepository;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -46,7 +43,6 @@ public class UserController {               //add validation
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<User> createUser(@RequestBody User user) {
-
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
