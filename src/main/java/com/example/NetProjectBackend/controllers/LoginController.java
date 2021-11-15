@@ -52,7 +52,7 @@ public class LoginController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/signup")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@RequestBody User user) {
         System.out.println(user.toString());
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
@@ -66,24 +66,21 @@ public class LoginController {
         }
         System.out.println("send mail");
         mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", user.getEmail());
-        return ResponseEntity.ok(userCreated);
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
-    public ResponseEntity<Integer> recovery(@RequestHeader(value = "Authorization") String email) {
-        System.out.println("recovery");
+    public ResponseEntity<?> recovery(@RequestBody String email) {
 
-        Map<String, String> returnValue = new HashMap<>();
-        returnValue.put("Authorization", email);
+        System.out.println("recovery");
         System.out.println(email);
-        String decoded = new String(Base64.getDecoder().decode(email));
 
         if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
-            mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", email);
             System.out.println("send mail");
+            mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", email);
         }
-        return ResponseEntity.ok(200);
+        return ResponseEntity.noContent().build();
     }
 }
