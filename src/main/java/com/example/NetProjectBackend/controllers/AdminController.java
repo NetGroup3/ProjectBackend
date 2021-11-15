@@ -3,11 +3,13 @@ package com.example.NetProjectBackend.controllers;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.websocket.server.PathParam;
 
 import javax.websocket.server.PathParam;
 
+import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
@@ -15,56 +17,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {               //add validation
+@RequestMapping("/admin")
+public class AdminController {               //add validation
 
     private final UserRepository userRepository;  //replace with @Service layer
 
-    UserController(UserRepository userRepository) {
+    AdminController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        System.out.println("users_GET");
-        User user = userRepository.readById(id);
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
-    }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/")
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
-        System.out.println("users_GET");
-        User user = userRepository.readByEmail(email);
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
-    }
-
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    @RequestMapping(method = RequestMethod.POST, path="/create")
+    public ResponseEntity<User> createModerator(@RequestBody User user) {
 
         System.out.println("users_POST");
-        System.out.println("try to create user");
+        System.out.println("try to create moderator");
         System.out.println(user.toString());
         //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
         //
-
         User userCreated = userRepository.create(user);
+        userCreated.setRole(ERole.ROLE_MODERATOR.name());
         if (userCreated == null) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(userCreated);
     }
 
-    @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
+    @PutMapping(path = "/update")
+    public ResponseEntity<User> updateModerator(@RequestBody User user) {
         System.out.println("users_PUT");
         User userUpdated = userRepository.update(user);
         if (userUpdated == null) {
@@ -74,7 +57,7 @@ public class UserController {               //add validation
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable int id) {
+    public ResponseEntity<User> deleteModerator(@PathVariable int id) {
         System.out.println("users_DELETE");
         User userDeleted = userRepository.delete(id);
         if (userDeleted == null) {
@@ -82,15 +65,31 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(userDeleted);
     }
-    @GetMapping("/get")
-    public ResponseEntity<List<User>> getUsers() {
+    @GetMapping("/get_moderators")
+    public ResponseEntity<List<User>> getModerators() {
         List<User> users = new ArrayList<>();
         users = userRepository.getAll();
-        System.out.println(users);
-        if (users == null) {
+        List<User> moderators = new ArrayList<>();
+        for (User user:users) {
+            if(Objects.equals(user.getRole(), ERole.ROLE_MODERATOR.name())){
+                moderators.add(user);
+            }
+        }
+        System.out.println(moderators);
+        if (moderators == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(moderators);
     }
+//    @GetMapping("/search")
+//    public ResponseEntity<User> searchByName(@PathVariable String name) {
+//        System.out.println("search moderator");
+//        User moderator = userRepository.readByName(name);
+//        if (moderator == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return ResponseEntity.ok(moderator);
+//    }
+
 
 }

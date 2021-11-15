@@ -38,6 +38,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User readByName(String name) {
+
+        return userDao.readByName(name);
+    }
+
+    @Override
     public User update(User user) {
         if (userDao.readById(user.getId()) == null) {
             return null;

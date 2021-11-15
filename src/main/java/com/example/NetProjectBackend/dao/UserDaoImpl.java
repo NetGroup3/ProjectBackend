@@ -27,7 +27,7 @@ public class UserDaoImpl implements UserDao {
     //select id, password, firstname, lastname, email, timestamp, picture, status, role from client where id=26;
     private static final String SELECT_BY_ID = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE ID = ?";
     private static final String SELECT_BY_EMAIL = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE email = ?";
-
+    private static final String SELECT_BY_NAME = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE name = ?";
     //INSERT INTO public.client (id, password, firstname, lastname, email, timestamp, picture, status, role)
     //              VALUES (DEFAULT, 'pasword_1234', 'John_firstname', 'miller_last_name', '1@1.com', '2020-08-10 10:41:22.276000 +00:00', 'picture_url', false, 10)
     private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, first_name, last_name, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
@@ -79,6 +79,18 @@ public class UserDaoImpl implements UserDao {
         }
         catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with email {}", email);
+        }
+        return user;
+    }
+
+    @Override
+    public User readByName(String name) {
+        User user = null;
+        try {
+            user = jdbcTemplate.queryForObject(SELECT_BY_NAME, new Object[]{name}, UserDaoImpl::mapClientRow);
+        }
+        catch (DataAccessException dataAccessException) {
+            LOGGER.debug("Couldn't find entity of type Person with name {}", name);
         }
         return user;
     }

@@ -9,6 +9,7 @@ public interface UserDao {
     int create(User client);
     User readById(int id);
     User readByEmail(String Email);
+    User readByName(String name);
     void update(User client);
     void delete(int id);
 }
