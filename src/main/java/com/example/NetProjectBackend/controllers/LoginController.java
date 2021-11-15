@@ -1,6 +1,8 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.services.mail.Mail;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ import java.util.Objects;
 @RestController
 public class LoginController {
 
-    final private Mail mail;
+    private final Mail mail;
     private final UserRepository userRepository;
 
     LoginController(UserRepository userRepository, Mail mail) {
@@ -61,7 +63,7 @@ public class LoginController {
         if (userCreated == null) {
             return ResponseEntity.badRequest().build(); // если юзер по каким-то причинам не создался
         }
-        mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", user.getEmail());
+        mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
         return ResponseEntity.ok(userCreated);
     }
 
@@ -77,9 +79,30 @@ public class LoginController {
         if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
-            mail.sendCode("https://ourproject.space/use_code?code=", "308ty397f239uopdh3f9p823dh928dhp1280dfh89ph", email);
-            System.out.println("send mail");
+            if (!mail.recoveryCode("https://ourproject.space/code?param=", email))
+                return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(200);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/code")
+    public ResponseEntity<Integer> code(@RequestParam String param) {
+        Verify verify = mail.readByCode(param);
+        if (verify == null) {
+            return ResponseEntity.notFound().build();
+        }
+        User user = userRepository.readById(verify.getUserId());
+        if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
+            String newPassword = userRepository.randomPassword();
+            if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
+                userRepository.changePassword(user, newPassword);
+            } else {
+                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            }
+        } else {
+            userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+        }
+        mail.deleteCode(verify.getUserId());
         return ResponseEntity.ok(200);
     }
 }

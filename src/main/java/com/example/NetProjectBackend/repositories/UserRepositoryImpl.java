@@ -8,6 +8,7 @@ import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Random;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -61,4 +62,27 @@ public class UserRepositoryImpl implements UserRepository {
         return userDao.getAll();
     }
 
+    @Override
+    public void changeStatus(EStatus status, int id) {
+        userDao.changeStatus(status, id);
+    }
+
+    @Override
+    public void changePassword(User user, String password) {
+        user.setPassword(HashPassword.getHashPassword(password));
+        userDao.update(user);
+    }
+
+    @Override
+    public String randomPassword() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        return random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
 }
