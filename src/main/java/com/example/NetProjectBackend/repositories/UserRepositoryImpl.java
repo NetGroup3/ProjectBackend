@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(User user) {
-        user.setPassword(BCryptHash.getHashPassword(user.getPassword()));
+        // user.setPassword(BCryptHash.getHashPassword(user.getPassword()));
         user.setRole(ERole.USER.name());
         user.setStatus(EStatus.NOT_VERIFY.name());
         int id = userDao.create(user);
