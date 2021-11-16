@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.dao;
 
+import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +25,17 @@ public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
 
     private static final String SELECT_ALL_FROM_CLIENT = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT";
-    //select id, password, firstname, lastname, email, timestamp, picture, status, role from client where id=26;
     private static final String SELECT_BY_ID = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE ID = ?";
     private static final String SELECT_BY_EMAIL = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE email = ?";
 
+    private static final String SELECT_BY_NAME = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE name = ?";
     //INSERT INTO public.client (id, password, firstname, lastname, email, timestamp, picture, status, role)
     //              VALUES (DEFAULT, 'pasword_1234', 'John_firstname', 'miller_last_name', '1@1.com', '2020-08-10 10:41:22.276000 +00:00', 'picture_url', false, 10)
+
     private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, first_name, last_name, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
     private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, first_name = ?, last_name = ?, email = ?, image_id = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
+    private static final String UPDATE_STATUS = "UPDATE CLIENT SET status = ? WHERE id = ?";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
@@ -83,6 +86,18 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    @Override
+    public User readByName(String name) {
+        User user = null;
+        try {
+            user = jdbcTemplate.queryForObject(SELECT_BY_NAME, new Object[]{name}, UserDaoImpl::mapClientRow);
+        }
+        catch (DataAccessException dataAccessException) {
+            LOGGER.debug("Couldn't find entity of type Person with name {}", name);
+        }
+        return user;
+    }
+
     //                     NEED CHECK
     @Override
     public int create(User user) {
@@ -114,5 +129,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(int id) {
         jdbcTemplate.update(DELETE_CLIENT, id);
+    }
+
+    @Override
+    public void changeStatus(EStatus status, int id) {
+        jdbcTemplate.update(UPDATE_STATUS, EStatus.ACTIVE.getAuthority(), id);
     }
 }

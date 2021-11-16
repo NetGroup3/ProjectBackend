@@ -86,6 +86,4 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(users);
     }
-
-
 }

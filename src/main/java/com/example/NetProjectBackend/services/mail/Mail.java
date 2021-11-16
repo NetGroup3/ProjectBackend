@@ -1,7 +1,16 @@
 package com.example.NetProjectBackend.services.mail;
 
-import javax.mail.MessagingException;
+import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.Verify;
 
 public interface Mail {
-    void sendCode(String link, String code, String email);
+    void confirmationCode(String link, String email);
+
+    boolean recoveryCode(String link, String email);
+
+    boolean sendNewPassword(String link, String password, User user, Verify verify);
+
+    Verify readByCode(String code);
+
+    void deleteCode(int ownerId);
 }

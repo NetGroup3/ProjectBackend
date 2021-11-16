@@ -38,6 +38,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User readByName(String name) {
+
+        return userDao.readByName(name);
+    }
+
+    @Override
     public User update(User user) {
         if (userDao.readById(user.getId()) == null) {
             return null;
@@ -60,5 +66,17 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getAll(){
         return userDao.getAll();
     }
+
+    @Override
+    public void changeStatus(EStatus status, int id) {
+        userDao.changeStatus(status, id);
+    }
+
+    @Override
+    public void changePassword(User user, String password) {
+        user.setPassword(HashPassword.getHashPassword(password));
+        userDao.update(user);
+    }
+
 
 }
