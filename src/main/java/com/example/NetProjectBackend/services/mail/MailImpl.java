@@ -111,13 +111,13 @@ public class MailImpl implements Mail{
 
     @Override
     public boolean sendNewPassword(String link, String password, User user, Verify verify) {
-        OffsetDateTime time = OffsetDateTime.now().plusDays(1);
-        if (!time.toInstant().isAfter(verify.getTimestamp().toInstant())) {
-            return false;
-        }
         this.password = password;
         this.email = user.getEmail();
         this.link = link;
+        if (!checkData(verify)) {
+            confirmationCode(link, user.getEmail());
+            return false;
+        }
         type = 1;
         sendMail();
         return true;
@@ -131,5 +131,11 @@ public class MailImpl implements Mail{
     @Override
     public void deleteCode(int userId) {
         verifyDao.delete(userId);
+    }
+
+    @Override
+    public boolean checkData(Verify verify) {
+        OffsetDateTime time = OffsetDateTime.now().plusDays(1);
+        return time.toInstant().isAfter(verify.getTimestamp().toInstant());
     }
 }
