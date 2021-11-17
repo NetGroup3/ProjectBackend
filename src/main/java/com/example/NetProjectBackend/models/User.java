@@ -21,5 +21,4 @@ public class User {
     private int imageId;
     private String status;
     private String role;
-
 }

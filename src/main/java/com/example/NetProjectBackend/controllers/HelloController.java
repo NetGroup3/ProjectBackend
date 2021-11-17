@@ -20,11 +20,11 @@ public class HelloController {
         return "hello world!!";
     }
     @GetMapping("/hello/user")
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasRole('USER')")
     public String getUser(){
         return "USER HELLO";
     }
-    @PreAuthorize("hasRole('MODERATOR')")
+//    @PreAuthorize("hasRole('MODERATOR')")
     public String getModerator(){
         return "MODERATOR HELLO";
     }
