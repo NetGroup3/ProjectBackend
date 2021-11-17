@@ -13,12 +13,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
     @Autowired
@@ -38,9 +40,9 @@ public class AuthController {
         System.out.println("LOGIN");
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
+                        loginRequest.getUsername(),
                         loginRequest.getPassword()));
-        System.out.println(loginRequest.getEmail());
+        System.out.println(loginRequest.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
