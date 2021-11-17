@@ -61,6 +61,7 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.notFound().build();
         }
         User user = userRepository.readById(verify.getUserId());
+
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
             String newPassword = randomPassword();
             if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
@@ -69,7 +70,12 @@ public class UserService implements UserDetailsService {
                 mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
             }
         } else {
-            userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+            if (mail.checkData(verify)) {
+                userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+            } else {
+                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            }
+
         }
         mail.deleteCode(verify.getUserId());
         return ResponseEntity.ok(200);
