@@ -48,7 +48,7 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("last_name"),
                 rs.getString("email"),
                 rs.getObject("timestamp", OffsetDateTime.class),
-                rs.getString("image_id"),
+                rs.getInt("image_id"),
                 rs.getString("status"),
                 rs.getString("role")
         );

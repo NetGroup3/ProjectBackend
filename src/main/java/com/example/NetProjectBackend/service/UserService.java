@@ -7,11 +7,13 @@ import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.services.mail.Mail;
 import com.example.NetProjectBackend.services.password.HashPassword;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -19,6 +21,8 @@ import java.util.Objects;
 import java.util.Random;
 
 @Service
+@Transactional
+@Slf4j
 public class UserService implements UserDetailsService {
 
     private final Mail mail;
@@ -63,6 +67,7 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.notFound().build();
         }
         User user = userRepository.readById(verify.getUserId());
+
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
             String newPassword = randomPassword();
             if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
@@ -71,7 +76,12 @@ public class UserService implements UserDetailsService {
                 mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
             }
         } else {
-            userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+            if (mail.checkData(verify)) {
+                userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+            } else {
+                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            }
+
         }
         mail.deleteCode(verify.getUserId());
         return ResponseEntity.ok(200);

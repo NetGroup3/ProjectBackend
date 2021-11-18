@@ -13,4 +13,6 @@ public interface Mail {
     Verify readByCode(String code);
 
     void deleteCode(int ownerId);
+
+    boolean checkData(Verify verify);
 }
