@@ -17,4 +17,5 @@ public interface UserRepository {
     public List<User> getAll();
     void changeStatus(EStatus status, int id);
     void changePassword(User user, String password);
+    User updatePassword(String password, int id);
 }

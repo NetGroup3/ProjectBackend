@@ -1,10 +1,12 @@
 package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.EStatus;
+import com.example.NetProjectBackend.models.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.services.mail.Mail;
+import com.example.NetProjectBackend.services.password.HashPassword;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -111,4 +113,13 @@ public class UserService implements UserDetailsService {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
+
+    public void checkOldPassword(PasswordChangeGroup passwordCG) throws Exception {
+        User user = userRepository.readById(passwordCG.getUserId());
+        if(!HashPassword.getHashPassword(passwordCG.getOldPassword()).equals(user.getPassword())){
+            System.out.println("Incorrect password");
+            throw new Exception("Incorrect password");
+        }
+    }
+
 }
