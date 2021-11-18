@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+
 public class UserController {               //add validation
 
     private final UserRepository userRepository;  //replace with @Service layer
