@@ -63,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll(){
+    public List<User> getAll() {
         return userDao.getAll();
     }
 
@@ -78,5 +78,11 @@ public class UserRepositoryImpl implements UserRepository {
         userDao.update(user);
     }
 
+    @Override
+    public User updatePassword(String password, int id) {
+        String hashedPassword = HashPassword.getHashPassword(password);
+        userDao.updatePassword(hashedPassword, id);
+        return userDao.readById(id);
+    }
 
 }

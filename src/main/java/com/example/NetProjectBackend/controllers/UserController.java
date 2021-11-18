@@ -1,7 +1,9 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
+import com.example.NetProjectBackend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class UserController {               //add validation
 
     private final UserRepository userRepository;  //replace with @Service layer
+    private final UserService userService;
 
-    UserController(UserRepository userRepository) {
+    UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
@@ -76,6 +80,7 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(userDeleted);
     }
+
     @GetMapping("/get")
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
@@ -86,4 +91,17 @@ public class UserController {               //add validation
         }
         return ResponseEntity.ok(users);
     }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<User> updatePassword(@RequestBody PasswordChangeGroup passwordCG) {
+        System.out.println("users_CHANGE_PASSWORD");
+        try {
+            userService.checkOldPassword(passwordCG);
+            User userUpdatedPassword = userRepository.updatePassword(passwordCG.getPassword(), passwordCG.getUserId());
+            return ResponseEntity.ok(userUpdatedPassword);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

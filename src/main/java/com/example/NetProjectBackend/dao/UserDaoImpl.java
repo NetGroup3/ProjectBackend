@@ -36,6 +36,7 @@ public class UserDaoImpl implements UserDao {
     private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, first_name = ?, last_name = ?, email = ?, image_id = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
     private static final String UPDATE_STATUS = "UPDATE CLIENT SET status = ? WHERE id = ?";
+    private static final String UPDATE_PASSWORD = "UPDATE CLIENT SET password = ? WHERE id = ?";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
@@ -67,8 +68,7 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(SELECT_BY_ID, UserDaoImpl::mapClientRow, id);
-        }
-        catch (DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with id {}", id);
         }
         return user;
@@ -79,8 +79,7 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL, UserDaoImpl::mapClientRow, email);
-        }
-        catch (DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with email {}", email);
         }
         return user;
@@ -91,8 +90,7 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(SELECT_BY_NAME, new Object[]{name}, UserDaoImpl::mapClientRow);
-        }
-        catch (DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             LOGGER.debug("Couldn't find entity of type Person with name {}", name);
         }
         return user;
@@ -103,19 +101,19 @@ public class UserDaoImpl implements UserDao {
     public int create(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
-        new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement ps = connection.prepareStatement(INSERT_INTO_CLIENT_VALUES, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, user.getPassword());
-                ps.setString(2, user.getFirstname());
-                ps.setString(3, user.getLastname());
-                ps.setString(4, user.getEmail());
-                ps.setObject(5, user.getTimestamp());
-                ps.setString(6, user.getStatus());
-                ps.setString(7, user.getRole());
-                return ps;
-            }
-        }, keyHolder);
+                new PreparedStatementCreator() {
+                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                        PreparedStatement ps = connection.prepareStatement(INSERT_INTO_CLIENT_VALUES, Statement.RETURN_GENERATED_KEYS);
+                        ps.setString(1, user.getPassword());
+                        ps.setString(2, user.getFirstname());
+                        ps.setString(3, user.getLastname());
+                        ps.setString(4, user.getEmail());
+                        ps.setObject(5, user.getTimestamp());
+                        ps.setString(6, user.getStatus());
+                        ps.setString(7, user.getRole());
+                        return ps;
+                    }
+                }, keyHolder);
         return keyHolder.getKey().intValue();
     }
 
@@ -135,4 +133,10 @@ public class UserDaoImpl implements UserDao {
     public void changeStatus(EStatus status, int id) {
         jdbcTemplate.update(UPDATE_STATUS, EStatus.ACTIVE.getAuthority(), id);
     }
+
+    @Override
+    public void updatePassword(String password, int id) {
+        jdbcTemplate.update(UPDATE_PASSWORD, password, id);
+    }
+
 }

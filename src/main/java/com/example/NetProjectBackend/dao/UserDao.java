@@ -14,4 +14,5 @@ public interface UserDao {
     void update(User client);
     void delete(int id);
     void changeStatus(EStatus status, int id);
+    void updatePassword(String password, int id);
 }
