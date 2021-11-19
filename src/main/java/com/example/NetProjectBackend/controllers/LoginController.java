@@ -3,13 +3,9 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
-import com.example.NetProjectBackend.services.mail.Mail;
-import com.example.NetProjectBackend.services.password.HashPassword;
+import com.example.NetProjectBackend.service.mail.Mail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Base64;
-import java.util.Objects;
 
 
 @RestController

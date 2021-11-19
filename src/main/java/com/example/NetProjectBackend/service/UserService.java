@@ -5,7 +5,7 @@ import com.example.NetProjectBackend.models.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
-import com.example.NetProjectBackend.services.mail.Mail;
+import com.example.NetProjectBackend.service.mail.Mail;
 import com.example.NetProjectBackend.services.password.HashPassword;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
