@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserRecovery;
 import com.example.NetProjectBackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,9 @@ public class LoginController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
-    public ResponseEntity<?> recoveryPassword(@RequestBody String email) {
-        return userService.recovery(email);
+    public ResponseEntity<?> recoveryPassword(@RequestBody UserRecovery userRecovery) {
+        System.out.println("recovery");
+        return userService.recovery(userRecovery.getEmail());
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/code")

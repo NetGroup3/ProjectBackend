@@ -61,12 +61,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authEntryPointJwt).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/auth/login/**").permitAll()
-                .antMatchers("/signup/**").permitAll()
+                .antMatchers("/auth/login").permitAll()
+                .antMatchers("/signup").permitAll()
                 .antMatchers("/auth/signup/**").permitAll()
-                .antMatchers("/recovery/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/recovery").permitAll()
                 .antMatchers("/hello/**").permitAll()
-                .antMatchers("/users/get/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

@@ -17,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
@@ -60,7 +62,7 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-
+        signupRequest.setTimestamp(OffsetDateTime.now());
         if (userRepository.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
