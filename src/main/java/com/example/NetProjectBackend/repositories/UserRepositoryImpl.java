@@ -7,6 +7,7 @@ import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -21,8 +22,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User create(User user) {
         //user.setPassword(HashPassword.getHashPassword(user.getPassword()));
+
         user.setRole(ERole.USER.name());
         user.setStatus(EStatus.NOT_VERIFY.name());
+        user.setTimestamp(OffsetDateTime.now());
         int id = userDao.create(user);
         return userDao.readById(id);
     }

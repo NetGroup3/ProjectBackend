@@ -76,9 +76,7 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Username is exist"));
         }
-
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        System.out.println(signupRequest.getPassword());
         userRepository.create(signupRequest);
         return ResponseEntity.ok(new MessageResponse("User CREATED"));
     }
