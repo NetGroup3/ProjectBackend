@@ -30,17 +30,19 @@ public class JwtUtils {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt);
             return true;
-        } catch (MalformedJwtException e) {
-            System.err.println(e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (MalformedJwtException | IllegalArgumentException e) {
             System.err.println(e.getMessage());
         }
-
         return false;
     }
 
     public String getUserNameFromJwtToken(String jwt) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().getSubject();
+        return Jwts
+                .parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getSubject();
     }
 
 }

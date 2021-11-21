@@ -1,45 +1,36 @@
 package com.example.NetProjectBackend.controllers;
-import com.example.NetProjectBackend.models.User;
-import com.example.NetProjectBackend.pojo.MessageResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+
 import com.example.NetProjectBackend.jwt.JwtUtils;
-import com.example.NetProjectBackend.models.ERole;
+import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.pojo.JwtResponse;
 import com.example.NetProjectBackend.pojo.LoginRequest;
+import com.example.NetProjectBackend.pojo.MessageResponse;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
-import com.google.gson.JsonParser;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.gson.Gson;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.OffsetDateTime;
 
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
+@AllArgsConstructor
 public class AuthController {
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @PostMapping("/login")
+    @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity<?> authUser(@RequestBody String  login) {
         System.out.println("LOGIN");
         Gson g = new Gson();
@@ -68,9 +59,10 @@ public class AuthController {
                 userDetails.getImageId(),
                 userDetails.getRole()));
     }
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
 
+    @RequestMapping(method = RequestMethod.POST, path = "/signup")
+    public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
+        signupRequest.setTimestamp(OffsetDateTime.now());
         if (userRepository.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
