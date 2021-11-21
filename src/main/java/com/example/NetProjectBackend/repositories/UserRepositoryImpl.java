@@ -1,7 +1,10 @@
 package com.example.NetProjectBackend.repositories;
 
+import java.util.List;
+
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserListRequest;
 
 import org.springframework.stereotype.Repository;
 
@@ -47,5 +50,23 @@ public class UserRepositoryImpl implements UserRepository {
         }
         userDao.delete(id);
         return user;
+    }
+
+    @Override
+    public List<User> getAllSuitable(UserListRequest req) {
+        List<User> list = userDao.getAllSuitable(req);
+
+        int lastIndex = list.size() - 1;
+        int startIndex = Math.abs(req.getPerPage()) * (Math.abs(req.getPageNo()) - 1);
+        int endIndex = startIndex + Math.abs(req.getPerPage());
+
+        if (startIndex > lastIndex) {
+            return null;
+        }
+        else if (endIndex > lastIndex + 1) {
+            endIndex = lastIndex + 1;
+        }
+
+        return list.subList(startIndex, endIndex);
     }
 }

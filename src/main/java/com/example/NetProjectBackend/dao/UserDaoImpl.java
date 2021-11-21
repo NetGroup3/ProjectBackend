@@ -1,6 +1,9 @@
 package com.example.NetProjectBackend.dao;
 
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserListRequest;
+import com.example.NetProjectBackend.models.UserListRequest.SortProps;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -23,13 +26,9 @@ public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static final String SELECT_ALL_FROM_CLIENT = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT";
-    //select id, password, firstname, lastname, email, timestamp, picture, status, role from client where id=26;
     private static final String SELECT_BY_ID = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE ID = ?";
     private static final String SELECT_BY_EMAIL = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE email = ?";
 
-    //INSERT INTO public.client (id, password, firstname, lastname, email, timestamp, picture, status, role)
-    //              VALUES (DEFAULT, 'pasword_1234', 'John_firstname', 'miller_last_name', '1@1.com', '2020-08-10 10:41:22.276000 +00:00', 'picture_url', false, 10)
     private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, first_name, last_name, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
     private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, first_name = ?, last_name = ?, email = ?, image_id = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
@@ -54,9 +53,94 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private String generateOrderByPart(UserListRequest req) {
+
+        String ORDER_BY = "";
+
+        if (req.getSortProps() != null) {
+            for (SortProps sp : req.getSortProps()) {
+                String column = sp.getColumn();
+                if (column != null && (column.equals("first_name") || column.equals("last_name") || column.equals("email") || column.equals("timestamp")) && !ORDER_BY.contains(column)) {
+
+                    if (ORDER_BY.equals("")) {
+                        ORDER_BY += " ORDER BY ";
+                    }
+                    else {
+                        ORDER_BY += ", ";
+                    }
+
+                    ORDER_BY += column;
+
+                    if (sp.getAsc() != null && sp.getAsc() == false) {
+                        ORDER_BY += " DESC";
+                    }
+                    else {
+                        ORDER_BY += " ASC";
+                    }
+                }
+            }
+        }
+
+        return ORDER_BY;
+    }
+
+    private String generateSelectSuitableQuery(UserListRequest req) {
+
+        String SELECT_SUITABLE_USERS = "SELECT * FROM client WHERE LOWER(first_name) LIKE LOWER(?) AND LOWER(last_name) LIKE LOWER(?) AND LOWER(email) LIKE LOWER(?) AND LOWER(role) LIKE LOWER(?)";
+
+        if (req.getFilterTimestamp() != null) {
+            SELECT_SUITABLE_USERS += " AND timestamp ";
+            if (req.getFilterTimestampAfter() != null) {
+                if (req.getFilterTimestampAfter() == false) {
+                    SELECT_SUITABLE_USERS += "<= ?";
+                }
+                else {
+                    SELECT_SUITABLE_USERS += ">= ?";
+                }
+            }
+            else {
+                SELECT_SUITABLE_USERS += ">= ?";
+            }
+            
+        }
+
+        SELECT_SUITABLE_USERS += generateOrderByPart(req);
+
+        return SELECT_SUITABLE_USERS;
+
+    }
+
     @Override
-    public List<User> getAll() {
-        return jdbcTemplate.query(SELECT_ALL_FROM_CLIENT, UserDaoImpl::mapClientRow);
+    public List<User> getAllSuitable(UserListRequest req) {
+
+        String SELECT_SUITABLE_USERS = generateSelectSuitableQuery(req);
+
+        List<User> users = null;
+
+        try {
+            if (req.getFilterTimestamp() == null) {
+                users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
+                    "%" + req.getSearchFirstname() + "%",
+                    "%" + req.getSearchLastname() + "%",
+                    "%" + req.getSearchEmail() + "%",
+                    "%" + req.getSearchRole() + "%"
+                );
+            }
+            else {
+                users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
+                    "%" + req.getSearchFirstname() + "%",
+                    "%" + req.getSearchLastname() + "%",
+                    "%" + req.getSearchEmail() + "%",
+                    "%" + req.getSearchRole() + "%",
+                    req.getFilterTimestamp()
+                );
+            }
+        }
+        catch (DataAccessException dataAccessException) {
+            LOGGER.debug("WARNING\n\n" + dataAccessException);
+        }
+        
+        return users;
     }
 
     @Override
