@@ -1,7 +1,6 @@
 package com.example.NetProjectBackend.jwt;
 
 import com.example.NetProjectBackend.service.UserDetailsServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,9 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtils jwtUtils;
-
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Override
