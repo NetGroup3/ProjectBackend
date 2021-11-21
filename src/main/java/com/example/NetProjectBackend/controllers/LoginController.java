@@ -3,9 +3,10 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.models.UserRecovery;
 import com.example.NetProjectBackend.service.UserService;
-import lombok.AllArgsConstructor;
+import com.example.NetProjectBackend.service.mail.Mail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
