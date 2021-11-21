@@ -6,7 +6,7 @@ import com.example.NetProjectBackend.models.User;
 import java.util.List;
 
 public interface UserRepository {
-    public User create(User user);
+    User create(User user);
     User readById(int id);
     User readByEmail(String email);
     User readByName(String name);
