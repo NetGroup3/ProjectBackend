@@ -14,7 +14,7 @@ public class JwtResponse {
     private int imageId;
     private String role;
 
-    public JwtResponse(String token, int id, String email, String firstname, String lastname, String status,  OffsetDateTime timestamp, int imageId,String role) {
+    public JwtResponse(String token, int id, String email, String firstname, String lastname, String status, OffsetDateTime timestamp, int imageId, String role) {
         this.token = token;
         this.id = id;
         this.email = email;

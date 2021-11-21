@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.models.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,16 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
+public class UserController {
 
-public class UserController {               //add validation
-
-    private final UserRepository userRepository;  //replace with @Service layer
+    private final UserRepository userRepository;
     private final UserService userService;
-
-    UserController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public ResponseEntity<User> getUserById(@PathVariable int id) {
@@ -104,6 +100,17 @@ public class UserController {               //add validation
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/personal-information")
+    public ResponseEntity<?> updatePersonalInformation (@RequestBody User userResponse){
+        System.out.println("good");
+        User user = userRepository.readById(userResponse.getId());
+        user.setFirstname(userResponse.getFirstname());
+        user.setLastname(userResponse.getLastname());
+        userRepository.update(user);
+        return ResponseEntity.ok(200);
     }
 
 }
