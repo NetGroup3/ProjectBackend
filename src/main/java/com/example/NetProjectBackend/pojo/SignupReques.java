@@ -1,7 +1,5 @@
 package com.example.NetProjectBackend.pojo;
 
-import java.time.OffsetDateTime;
-
 public class SignupReques {
     private String password;
     private String firstname;

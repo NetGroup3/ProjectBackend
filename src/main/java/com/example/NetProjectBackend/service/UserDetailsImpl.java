@@ -1,7 +1,5 @@
 package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.ERole;
-import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,8 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class UserDetailsImpl implements UserDetails {
 

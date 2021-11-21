@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
 import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
@@ -23,10 +22,7 @@ public class AdminController {               //add validation
         this.userRepository = userRepository;
     }
 
-
-
-
-    @RequestMapping(method = RequestMethod.POST, path="/create")
+    @RequestMapping(method = RequestMethod.POST, path = "/create")
     public ResponseEntity<User> createModerator(@RequestBody User user) {
 
         System.out.println("users_POST");
@@ -62,13 +58,14 @@ public class AdminController {               //add validation
         }
         return ResponseEntity.ok(userDeleted);
     }
+
     @GetMapping("/get_moderators")
     public ResponseEntity<List<User>> getModerators() {
         List<User> users = new ArrayList<>();
         users = userRepository.getAll();
         List<User> moderators = new ArrayList<>();
-        for (User user:users) {
-            if(Objects.equals(user.getRole(), ERole.MODERATOR.name())){
+        for (User user : users) {
+            if (Objects.equals(user.getRole(), ERole.MODERATOR.name())) {
                 moderators.add(user);
             }
         }

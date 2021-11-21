@@ -1,15 +1,13 @@
 package com.example.NetProjectBackend.controllers;
-import com.example.NetProjectBackend.models.User;
-import com.example.NetProjectBackend.pojo.MessageResponse;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+
 import com.example.NetProjectBackend.jwt.JwtUtils;
-import com.example.NetProjectBackend.models.ERole;
+import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.pojo.JwtResponse;
 import com.example.NetProjectBackend.pojo.LoginRequest;
+import com.example.NetProjectBackend.pojo.MessageResponse;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,7 +34,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authUser(@RequestBody String  login) {
+    public ResponseEntity<?> authUser(@RequestBody String login) {
         System.out.println("LOGIN");
         Gson g = new Gson();
         LoginRequest loginRequest = g.fromJson(login, LoginRequest.class);
@@ -68,6 +62,7 @@ public class AuthController {
                 userDetails.getImageId(),
                 userDetails.getRole()));
     }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
 

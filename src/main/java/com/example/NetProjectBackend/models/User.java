@@ -1,12 +1,10 @@
 package com.example.NetProjectBackend.models;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import org.springframework.security.core.GrantedAuthority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
