@@ -15,7 +15,7 @@ public class User {
     private String lastname;
     private String email;
     private OffsetDateTime timestamp;
-    private int imageId;
+    private String imageId;
     private String status;
     private String role;
 }

@@ -2,6 +2,9 @@ package com.example.NetProjectBackend.dao;
 
 import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserListRequest;
+import com.example.NetProjectBackend.models.UserListRequest.SortProps;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -48,7 +51,7 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("last_name"),
                 rs.getString("email"),
                 rs.getObject("timestamp", OffsetDateTime.class),
-                rs.getInt("image_id"),
+                rs.getString("image_id"),
                 rs.getString("status"),
                 rs.getString("role")
         );
@@ -57,6 +60,97 @@ public class UserDaoImpl implements UserDao {
     public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+    private String generateOrderByPart(UserListRequest req) {
+
+        String ORDER_BY = "";
+
+        if (req.getSortProps() != null) {
+            for (SortProps sp : req.getSortProps()) {
+                String column = sp.getColumn();
+                if (column != null && (column.equals("first_name") || column.equals("last_name") || column.equals("email") || column.equals("timestamp")) && !ORDER_BY.contains(column)) {
+
+                    if (ORDER_BY.equals("")) {
+                        ORDER_BY += " ORDER BY ";
+                    }
+                    else {
+                        ORDER_BY += ", ";
+                    }
+
+                    ORDER_BY += column;
+
+                    if (sp.getAsc() != null && sp.getAsc() == false) {
+                        ORDER_BY += " DESC";
+                    }
+                    else {
+                        ORDER_BY += " ASC";
+                    }
+                }
+            }
+        }
+
+        return ORDER_BY;
+    }
+
+    private String generateSelectSuitableQuery(UserListRequest req) {
+
+        String SELECT_SUITABLE_USERS = "SELECT * FROM client WHERE LOWER(first_name) LIKE LOWER(?) AND LOWER(last_name) LIKE LOWER(?) AND LOWER(email) LIKE LOWER(?) AND LOWER(role) LIKE LOWER(?)";
+
+        if (req.getFilterTimestamp() != null) {
+            SELECT_SUITABLE_USERS += " AND timestamp ";
+            if (req.getFilterTimestampAfter() != null) {
+                if (req.getFilterTimestampAfter() == false) {
+                    SELECT_SUITABLE_USERS += "<= ?";
+                }
+                else {
+                    SELECT_SUITABLE_USERS += ">= ?";
+                }
+            }
+            else {
+                SELECT_SUITABLE_USERS += ">= ?";
+            }
+            
+        }
+
+        SELECT_SUITABLE_USERS += generateOrderByPart(req);
+
+        return SELECT_SUITABLE_USERS;
+
+    }
+
+    @Override
+    public List<User> getAllSuitable(UserListRequest req) {
+
+        String SELECT_SUITABLE_USERS = generateSelectSuitableQuery(req);
+
+        List<User> users = null;
+
+        try {
+            if (req.getFilterTimestamp() == null) {
+                users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
+                    "%" + req.getSearchFirstname() + "%",
+                    "%" + req.getSearchLastname() + "%",
+                    "%" + req.getSearchEmail() + "%",
+                    "%" + req.getSearchRole() + "%"
+                );
+            }
+            else {
+                users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
+                    "%" + req.getSearchFirstname() + "%",
+                    "%" + req.getSearchLastname() + "%",
+                    "%" + req.getSearchEmail() + "%",
+                    "%" + req.getSearchRole() + "%",
+                    req.getFilterTimestamp()
+                );
+            }
+        }
+        catch (DataAccessException dataAccessException) {
+            LOGGER.debug("WARNING\n\n" + dataAccessException);
+        }
+        
+        return users;
+    }
+
 
     @Override
     public List<User> getAll() {

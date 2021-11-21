@@ -48,9 +48,6 @@ public class UserController {
         System.out.println("users_POST");
         System.out.println("try to create user");
         System.out.println(user.toString());
-        //move to @Service or elsewhere
-        user.setTimestamp(OffsetDateTime.now());
-        //
 
         User userCreated = userRepository.create(user);
         if (userCreated == null) {
