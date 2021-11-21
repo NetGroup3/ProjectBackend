@@ -51,6 +51,7 @@ public class UserService implements UserDetailsService {
 
     /** Recovery Password */
     public ResponseEntity<?> recovery (String email){
+        System.out.println(email);
         if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
