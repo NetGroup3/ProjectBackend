@@ -2,17 +2,21 @@ package com.example.NetProjectBackend.repositories;
 
 import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserListRequest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
 public interface UserRepository {
-    User create(User user);
-    User readById(int id);
-    User readByEmail(String email);
-    User readByName(String name);
-    User update(User user);
-    User delete(int id);
-    List<User> getAll();
+    public User create(User user);
+    public User readById(int id);
+    public User readByEmail(String email);
+    public User readByName(String name);
+    public User update(User user);
+    public User delete(int id);
+    public List<User> getAll();
+    public List<User> getAllSuitable(UserListRequest req);
     void changeStatus(EStatus status, int id);
     void changePassword(User user, String password);
     User updatePassword(String password, int id);

@@ -8,7 +8,7 @@ import com.example.NetProjectBackend.pojo.MessageResponse;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.google.gson.Gson;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,24 +17,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
+@AllArgsConstructor
 public class AuthController {
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @PostMapping("/login")
-    public ResponseEntity<?> authUser(@RequestBody String login) {
+    @RequestMapping(method = RequestMethod.POST, path = "/login")
+    public ResponseEntity<?> authUser(@RequestBody String  login) {
         System.out.println("LOGIN");
         Gson g = new Gson();
         LoginRequest loginRequest = g.fromJson(login, LoginRequest.class);
@@ -63,17 +60,15 @@ public class AuthController {
                 userDetails.getRole()));
     }
 
-    @PostMapping("/signup")
+    @RequestMapping(method = RequestMethod.POST, path = "/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-
+        signupRequest.setTimestamp(OffsetDateTime.now());
         if (userRepository.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is exist"));
         }
-
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        System.out.println(signupRequest.getPassword());
         userRepository.create(signupRequest);
         return ResponseEntity.ok(new MessageResponse("User CREATED"));
     }

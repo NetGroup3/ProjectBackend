@@ -1,10 +1,9 @@
 package com.example.NetProjectBackend.models;
 
+import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +15,7 @@ public class User {
     private String lastname;
     private String email;
     private OffsetDateTime timestamp;
-    private int imageId;
+    private String imageId;
     private String status;
     private String role;
 }

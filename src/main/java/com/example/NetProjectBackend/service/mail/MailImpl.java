@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.services.mail;
+package com.example.NetProjectBackend.service.mail;
 
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.dao.VerifyDao;

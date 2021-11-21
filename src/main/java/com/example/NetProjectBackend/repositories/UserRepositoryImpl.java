@@ -4,9 +4,11 @@ import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.EStatus;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.services.password.HashPassword;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -21,8 +23,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User create(User user) {
         //user.setPassword(HashPassword.getHashPassword(user.getPassword()));
+
         user.setRole(ERole.USER.name());
         user.setStatus(EStatus.NOT_VERIFY.name());
+        user.setTimestamp(OffsetDateTime.now());
         int id = userDao.create(user);
         return userDao.readById(id);
     }
@@ -66,6 +70,26 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         return userDao.getAll();
     }
+
+    public List<User> getAllSuitable(UserListRequest req) {
+        List<User> list = userDao.getAllSuitable(req);
+
+        if (list == null) return null;
+
+        int lastIndex = list.size() - 1;
+        int startIndex = Math.abs(req.getPerPage()) * (Math.abs(req.getPageNo()) - 1);
+        int endIndex = startIndex + Math.abs(req.getPerPage());
+
+        if (startIndex > lastIndex) {
+            return null;
+        }
+        else if (endIndex > lastIndex + 1) {
+            endIndex = lastIndex + 1;
+        }
+
+        return list.subList(startIndex, endIndex);
+    }
+
 
     @Override
     public void changeStatus(EStatus status, int id) {

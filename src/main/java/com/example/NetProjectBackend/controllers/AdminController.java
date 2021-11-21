@@ -1,12 +1,11 @@
 package com.example.NetProjectBackend.controllers;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,10 @@ public class AdminController {               //add validation
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/create")
+
+
+
+    @RequestMapping(method = RequestMethod.POST, path="/create")
     public ResponseEntity<User> createModerator(@RequestBody User user) {
 
         System.out.println("users_POST");
@@ -59,31 +61,13 @@ public class AdminController {               //add validation
         return ResponseEntity.ok(userDeleted);
     }
 
-    @GetMapping("/get_moderators")
-    public ResponseEntity<List<User>> getModerators() {
-        List<User> users = new ArrayList<>();
-        users = userRepository.getAll();
-        List<User> moderators = new ArrayList<>();
-        for (User user : users) {
-            if (Objects.equals(user.getRole(), ERole.MODERATOR.name())) {
-                moderators.add(user);
-            }
-        }
-        System.out.println(moderators);
+    @PostMapping("/moderators")
+    public ResponseEntity<List<User>> getModerators(@RequestBody UserListRequest req) {
+        req.setSearchRole("moderator");
+        List<User> moderators = userRepository.getAllSuitable(req);
         if (moderators == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(moderators);
     }
-//    @GetMapping("/search")
-//    public ResponseEntity<User> searchByName(@PathVariable String name) {
-//        System.out.println("search moderator");
-//        User moderator = userRepository.readByName(name);
-//        if (moderator == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(moderator);
-//    }
-
-
 }

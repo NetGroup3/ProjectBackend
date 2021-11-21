@@ -16,14 +16,14 @@ public class UserDetailsImpl implements UserDetails {
     private String lastname;
     private String email;
     private OffsetDateTime timestamp;
-    private int imageId;
+    private String imageId;
     @JsonIgnore
     private String password;
     private Collection<? extends GrantedAuthority> authoritiesR;
     private String status;
     private String role;
 
-    public UserDetailsImpl(int id, String firstname, String lastname, String email, OffsetDateTime timestamp, int imageId, String password, String role, String status) {
+    public UserDetailsImpl(int id, String firstname, String lastname, String email, OffsetDateTime timestamp, String imageId, String password, String role, String status) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -74,7 +74,7 @@ public class UserDetailsImpl implements UserDetails {
     public OffsetDateTime getTimestamp(){
         return timestamp;
     }
-    public int getImageId(){
+    public String getImageId(){
         return imageId;
     }
     public String getStatus(){

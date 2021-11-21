@@ -1,6 +1,5 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.services.mail.Mail;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
