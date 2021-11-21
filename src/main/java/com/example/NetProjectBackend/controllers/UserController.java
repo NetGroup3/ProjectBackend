@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
 
     private final UserRepository userRepository;
@@ -99,6 +100,17 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+
+    @RequestMapping(method = RequestMethod.PUT, path = "/personal-information")
+    public ResponseEntity<?> updatePersonalInformation (@RequestBody User userResponse){
+        System.out.println("good");
+        User user = userRepository.readById(userResponse.getId());
+        user.setFirstname(userResponse.getFirstname());
+        user.setLastname(userResponse.getLastname());
+        userRepository.update(user);
+        return ResponseEntity.ok(200);
     }
 
 }
