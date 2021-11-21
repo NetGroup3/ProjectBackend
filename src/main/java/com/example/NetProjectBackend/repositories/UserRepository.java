@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface UserRepository {
     public User create(User user);
-    public User readById(int id);
-    public User readByEmail(String email);
-    public User readByName(String name);
-    public User update(User user);
-    public User delete(int id);
-    public List<User> getAll();
+    User readById(int id);
+    User readByEmail(String email);
+    User readByName(String name);
+    User update(User user);
+    User delete(int id);
+    List<User> getAll();
     void changeStatus(EStatus status, int id);
     void changePassword(User user, String password);
     User updatePassword(String password, int id);
