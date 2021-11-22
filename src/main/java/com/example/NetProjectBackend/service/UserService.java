@@ -1,17 +1,17 @@
 package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.enums.EStatus;
-import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
-import com.example.NetProjectBackend.models.entity.User;
-import com.example.NetProjectBackend.models.Verify;
+import com.example.NetProjectBackend.models.*;
+import com.example.NetProjectBackend.pojo.MessageResponse;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.mail.Mail;
-import com.example.NetProjectBackend.service.password.HashPassword;
+import com.example.NetProjectBackend.services.password.HashPassword;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,30 +23,26 @@ import java.util.Random;
 @Service
 @Transactional
 @Slf4j
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final Mail mail;
     private final UserRepository userRepository;
-
-    public UserService(Mail mail, UserRepository userRepository) {
-        this.mail = mail;
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     /**Sign Up */
     public ResponseEntity<?> create (User user){
-        //move to @Service or elsewhere
         user.setTimestamp(OffsetDateTime.now());
-
-        if(userRepository.readByEmail(user.getEmail())!=null){ //есть ли пользователь с таким имейлом?
-            return ResponseEntity.badRequest().build();
+        if (userRepository.readByEmail(user.getEmail()) != null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is exist"));
         }
-        User userCreated = userRepository.create(user);
-        if (userCreated == null) {
-            return ResponseEntity.badRequest().build(); // если юзер по каким-то причинам не создался
-        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(ERole.USER.getAuthority());
+        userRepository.create(user);
         mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
-        return ResponseEntity.ok(userCreated);
+        return ResponseEntity.ok(new MessageResponse("User CREATED"));
     }
 
     /** Recovery Password */
