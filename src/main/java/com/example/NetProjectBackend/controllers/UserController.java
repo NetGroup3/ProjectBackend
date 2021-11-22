@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -76,7 +77,8 @@ public class UserController {
 
     @GetMapping("/get")
     public ResponseEntity<List<User>> getUsers() {
-        List<User> users = userRepository.getAll();
+        List<User> users = new ArrayList<>();
+        users = userRepository.getAll();
         System.out.println(users);
         if (users == null) {
             return ResponseEntity.notFound().build();
@@ -99,6 +101,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.PUT, path = "/personal-information")
     public ResponseEntity<?> updatePersonalInformation (@RequestBody User userResponse){
+        System.out.println("good");
         User user = userRepository.readById(userResponse.getId());
         user.setFirstname(userResponse.getFirstname());
         user.setLastname(userResponse.getLastname());
