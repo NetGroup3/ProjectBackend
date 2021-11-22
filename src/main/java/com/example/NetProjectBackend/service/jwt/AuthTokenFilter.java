@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.jwt;
+package com.example.NetProjectBackend.service.jwt;
 
 import com.example.NetProjectBackend.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

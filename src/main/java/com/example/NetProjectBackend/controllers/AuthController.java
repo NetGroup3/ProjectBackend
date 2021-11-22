@@ -1,10 +1,10 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.jwt.JwtUtils;
-import com.example.NetProjectBackend.models.User;
-import com.example.NetProjectBackend.pojo.JwtResponse;
-import com.example.NetProjectBackend.pojo.LoginRequest;
-import com.example.NetProjectBackend.pojo.MessageResponse;
+import com.example.NetProjectBackend.service.jwt.JwtUtils;
+import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.dto.JwtResponse;
+import com.example.NetProjectBackend.models.dto.LoginRequest;
+import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.google.gson.Gson;

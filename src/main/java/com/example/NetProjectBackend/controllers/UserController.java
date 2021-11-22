@@ -1,15 +1,13 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.PasswordChangeGroup;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -78,8 +76,7 @@ public class UserController {
 
     @GetMapping("/get")
     public ResponseEntity<List<User>> getUsers() {
-        List<User> users = new ArrayList<>();
-        users = userRepository.getAll();
+        List<User> users = userRepository.getAll();
         System.out.println(users);
         if (users == null) {
             return ResponseEntity.notFound().build();
@@ -102,7 +99,6 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.PUT, path = "/personal-information")
     public ResponseEntity<?> updatePersonalInformation (@RequestBody User userResponse){
-        System.out.println("good");
         User user = userRepository.readById(userResponse.getId());
         user.setFirstname(userResponse.getFirstname());
         user.setLastname(userResponse.getLastname());

@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.service.mail;
 
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
 
 public interface Mail {

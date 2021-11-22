@@ -2,8 +2,8 @@ package com.example.NetProjectBackend.service.mail;
 
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.dao.VerifyDao;
-import com.example.NetProjectBackend.models.EStatus;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.enums.EStatus;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

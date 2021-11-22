@@ -1,12 +1,12 @@
 package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.EStatus;
-import com.example.NetProjectBackend.models.PasswordChangeGroup;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.enums.EStatus;
+import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.mail.Mail;
-import com.example.NetProjectBackend.services.password.HashPassword;
+import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

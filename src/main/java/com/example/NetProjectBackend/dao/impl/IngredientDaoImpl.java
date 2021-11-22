@@ -1,5 +1,6 @@
-package com.example.NetProjectBackend.dao;
+package com.example.NetProjectBackend.dao.impl;
 
+import com.example.NetProjectBackend.dao.IngredientDao;
 import com.example.NetProjectBackend.models.Ingredient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
