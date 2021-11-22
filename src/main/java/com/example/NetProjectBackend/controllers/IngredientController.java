@@ -16,14 +16,13 @@ public class IngredientController {
     }
 
 
-    @GetMapping("/ingredient")
-    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR')")
-    public ResponseEntity<?> readIngredient(@RequestBody int id) {
+    @GetMapping(path = "/ingredient")
+    public ResponseEntity<?> readIngredient(@RequestParam int id) {
+        System.out.println("OK");
         return ResponseEntity.ok(ingredientService.read(id));
     }
 
     @PostMapping("/ingredient")
-    //@PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
         ingredient.set_active(true);
         ingredientService.create(ingredient);
@@ -31,22 +30,19 @@ public class IngredientController {
     }
 
     @PutMapping("/ingredient")
-    //@PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<?> updateIngredient(@RequestBody Ingredient ingredient) {
         ingredientService.update(ingredient);
         return ResponseEntity.ok(200);
     }
 
     @DeleteMapping("/ingredient")
-    //@PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<?> deleteIngredient(@RequestBody int id) {
+    public ResponseEntity<?> deleteIngredient(@RequestParam int id) {
         ingredientService.delete(id);
         return ResponseEntity.ok(200);
     }
 
     @GetMapping("/ingredient/page")
-    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR')")
-    public ResponseEntity<?> readIngredientPage(@RequestBody int limit, @RequestBody int offset) {
+    public ResponseEntity<?> readIngredientPage(@RequestParam int limit, @RequestParam int offset) {
         return ResponseEntity.ok(ingredientService.readPage(limit, offset));
     }
 
