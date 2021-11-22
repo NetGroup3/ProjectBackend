@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.jwt.JwtUtils;
+import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.models.UserRecovery;
 import com.example.NetProjectBackend.pojo.JwtResponse;
@@ -65,16 +66,7 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-        signupRequest.setTimestamp(OffsetDateTime.now());
-        if (userRepository.readByEmail(signupRequest.getEmail()) != null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is exist"));
-        }
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        //userRepository.create(signupRequest);
-        userService.create(signupRequest);
-        return ResponseEntity.ok(new MessageResponse("User CREATED"));
+        return ResponseEntity.ok(userService.create(signupRequest));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/code")
