@@ -1,12 +1,15 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.jwt.JwtUtils;
+import com.example.NetProjectBackend.models.ERole;
 import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.UserRecovery;
 import com.example.NetProjectBackend.pojo.JwtResponse;
 import com.example.NetProjectBackend.pojo.LoginRequest;
 import com.example.NetProjectBackend.pojo.MessageResponse;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
+import com.example.NetProjectBackend.service.UserService;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity<?> authUser(@RequestBody String  login) {
@@ -62,15 +66,18 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-        signupRequest.setTimestamp(OffsetDateTime.now());
-        if (userRepository.readByEmail(signupRequest.getEmail()) != null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is exist"));
-        }
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        userRepository.create(signupRequest);
-        return ResponseEntity.ok(new MessageResponse("User CREATED"));
+        signupRequest.setRole(ERole.USER.getAuthority());
+        return ResponseEntity.ok(userService.create(signupRequest));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/code")
+    public ResponseEntity<?> code(@RequestParam String param) {
+        return userService.code(param);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path="/recovery")
+    public ResponseEntity<?> recoveryPassword(@RequestBody UserRecovery userRecovery) {
+        return userService.recovery(userRecovery.getEmail());
     }
 
 }
