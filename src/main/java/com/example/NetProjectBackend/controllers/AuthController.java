@@ -66,6 +66,7 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
+        signupRequest.setRole(ERole.USER.getAuthority());
         return ResponseEntity.ok(userService.create(signupRequest));
     }
 
