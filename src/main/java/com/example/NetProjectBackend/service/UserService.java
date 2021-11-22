@@ -39,7 +39,6 @@ public class UserService implements UserDetailsService {
                     .body(new MessageResponse("Error: Username is exist"));
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(ERole.USER.getAuthority());
         userRepository.create(user);
         mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
         return ResponseEntity.ok(new MessageResponse("User CREATED"));
