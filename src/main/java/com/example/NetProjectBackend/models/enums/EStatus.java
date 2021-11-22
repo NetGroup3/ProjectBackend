@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models;
+package com.example.NetProjectBackend.models.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 

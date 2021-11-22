@@ -1,11 +1,11 @@
 package com.example.NetProjectBackend.repositories;
 
 import com.example.NetProjectBackend.dao.UserDao;
-import com.example.NetProjectBackend.models.ERole;
-import com.example.NetProjectBackend.models.EStatus;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.enums.ERole;
+import com.example.NetProjectBackend.models.enums.EStatus;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
-import com.example.NetProjectBackend.services.password.HashPassword;
+import com.example.NetProjectBackend.service.password.HashPassword;
 import org.springframework.stereotype.Repository;
 
 import java.time.OffsetDateTime;

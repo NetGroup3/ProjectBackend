@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.pojo;
+package com.example.NetProjectBackend.models.dto;
 
 public class MessageResponse {
     private String message;

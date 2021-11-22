@@ -1,14 +1,13 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.PasswordChangeGroup;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

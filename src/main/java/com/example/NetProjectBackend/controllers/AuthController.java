@@ -1,15 +1,15 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.jwt.JwtUtils;
-import com.example.NetProjectBackend.models.ERole;
-import com.example.NetProjectBackend.models.User;
 import com.example.NetProjectBackend.models.UserRecovery;
-import com.example.NetProjectBackend.pojo.JwtResponse;
-import com.example.NetProjectBackend.pojo.LoginRequest;
-import com.example.NetProjectBackend.pojo.MessageResponse;
+import com.example.NetProjectBackend.models.dto.JwtResponse;
+import com.example.NetProjectBackend.models.dto.LoginRequest;
+import com.example.NetProjectBackend.models.dto.MessageResponse;
+import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserService;
+import com.example.NetProjectBackend.service.jwt.JwtUtils;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.OffsetDateTime;
 
 @RestController
 @RequestMapping("/auth")

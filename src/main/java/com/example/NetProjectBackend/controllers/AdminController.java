@@ -3,8 +3,8 @@ package com.example.NetProjectBackend.controllers;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import com.example.NetProjectBackend.models.ERole;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.enums.ERole;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.repositories.UserRepository;
 
