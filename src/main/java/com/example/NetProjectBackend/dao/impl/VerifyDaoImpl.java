@@ -1,9 +1,10 @@
-package com.example.NetProjectBackend.dao;
+package com.example.NetProjectBackend.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
+import com.example.NetProjectBackend.dao.VerifyDao;
 import com.example.NetProjectBackend.models.Verify;
 
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class VerifyDaoImpl implements VerifyDao{
+public class VerifyDaoImpl implements VerifyDao {
 
     private final JdbcTemplate jdbcTemplate;
     private static final Logger LOGGER = LoggerFactory.getLogger(VerifyDao.class);

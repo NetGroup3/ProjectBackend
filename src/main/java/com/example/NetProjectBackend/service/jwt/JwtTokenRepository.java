@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service;
+package com.example.NetProjectBackend.service.jwt;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

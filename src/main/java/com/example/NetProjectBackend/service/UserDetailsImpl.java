@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

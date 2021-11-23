@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.dao;
 
-import com.example.NetProjectBackend.models.EStatus;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.enums.EStatus;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models;
+package com.example.NetProjectBackend.models.entity;
 
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;

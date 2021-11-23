@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend;
 
-import com.example.NetProjectBackend.service.JwtTokenRepository;
+import com.example.NetProjectBackend.service.jwt.JwtTokenRepository;
 import lombok.Getter;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.security.web.csrf.InvalidCsrfTokenException;

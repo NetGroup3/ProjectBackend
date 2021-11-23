@@ -1,10 +1,8 @@
 package com.example.NetProjectBackend.repositories;
 
-import com.example.NetProjectBackend.models.EStatus;
-import com.example.NetProjectBackend.models.User;
+import com.example.NetProjectBackend.models.enums.EStatus;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 

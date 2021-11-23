@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models;
+package com.example.NetProjectBackend.models.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
