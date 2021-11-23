@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.service;
 
+import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.entity.User;
-import com.example.NetProjectBackend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserDao userDao;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.readByEmail(email);
+        User user = userDao.readByEmail(email);
         return UserDetailsImpl.build(user);
     }
 }

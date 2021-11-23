@@ -3,10 +3,8 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.UserRecovery;
 import com.example.NetProjectBackend.models.dto.JwtResponse;
 import com.example.NetProjectBackend.models.dto.LoginRequest;
-import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
-import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final UserService userService;
