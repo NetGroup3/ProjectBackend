@@ -61,33 +61,33 @@ public class UserDaoImpl implements UserDao {
 
     private String generateOrderByPart(UserListRequest req) {
 
-        String ORDER_BY = "";
+        StringBuilder ORDER_BY = new StringBuilder();
 
         if (req.getSortProps() != null) {
             for (SortProps sp : req.getSortProps()) {
                 String column = sp.getColumn();
-                if (column != null && (column.equals("first_name") || column.equals("last_name") || column.equals("email") || column.equals("timestamp")) && !ORDER_BY.contains(column)) {
+                if (column != null && (column.equals("first_name") || column.equals("last_name") || column.equals("email") || column.equals("timestamp")) && !ORDER_BY.toString().contains(column)) {
 
-                    if (ORDER_BY.equals("")) {
-                        ORDER_BY += " ORDER BY ";
+                    if (ORDER_BY.toString().equals("")) {
+                        ORDER_BY.append(" ORDER BY ");
                     }
                     else {
-                        ORDER_BY += ", ";
+                        ORDER_BY.append(", ");
                     }
 
-                    ORDER_BY += column;
+                    ORDER_BY.append(column);
 
-                    if (sp.getAsc() != null && sp.getAsc() == false) {
-                        ORDER_BY += " DESC";
+                    if (sp.getAsc() != null && !sp.getAsc()) {
+                        ORDER_BY.append(" DESC");
                     }
                     else {
-                        ORDER_BY += " ASC";
+                        ORDER_BY.append(" ASC");
                     }
                 }
             }
         }
 
-        return ORDER_BY;
+        return ORDER_BY.toString();
     }
 
     private String generateSelectSuitableQuery(UserListRequest req) {
@@ -97,7 +97,7 @@ public class UserDaoImpl implements UserDao {
         if (req.getFilterTimestamp() != null) {
             SELECT_SUITABLE_USERS += " AND timestamp ";
             if (req.getFilterTimestampAfter() != null) {
-                if (req.getFilterTimestampAfter() == false) {
+                if (!req.getFilterTimestampAfter()) {
                     SELECT_SUITABLE_USERS += "<= ?";
                 }
                 else {

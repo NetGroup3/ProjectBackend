@@ -2,12 +2,14 @@ package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
 
+@ToString
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;

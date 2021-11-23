@@ -1,7 +1,5 @@
 package com.example.NetProjectBackend.models.dto;
 
-import java.time.OffsetDateTime;
-
 public class SignupReques {
     private String password;
     private String firstname;
