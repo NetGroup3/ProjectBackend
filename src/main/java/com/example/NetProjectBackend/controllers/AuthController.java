@@ -29,25 +29,19 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
 
-    @RequestMapping(method = RequestMethod.POST, path = "/login")
-    public ResponseEntity<?> authUser(@RequestBody String  login) {
-        System.out.println("LOGIN");
-        Gson g = new Gson();
-        LoginRequest loginRequest = g.fromJson(login, LoginRequest.class);
 
-        System.out.println(loginRequest.getUsername());
+    @PostMapping("/login")
+    public ResponseEntity<?> authUser(@RequestBody String  login) {
+        LoginRequest loginRequest = new Gson().fromJson(login, LoginRequest.class);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(),
                 loginRequest.getPassword());
-        System.out.println(token);
         Authentication authentication = authenticationManager
                 .authenticate(token);
-        System.out.println(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
+        System.out.println(userDetails);
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),

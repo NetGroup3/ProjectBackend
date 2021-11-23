@@ -5,6 +5,7 @@ import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.service.mail.Mail;
@@ -186,4 +187,15 @@ public class UserService implements UserDetailsService {
         return userDao.readByName(name);
     }
 
+    public void updateUserImage(UserImage response) {
+        User user = userRepository.readById(response.getId());
+        if(user!=null) {
+            user.setImageId(response.getImageId());
+            userRepository.update(user);
+            System.out.println("update user");
+        } else {
+            System.out.println("user == null");
+        }
+    }
+  
 }
