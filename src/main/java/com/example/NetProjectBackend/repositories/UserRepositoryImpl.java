@@ -90,7 +90,6 @@ public class UserRepositoryImpl implements UserRepository {
         return list.subList(startIndex, endIndex);
     }
 
-
     @Override
     public void changeStatus(EStatus status, int id) {
         userDao.changeStatus(status, id);
@@ -104,8 +103,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User updatePassword(String password, int id) {
-        String hashedPassword = HashPassword.getHashPassword(password);
-        userDao.updatePassword(hashedPassword, id);
+        userDao.updatePassword(password, id);
         return userDao.readById(id);
     }
 

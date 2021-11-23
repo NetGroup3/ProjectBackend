@@ -115,10 +115,13 @@ public class UserService implements UserDetailsService {
 
     public void checkOldPassword(PasswordChangeGroup passwordCG) throws Exception {
         User user = userRepository.readById(passwordCG.getUserId());
-        if(!HashPassword.getHashPassword(passwordCG.getOldPassword()).equals(user.getPassword())){
-            System.out.println("Incorrect password");
+        if(!passwordEncoder.matches(passwordCG.getOldPassword(), user.getPassword())){
             throw new Exception("Incorrect password");
         }
     }
 
+    public String hashPassword(String password){
+        String hashedPassword = passwordEncoder.encode(password);
+        return hashedPassword;
+    }
 }
