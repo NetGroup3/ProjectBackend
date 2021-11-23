@@ -3,6 +3,7 @@ package com.example.NetProjectBackend.service;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.repositories.UserRepository;
@@ -123,5 +124,16 @@ public class UserService implements UserDetailsService {
     public String hashPassword(String password){
         String hashedPassword = passwordEncoder.encode(password);
         return hashedPassword;
+    }
+
+    public void updateUserImage(UserImage response) {
+        User user = userRepository.readById(response.getId());
+        if(user!=null) {
+            user.setImageId(response.getImageId());
+            userRepository.update(user);
+            System.out.println("update user");
+        } else {
+            System.out.println("user == null");
+        }
     }
 }
