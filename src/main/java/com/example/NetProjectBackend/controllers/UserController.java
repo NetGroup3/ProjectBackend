@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
@@ -90,20 +91,23 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<User> updatePassword(@RequestBody PasswordChangeGroup passwordCG) {
-        System.out.println("users_CHANGE_PASSWORD");
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeGroup passwordCG) {
+//        System.out.println("users_CHANGE_PASSWORD");
         try {
             userService.checkOldPassword(passwordCG);
-            User userUpdatedPassword = userRepository.updatePassword(passwordCG.getPassword(), passwordCG.getUserId());
-            return ResponseEntity.ok(userUpdatedPassword);
+            String userUpdatedPassword = userService.hashPassword(passwordCG.getPassword());
+            userRepository.updatePassword(userUpdatedPassword/*passwordCG.getPassword()*/, passwordCG.getUserId());
+            return ResponseEntity.ok(200);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Incorrect password"));
         }
     }
 
 
     @RequestMapping(method = RequestMethod.PUT, path = "/personal-information")
-    public ResponseEntity<?> updatePersonalInformation (@RequestBody User userResponse){
+    public ResponseEntity<?> updatePersonalInformation(@RequestBody User userResponse) {
         System.out.println("good");
         User user = userRepository.readById(userResponse.getId());
         user.setFirstname(userResponse.getFirstname());
