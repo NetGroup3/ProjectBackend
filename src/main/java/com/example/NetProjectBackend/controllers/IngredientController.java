@@ -19,6 +19,7 @@ public class IngredientController {
     @GetMapping(path = "/ingredient")
     public ResponseEntity<?> readIngredient(@RequestParam int id) {
         System.out.println("OK");
+
         return ResponseEntity.ok(ingredientService.read(id));
     }
 
