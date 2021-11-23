@@ -1,10 +1,12 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RequestMapping("/users")
 @AllArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
+@Slf4j
 public class UserController {
 
     private final UserRepository userRepository;
@@ -107,6 +110,16 @@ public class UserController {
         user.setLastname(userResponse.getLastname());
         userRepository.update(user);
         return ResponseEntity.ok(200);
+    }
+
+    @PutMapping("/user-image")
+    public void updateImage (@RequestBody UserImage response){
+        System.out.println("logggggg");
+        System.out.println(response.getId());
+        System.out.println(response.getImageId());
+
+        log.debug("Controller update user image");
+        userService.updateUserImage(response);
     }
 
 }
