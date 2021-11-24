@@ -41,8 +41,8 @@ public class KitchenwareController {
     }
 
     @GetMapping("/kitchenware/page")
-    public ResponseEntity<?> readKitchenwarePage(@RequestParam int limit, @RequestParam int offset) {
-        return ResponseEntity.ok(kitchenwareService.readPage(limit, offset));
+    public ResponseEntity<?> readKitchenwarePage(@RequestParam int limit, @RequestParam int page) {
+        return ResponseEntity.ok(kitchenwareService.readPage(limit, limit*page));
     }
 
 }
