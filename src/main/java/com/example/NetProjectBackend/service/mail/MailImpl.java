@@ -6,7 +6,6 @@ import com.example.NetProjectBackend.dao.VerifyDao;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,7 +22,6 @@ import java.util.Calendar;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class MailImpl implements Mail{
 
@@ -39,6 +37,13 @@ public class MailImpl implements Mail{
     private String link;
     private String code;
 
+    public MailImpl(JavaMailSender emailSender, SpringTemplateEngine thymeleafTemplateEngine, UserDao userDao, VerifyDao verifyDao, LinkConfig l) {
+        this.emailSender = emailSender;
+        this.thymeleafTemplateEngine = thymeleafTemplateEngine;
+        this.userDao = userDao;
+        this.verifyDao = verifyDao;
+        this.l = l;
+    }
 
 
     protected void sendMail() {
