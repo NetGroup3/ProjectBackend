@@ -1,12 +1,13 @@
 package com.example.NetProjectBackend.service;
 
+import com.example.NetProjectBackend.dao.UserDao;
+import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
-import com.example.NetProjectBackend.repositories.UserRepository;
 import com.example.NetProjectBackend.service.mail.Mail;
 import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -31,27 +33,32 @@ import java.util.Random;
 public class UserService implements UserDetailsService {
 
     private final Mail mail;
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
 
     /**Sign Up */
     public ResponseEntity<?> create (User user){
-        user.setTimestamp(OffsetDateTime.now());
-        if (userRepository.readByEmail(user.getEmail()) != null) {
+
+        if (readByEmail(user.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is exist"));
         }
+        user.setTimestamp(OffsetDateTime.now());
+        user.setStatus(EStatus.NOT_VERIFY.name());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.create(user);
-        mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
-        return ResponseEntity.ok(new MessageResponse("User CREATED"));
+        int id = userDao.create(user);
+        if (id > 0) {
+            mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            return ResponseEntity.ok(new MessageResponse("User CREATED"));
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     /** Recovery Password */
     public ResponseEntity<?> recovery (String email){
         System.out.println(email);
-        if(userRepository.readByEmail(email) == null){ //проверка на ниличие в бд
+        if(readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
             if (!mail.recoveryCode("https://ourproject.space/code?param=", email))
@@ -66,18 +73,18 @@ public class UserService implements UserDetailsService {
         if (verify == null) {
             return ResponseEntity.notFound().build();
         }
-        User user = userRepository.readById(verify.getUserId());
+        User user = readById(verify.getUserId());
 
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
             String newPassword = randomPassword();
             if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
-                userRepository.changePassword(user, newPassword);
+                changePassword(user, newPassword);
             } else {
                 mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
             }
         } else {
             if (mail.checkData(verify)) {
-                userRepository.changeStatus(EStatus.ACTIVE, user.getId());
+                changeStatus(EStatus.ACTIVE, user.getId());
             } else {
                 mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
             }
@@ -87,11 +94,6 @@ public class UserService implements UserDetailsService {
         return ResponseEntity.ok(200);
     }
 
-
-
-    public User readByEmail(String login){
-        return this.userRepository.readByEmail(login);
-    }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
@@ -115,10 +117,72 @@ public class UserService implements UserDetailsService {
     }
 
     public void checkOldPassword(PasswordChangeGroup passwordCG) throws Exception {
-        User user = userRepository.readById(passwordCG.getUserId());
+        User user = readById(passwordCG.getUserId());
         if(!passwordEncoder.matches(passwordCG.getOldPassword(), user.getPassword())){
             throw new Exception("Incorrect password");
         }
+    }
+
+    public void changeStatus(EStatus status, int id) {
+        userDao.changeStatus(status, id);
+    }
+
+    public void changePassword(User user, String password) {
+        user.setPassword(HashPassword.getHashPassword(password));
+        userDao.update(user);
+    }
+
+    public User updatePassword(String password, int id) {
+        userDao.updatePassword(password, id);
+        return userDao.readById(id);
+    }
+
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    public List<User> getAllSuitable(UserListRequest req) {
+        List<User> list = userDao.getAllSuitable(req);
+        if (list == null) return null;
+        int lastIndex = list.size() - 1;
+        int startIndex = Math.abs(req.getPerPage()) * (Math.abs(req.getPageNo()) - 1);
+        int endIndex = startIndex + Math.abs(req.getPerPage());
+        if (startIndex > lastIndex) {
+            return null;
+        }
+        else if (endIndex > lastIndex + 1) {
+            endIndex = lastIndex + 1;
+        }
+        return list.subList(startIndex, endIndex);
+    }
+
+    public User update(User user) {
+        if (userDao.readById(user.getId()) == null) {
+            return null;
+        }
+        userDao.update(user);
+        return userDao.readById(user.getId());
+    }
+
+    public User delete(int id) {
+        User user = userDao.readById(id);
+        if (user == null) {
+            return null;
+        }
+        userDao.delete(id);
+        return user;
+    }
+
+    public User readById(int id) {
+        return userDao.readById(id);
+    }
+
+    public User readByEmail(String email) {
+        return userDao.readByEmail(email);
+    }
+
+    public User readByName(String name) {
+        return userDao.readByName(name);
     }
 
     public String hashPassword(String password){
@@ -127,13 +191,14 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUserImage(UserImage response) {
-        User user = userRepository.readById(response.getId());
+        User user = readById(response.getId());
         if(user!=null) {
             user.setImageId(response.getImageId());
-            userRepository.update(user);
+            update(user);
             System.out.println("update user");
         } else {
             System.out.println("user == null");
         }
     }
+
 }
