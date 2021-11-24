@@ -124,6 +124,15 @@ public class MailImpl implements Mail{
     }
 
     @Override
+    public boolean sendModeratorPassword(String password, String email) {
+        this.password = password;
+        this.email = email;
+        type = 1;
+        sendMail();
+        return true;
+    }
+
+    @Override
     public Verify readByCode(String code) {
         return verifyDao.readByCode(code);
     }

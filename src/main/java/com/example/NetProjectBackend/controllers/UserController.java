@@ -108,10 +108,6 @@ public class UserController {
 
     @PutMapping("/user-image")
     public void updateImage (@RequestBody UserImage response){
-        System.out.println("logggggg");
-        System.out.println(response.getId());
-        System.out.println(response.getImageId());
-
         log.debug("Controller update user image");
         userService.updateUserImage(response);
     }

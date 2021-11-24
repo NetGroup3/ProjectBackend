@@ -7,6 +7,7 @@ import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
 import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.service.mail.Mail;
 import com.example.NetProjectBackend.service.password.HashPassword;
@@ -195,10 +196,32 @@ public class UserService implements UserDetailsService {
         if(user!=null) {
             user.setImageId(response.getImageId());
             update(user);
-            System.out.println("update user");
-        } else {
-            System.out.println("user == null");
         }
     }
 
+    public ResponseEntity<?> createModerator(User user) {
+        if (readByEmail(user.getEmail()) != null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is exist"));
+        }
+
+        user.setRole(ERole.MODERATOR.getAuthority());
+        user.setTimestamp(OffsetDateTime.now());
+        user.setStatus(EStatus.ACTIVE.getAuthority());
+        String password = randomPassword();
+        user.setPassword(passwordEncoder.encode(password));
+
+        if (userDao.create(user) > 0) {
+            mail.sendModeratorPassword(user.getEmail(), password );
+
+            return ResponseEntity.ok(new MessageResponse("Moderator CREATED"));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    public ResponseEntity<?> readPage(int limit, int offset) {
+            if (limit > 100) limit = 100;
+            return ResponseEntity.ok(userDao.readPage(limit, offset));
+    }
 }
