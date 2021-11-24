@@ -1,13 +1,14 @@
 package com.example.NetProjectBackend.dao.impl;
 
+import com.example.NetProjectBackend.confuguration.query.UserConfig;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.UserListRequest.SortProps;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -24,22 +25,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
+@Slf4j
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private static final String SELECT_ALL_FROM_CLIENT = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT";
-    private static final String SELECT_BY_ID = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE ID = ?";
-    private static final String SELECT_BY_EMAIL = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE email = ?";
-
-    private static final String SELECT_BY_NAME = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT WHERE name = ?";
-    private static final String INSERT_INTO_CLIENT_VALUES = "INSERT INTO CLIENT (password, first_name, last_name, email, timestamp, status, role) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
-    private static final String UPDATE_CLIENT = "UPDATE CLIENT SET password = ?, first_name = ?, last_name = ?, email = ?, image_id = ? WHERE id = ?";
-    private static final String DELETE_CLIENT = "DELETE FROM CLIENT WHERE ID = ?";
-    private static final String UPDATE_STATUS = "UPDATE CLIENT SET status = ? WHERE id = ?";
-    private static final String UPDATE_PASSWORD = "UPDATE CLIENT SET password = ? WHERE id = ?";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
+    private final UserConfig q;
 
     private static User mapClientRow(ResultSet rs, int rowNum) throws SQLException {
         return new User(
@@ -53,10 +44,6 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("status"),
                 rs.getString("role")
         );
-    }
-
-    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     private String generateOrderByPart(UserListRequest req) {
@@ -143,7 +130,7 @@ public class UserDaoImpl implements UserDao {
             }
         }
         catch (DataAccessException dataAccessException) {
-            LOGGER.debug("WARNING\n\n" + dataAccessException);
+            log.debug("WARNING\n\n" + dataAccessException);
         }
 
         return users;
@@ -152,16 +139,16 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query(SELECT_ALL_FROM_CLIENT, UserDaoImpl::mapClientRow);
+        return jdbcTemplate.query(q.getSelectAllFromClient(), UserDaoImpl::mapClientRow);
     }
 
     @Override
     public User readById(int id) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_ID, UserDaoImpl::mapClientRow, id);
+            user = jdbcTemplate.queryForObject(q.getSelectById(), UserDaoImpl::mapClientRow, id);
         } catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Person with id {}", id);
+            log.debug("Couldn't find entity of type Person with id {}", id);
         }
         return user;
     }
@@ -170,9 +157,9 @@ public class UserDaoImpl implements UserDao {
     public User readByEmail(String email) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_EMAIL, UserDaoImpl::mapClientRow, email);
+            user = jdbcTemplate.queryForObject(q.getSelectByEmail(), UserDaoImpl::mapClientRow, email);
         } catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Person with email {}", email);
+            log.debug("Couldn't find entity of type Person with email {}", email);
         }
         return user;
     }
@@ -181,9 +168,9 @@ public class UserDaoImpl implements UserDao {
     public User readByName(String name) {
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(SELECT_BY_NAME, new Object[]{name}, UserDaoImpl::mapClientRow);
+            user = jdbcTemplate.queryForObject(q.getSelectByName(), new Object[]{name}, UserDaoImpl::mapClientRow);
         } catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Person with name {}", name);
+            log.debug("Couldn't find entity of type Person with name {}", name);
         }
         return user;
     }
@@ -195,7 +182,7 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate.update(
                 new PreparedStatementCreator() {
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        PreparedStatement ps = connection.prepareStatement(INSERT_INTO_CLIENT_VALUES, Statement.RETURN_GENERATED_KEYS);
+                        PreparedStatement ps = connection.prepareStatement(q.getInsertIntoClientValues(), Statement.RETURN_GENERATED_KEYS);
                         ps.setString(1, user.getPassword());
                         ps.setString(2, user.getFirstname());
                         ps.setString(3, user.getLastname());
@@ -212,23 +199,23 @@ public class UserDaoImpl implements UserDao {
     //                     NEED CHECK
     @Override
     public void update(User user) {
-        jdbcTemplate.update(UPDATE_CLIENT, user.getPassword(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getImageId(), user.getId());
+        jdbcTemplate.update(q.getUpdateClient(), user.getPassword(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getImageId(), user.getId());
     }
 
     //                     NEED CHECK
     @Override
     public void delete(int id) {
-        jdbcTemplate.update(DELETE_CLIENT, id);
+        jdbcTemplate.update(q.getDeleteClient(), id);
     }
 
     @Override
     public void changeStatus(EStatus status, int id) {
-        jdbcTemplate.update(UPDATE_STATUS, EStatus.ACTIVE.getAuthority(), id);
+        jdbcTemplate.update(q.getUpdateStatus(), EStatus.ACTIVE.getAuthority(), id);
     }
 
     @Override
     public void updatePassword(String password, int id) {
-        jdbcTemplate.update(UPDATE_PASSWORD, password, id);
+        jdbcTemplate.update(q.getUpdatePassword(), password, id);
     }
 
 }
