@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         int id = userDao.create(user);
         if (id > 0) {
-            mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+            mail.confirmationCode(user.getEmail());
             return ResponseEntity.ok(new MessageResponse("User CREATED"));
         }
         return ResponseEntity.badRequest().build();
@@ -62,7 +62,7 @@ public class UserService implements UserDetailsService {
         if(readByEmail(email) == null){ //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
-            if (!mail.recoveryCode("https://ourproject.space/code?param=", email))
+            if (!mail.recoveryCode(email))
                 return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(200);
@@ -78,16 +78,16 @@ public class UserService implements UserDetailsService {
 
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
             String newPassword = randomPassword();
-            if (mail.sendNewPassword("https://ourproject.space/code?param=", newPassword, user, verify)) {
+            if (mail.sendNewPassword(newPassword, user, verify)) {
                 changePassword(user, newPassword);
             } else {
-                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+                mail.confirmationCode(user.getEmail());
             }
         } else {
             if (mail.checkData(verify)) {
                 changeStatus(EStatus.ACTIVE, user.getId());
             } else {
-                mail.confirmationCode("https://ourproject.space/code?param=", user.getEmail());
+                mail.confirmationCode(user.getEmail());
             }
 
         }

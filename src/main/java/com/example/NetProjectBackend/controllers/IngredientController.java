@@ -42,8 +42,8 @@ public class IngredientController {
     }
 
     @GetMapping("/ingredient/page")
-    public ResponseEntity<?> readIngredientPage(@RequestParam int limit, @RequestParam int offset) {
-        return ResponseEntity.ok(ingredientService.readPage(limit, offset));
+    public ResponseEntity<?> readIngredientPage(@RequestParam int limit, @RequestParam int page) {
+        return ResponseEntity.ok(ingredientService.readPage(limit,limit*page));
     }
 
 }
