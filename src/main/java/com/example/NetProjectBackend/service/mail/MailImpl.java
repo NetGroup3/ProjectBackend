@@ -1,10 +1,12 @@
 package com.example.NetProjectBackend.service.mail;
 
+import com.example.NetProjectBackend.confuguration.LinkConfig;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.dao.VerifyDao;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,24 +22,27 @@ import java.util.Calendar;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class MailImpl implements Mail{
 
     private final JavaMailSender emailSender;
     private final SpringTemplateEngine thymeleafTemplateEngine;
     private final UserDao userDao;
     private final VerifyDao verifyDao;
+    private final LinkConfig l;
 
     private int type;
     private String password;
     private String email;
-    private String link;
+    private String link = "https://ourproject.space/login";
     private String code;
 
-    public MailImpl(JavaMailSender emailSender, SpringTemplateEngine thymeleafTemplateEngine, UserDao userDao, VerifyDao verifyDao) {
+    public MailImpl(JavaMailSender emailSender, SpringTemplateEngine thymeleafTemplateEngine, UserDao userDao, VerifyDao verifyDao, LinkConfig l) {
         this.emailSender = emailSender;
         this.thymeleafTemplateEngine = thymeleafTemplateEngine;
         this.userDao = userDao;
         this.verifyDao = verifyDao;
+        this.l = l;
     }
 
     protected void sendMail() {
@@ -83,9 +88,9 @@ public class MailImpl implements Mail{
     }
 
     @Override
-    public void confirmationCode(String link, String email) {
+    public void confirmationCode(String email) {
         this.email = email;
-        this.link = link;
+        this.link = l.getUrl()+l.getUrl();
         code = getCode();
         sendMail();
         codeDao();
@@ -100,24 +105,33 @@ public class MailImpl implements Mail{
     }
 
     @Override
-    public boolean recoveryCode(String link, String email) {
+    public boolean recoveryCode(String email) {
         User user = userDao.readByEmail(email);
         if (Objects.equals(user.getStatus(), EStatus.NOT_VERIFY.getAuthority())) {
             return false;
         }
-        confirmationCode(link, email);
+        confirmationCode(email);
         return true;
     }
 
     @Override
-    public boolean sendNewPassword(String link, String password, User user, Verify verify) {
+    public boolean sendNewPassword(String password, User user, Verify verify) {
         this.password = password;
         this.email = user.getEmail();
-        this.link = link;
+        this.link = l.getUrl()+l.getCode();
         if (!checkData(verify)) {
-            confirmationCode(link, user.getEmail());
+            confirmationCode(user.getEmail());
             return false;
         }
+        type = 1;
+        sendMail();
+        return true;
+    }
+
+    @Override
+    public boolean sendModeratorPassword(String password, String email) {
+        this.password = password;
+        this.email = email;
         type = 1;
         sendMail();
         return true;

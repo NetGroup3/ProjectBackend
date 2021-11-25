@@ -14,4 +14,6 @@ public interface KitchenwareDao {
     void delete(int id);
 
     List<Kitchenware> readPage(int limit, int offset);
+
+    List<Kitchenware> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
 }
