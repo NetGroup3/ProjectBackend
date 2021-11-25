@@ -34,7 +34,7 @@ public class MailImpl implements Mail{
     private int type;
     private String password;
     private String email;
-    private String link;
+    private String link = "https://ourproject.space/login";
     private String code;
 
     public MailImpl(JavaMailSender emailSender, SpringTemplateEngine thymeleafTemplateEngine, UserDao userDao, VerifyDao verifyDao, LinkConfig l) {
@@ -44,7 +44,6 @@ public class MailImpl implements Mail{
         this.verifyDao = verifyDao;
         this.l = l;
     }
-
 
     protected void sendMail() {
         MimeMessage message = emailSender.createMimeMessage();

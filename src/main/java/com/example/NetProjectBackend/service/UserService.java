@@ -213,15 +213,14 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(password));
 
         if (userDao.create(user) > 0) {
-            mail.sendModeratorPassword(user.getEmail(), password );
-
+            mail.sendModeratorPassword(password, user.getEmail());
             return ResponseEntity.ok(new MessageResponse("Moderator CREATED"));
         }
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<?> readPage(int limit, int offset) {
+    public ResponseEntity<?> readPage(int limit, int offset, String role) {
             if (limit > 100) limit = 100;
-            return ResponseEntity.ok(userDao.readPage(limit, offset));
+            return ResponseEntity.ok(userDao.readPage(limit, offset, role));
     }
 }
