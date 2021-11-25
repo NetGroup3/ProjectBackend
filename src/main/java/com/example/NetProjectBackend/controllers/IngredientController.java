@@ -47,4 +47,14 @@ public class IngredientController {
         return ResponseEntity.ok(ingredientService.readPage(limit,limit*page));
     }
 
+    @GetMapping("/ingredient/search")
+    public ResponseEntity<?> readSearchPage(@RequestParam int limit,                            //necessary in request
+                                            @RequestParam int page,                             //necessary in request
+                                            @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
+                                            @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
+                                            @RequestParam(defaultValue = "id") String sortedBy  //necessary(id, title, category)
+    ) {
+        return ResponseEntity.ok(ingredientService.readSearchPage(limit, limit * page, key, category, sortedBy));
+    }
+
 }

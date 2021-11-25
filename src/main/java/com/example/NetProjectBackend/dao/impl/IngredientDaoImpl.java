@@ -102,4 +102,24 @@ public class IngredientDaoImpl implements IngredientDao {
         return ingredient;
     }
 
+    @Override
+    public List<Ingredient> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
+        List<Ingredient> ingredient = null;
+        try {
+            if (sortedBy.equals("id")) {
+                System.out.println(key);
+                System.out.println(category);
+                System.out.println(sortedBy);
+                ingredient = jdbcTemplate.query(q.getSelectSearchPageById(), IngredientDaoImpl::mapIngredientRow, key, category, limit, offset);
+            } else if (sortedBy.equals("title")) {
+                ingredient = jdbcTemplate.query(q.getSelectSearchPageByTitle(), IngredientDaoImpl::mapIngredientRow, key, category, limit, offset);
+            } else if (sortedBy.equals("category")) {
+                ingredient = jdbcTemplate.query(q.getSelectSearchPageByCategory(), IngredientDaoImpl::mapIngredientRow, key, category, limit, offset);
+            }
+        } catch (DataAccessException dataAccessException) {
+            log.debug("Couldn't find entity of type Ingredients with limit {} and offset {}", limit, offset);
+        }
+        return ingredient;
+    }
+
 }
