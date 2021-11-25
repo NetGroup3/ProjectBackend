@@ -1,7 +1,11 @@
 package com.example.NetProjectBackend.dao.impl;
 
+import com.example.NetProjectBackend.confuguration.query.IngredientConfig;
+import com.example.NetProjectBackend.confuguration.query.KitchenwareConfig;
 import com.example.NetProjectBackend.dao.KitchenwareDao;
 import com.example.NetProjectBackend.models.Kitchenware;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -16,20 +20,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
+@AllArgsConstructor
+@Slf4j
 public class KitchenwareDaoImpl implements KitchenwareDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private static final Logger LOGGER = LoggerFactory.getLogger(KitchenwareDao.class);
-
-    private static final String INSERT = "INSERT INTO KITCHENWARE (title, description, category, image_id, is_active) VALUES (?, ?, ?, ?, ?) RETURNING id";
-    private static final String SELECT = "SELECT id, title, description, category, image_id, is_active FROM KITCHENWARE WHERE id = ?";
-    private static final String UPDATE = "UPDATE KITCHENWARE SET title = ?, description = ?, category = ?, image_id = ?, is_active = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM KITCHENWARE WHERE id = ?";
-    private static final String SELECT_PAGE = "SELECT id, title, description, category, image_id, is_active FROM KITCHENWARE ORDER BY id ASC LIMIT ? OFFSET ?";
-
-    public KitchenwareDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final KitchenwareConfig q;
 
     private static Kitchenware mapKitchenwareRow(ResultSet rs, int rowNum) throws SQLException {
         return new Kitchenware(
@@ -48,7 +44,7 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
         jdbcTemplate.update(
                 new PreparedStatementCreator() {
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+                        PreparedStatement ps = connection.prepareStatement(q.getInsert(), Statement.RETURN_GENERATED_KEYS);
                         ps.setString(1, kitchenware.getTitle());
                         ps.setString(2, kitchenware.getDescription());
                         ps.setString(3, kitchenware.getCategory());
@@ -58,14 +54,6 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
                     }
                 }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).intValue();
-        //jdbcTemplate.update(
-        //        INSERT,
-        //        kitchenware.getTitle(),
-        //        kitchenware.getDescription(),
-        //        kitchenware.getCategory(),
-        //        kitchenware.getImage_id(),
-        //        kitchenware.is_active(),
-        //);
     }
 
     @Override
@@ -73,10 +61,10 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
         Kitchenware kitchenware = null;
         System.out.println("test");
         try {
-            kitchenware = jdbcTemplate.queryForObject(SELECT, KitchenwareDaoImpl::mapKitchenwareRow, id);
+            kitchenware = jdbcTemplate.queryForObject(q.getSelect(), KitchenwareDaoImpl::mapKitchenwareRow, id);
         }
         catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Kitchenware with id {}", id);
+            log.debug("Couldn't find entity of type Kitchenware with id {}", id);
         }
         return kitchenware;
     }
@@ -84,7 +72,7 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
     @Override
     public void update(Kitchenware kitchenware) {
         jdbcTemplate.update(
-                UPDATE,
+                q.getUpdate(),
                 kitchenware.getTitle(),
                 kitchenware.getDescription(),
                 kitchenware.getCategory(),
@@ -96,17 +84,17 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
 
     @Override
     public void delete(int id) {
-        jdbcTemplate.update(DELETE, id);
+        jdbcTemplate.update(q.getDelete(), id);
     }
 
     @Override
     public List<Kitchenware> readPage(int limit, int offset) {
         List<Kitchenware> kitchenware = null;
         try {
-            kitchenware = jdbcTemplate.query(SELECT_PAGE, KitchenwareDaoImpl::mapKitchenwareRow, limit, offset);
+            kitchenware = jdbcTemplate.query(q.getSelectPage(), KitchenwareDaoImpl::mapKitchenwareRow, limit, offset);
         }
         catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Kitchenware with limit {} and offset {}", limit, offset);
+            log.debug("Couldn't find entity of type Kitchenware with limit {} and offset {}", limit, offset);
         }
         return kitchenware;
     }

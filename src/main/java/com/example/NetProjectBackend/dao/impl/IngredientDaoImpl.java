@@ -1,7 +1,10 @@
 package com.example.NetProjectBackend.dao.impl;
 
+import com.example.NetProjectBackend.confuguration.query.IngredientConfig;
 import com.example.NetProjectBackend.dao.IngredientDao;
 import com.example.NetProjectBackend.models.Ingredient;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -16,20 +19,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
+@AllArgsConstructor
+@Slf4j
 public class IngredientDaoImpl implements IngredientDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private static final Logger LOGGER = LoggerFactory.getLogger(IngredientDao.class);
-
-    private static final String INSERT = "INSERT INTO INGREDIENT (title, description, category, image_id, is_active, measurement) VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
-    private static final String SELECT = "SELECT id, title, description, category, image_id, is_active, measurement FROM INGREDIENT WHERE id = ?";
-    private static final String UPDATE = "UPDATE INGREDIENT SET title = ?, description = ?, category = ?, image_id = ?, is_active = ?, measurement = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM INGREDIENT WHERE id = ?";
-    private static final String SELECT_PAGE = "SELECT id, title, description, category, image_id, is_active, measurement FROM INGREDIENT ORDER BY id ASC LIMIT ? OFFSET ?";
-
-    public IngredientDaoImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private final IngredientConfig q;
 
     private static Ingredient mapIngredientRow(ResultSet rs, int rowNum) throws SQLException {
         return new Ingredient(
@@ -49,7 +44,7 @@ public class IngredientDaoImpl implements IngredientDao {
         jdbcTemplate.update(
                 new PreparedStatementCreator() {
                     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        PreparedStatement ps = connection.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
+                        PreparedStatement ps = connection.prepareStatement(q.getInsert(), Statement.RETURN_GENERATED_KEYS);
                         ps.setString(1, ingredient.getTitle());
                         ps.setString(2, ingredient.getDescription());
                         ps.setString(3, ingredient.getCategory());
@@ -60,15 +55,6 @@ public class IngredientDaoImpl implements IngredientDao {
                     }
                 }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).intValue();
-        //jdbcTemplate.update(
-        //        INSERT,
-        //        ingredient.getTitle(),
-        //        ingredient.getDescription(),
-        //        ingredient.getCategory(),
-        //        ingredient.getImage_id(),
-        //        ingredient.is_active(),
-        //        ingredient.getMeasurement()
-        //);
     }
 
     @Override
@@ -76,10 +62,11 @@ public class IngredientDaoImpl implements IngredientDao {
         Ingredient ingredient = null;
         System.out.println("test");
         try {
-            ingredient = jdbcTemplate.queryForObject(SELECT, IngredientDaoImpl::mapIngredientRow, id);
+            System.out.println(q.getSelect());
+            ingredient = jdbcTemplate.queryForObject(q.getSelect(), IngredientDaoImpl::mapIngredientRow, id);
         }
         catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Ingredient with id {}", id);
+            log.debug("Couldn't find entity of type Ingredient with id {}", id);
         }
         return ingredient;
     }
@@ -87,7 +74,7 @@ public class IngredientDaoImpl implements IngredientDao {
     @Override
     public void update(Ingredient ingredient) {
         jdbcTemplate.update(
-                UPDATE,
+                q.getUpdate(),
                 ingredient.getTitle(),
                 ingredient.getDescription(),
                 ingredient.getCategory(),
@@ -100,17 +87,17 @@ public class IngredientDaoImpl implements IngredientDao {
 
     @Override
     public void delete(int id) {
-        jdbcTemplate.update(DELETE, id);
+        jdbcTemplate.update(q.getDelete(), id);
     }
 
     @Override
     public List<Ingredient> readPage(int limit, int offset) {
         List<Ingredient> ingredient = null;
         try {
-            ingredient = jdbcTemplate.query(SELECT_PAGE, IngredientDaoImpl::mapIngredientRow, limit, offset);
+            ingredient = jdbcTemplate.query(q.getSelectPage(), IngredientDaoImpl::mapIngredientRow, limit, offset);
         }
         catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Ingredient with limit {} and offset {}", limit, offset);
+            log.debug("Couldn't find entity of type Ingredient with limit {} and offset {}", limit, offset);
         }
         return ingredient;
     }
