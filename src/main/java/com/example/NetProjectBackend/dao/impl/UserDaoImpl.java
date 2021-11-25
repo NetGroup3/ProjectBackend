@@ -230,7 +230,7 @@ public class UserDaoImpl implements UserDao {
             users = jdbcTemplate.query(SELECT_PAGE, UserDaoImpl::mapUserRow, limit, offset);
         }
         catch (DataAccessException dataAccessException) {
-            LOGGER.debug("Couldn't find entity of type Users with limit {} and offset {}", limit, offset);
+            log.debug("Couldn't find entity of type Users with limit {} and offset {}", limit, offset);
         }
         return users;
     }
