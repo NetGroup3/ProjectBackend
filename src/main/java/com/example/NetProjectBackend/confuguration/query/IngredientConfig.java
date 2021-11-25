@@ -23,4 +23,13 @@ public class IngredientConfig {
 
     @Value("${ingredient.delete}")
     private String delete;
+
+    @Value("${ingredient.select_search_page_order_by_id}")
+    private String SelectSearchPageById;
+
+    @Value("${ingredient.select_search_page_order_by_title}")
+    private String SelectSearchPageByTitle;
+
+    @Value("${ingredient.select_search_page_order_by_category}")
+    private String SelectSearchPageByCategory;
 }

@@ -45,4 +45,10 @@ public class IngredientServiceImpl implements IngredientService {
         if (limit > 100) limit = 100;
         return ResponseEntity.ok(ingredientDao.readPage(limit, offset));
     }
+
+    @Override
+    public ResponseEntity<?> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
+        if (limit > 100) limit = 100;
+        return ResponseEntity.ok(ingredientDao.readSearchPage(limit, offset, key, category, sortedBy));
+    }
 }

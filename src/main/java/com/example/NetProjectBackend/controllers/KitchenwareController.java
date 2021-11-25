@@ -42,7 +42,17 @@ public class KitchenwareController {
 
     @GetMapping("/kitchenware/page")
     public ResponseEntity<?> readKitchenwarePage(@RequestParam int limit, @RequestParam int page) {
-        return ResponseEntity.ok(kitchenwareService.readPage(limit, limit*page));
+        return ResponseEntity.ok(kitchenwareService.readPage(limit, limit * page));
+    }
+
+    @GetMapping("/kitchenware/search")
+    public ResponseEntity<?> readSearchPage(@RequestParam int limit,                            //necessary in request
+                                            @RequestParam int page,                             //necessary in request
+                                            @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
+                                            @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
+                                            @RequestParam(defaultValue = "id") String sortedBy  //necessary(id, title, category)
+    ) {
+        return ResponseEntity.ok(kitchenwareService.readSearchPage(limit, limit * page, key, category, sortedBy));
     }
 
 }

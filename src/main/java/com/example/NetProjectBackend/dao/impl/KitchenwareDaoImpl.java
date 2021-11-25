@@ -92,8 +92,24 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
         List<Kitchenware> kitchenware = null;
         try {
             kitchenware = jdbcTemplate.query(q.getSelectPage(), KitchenwareDaoImpl::mapKitchenwareRow, limit, offset);
+        } catch (DataAccessException dataAccessException) {
+            log.debug("Couldn't find entity of type Kitchenware with limit {} and offset {}", limit, offset);
         }
-        catch (DataAccessException dataAccessException) {
+        return kitchenware;
+    }
+
+    @Override
+    public List<Kitchenware> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
+        List<Kitchenware> kitchenware = null;
+        try {
+            if (sortedBy.equals("id")) {
+                kitchenware = jdbcTemplate.query(q.getSelectSearchPageById(), KitchenwareDaoImpl::mapKitchenwareRow, key, category, limit, offset);
+            } else if (sortedBy.equals("title")) {
+                kitchenware = jdbcTemplate.query(q.getSelectSearchPageByTitle(), KitchenwareDaoImpl::mapKitchenwareRow, key, category, limit, offset);
+            } else if (sortedBy.equals("category")) {
+                kitchenware = jdbcTemplate.query(q.getSelectSearchPageByCategory(), KitchenwareDaoImpl::mapKitchenwareRow, key, category, limit, offset);
+            }
+        } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find entity of type Kitchenware with limit {} and offset {}", limit, offset);
         }
         return kitchenware;
