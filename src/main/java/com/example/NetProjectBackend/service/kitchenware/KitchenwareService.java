@@ -13,4 +13,6 @@ public interface KitchenwareService {
     ResponseEntity<?> delete(int id);
 
     ResponseEntity<?> readPage(int limit, int offset);
+
+    ResponseEntity<?> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
 }

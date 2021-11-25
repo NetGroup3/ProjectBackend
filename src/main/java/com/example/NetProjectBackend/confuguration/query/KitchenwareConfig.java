@@ -23,4 +23,16 @@ public class KitchenwareConfig {
 
     @Value("${kitchenware.delete}")
     private String delete;
+
+    @Value("${kitchenware.select_search_page_order_by_id}")
+    private String SelectSearchPageById;
+
+    @Value("${kitchenware.select_search_page_order_by_title}")
+    private String SelectSearchPageByTitle;
+
+    @Value("${kitchenware.select_search_page_order_by_category}")
+    private String SelectSearchPageByCategory;
 }
+
+
+
