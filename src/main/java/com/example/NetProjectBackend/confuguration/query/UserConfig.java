@@ -35,4 +35,7 @@ public class UserConfig {
 
     @Value("${user.update_password}")
     private String updatePassword;
+
+    @Value("${user.select_page}")
+    private String selectPage;
 }

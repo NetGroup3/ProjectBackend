@@ -2,11 +2,11 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.UserConfig;
 import com.example.NetProjectBackend.dao.UserDao;
-import com.example.NetProjectBackend.models.enums.EStatus;
-import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.UserListRequest.SortProps;
-
+import com.example.NetProjectBackend.models.dto.UserView;
+import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -16,11 +16,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -216,6 +212,32 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updatePassword(String password, int id) {
         jdbcTemplate.update(q.getUpdatePassword(), password, id);
+    }
+
+    @Override
+    public List<UserView> readPage(int limit, int offset, String role) {
+        List<UserView> users = null;
+        try {
+            users = jdbcTemplate.query(q.getSelectPage(), UserDaoImpl::mapUserRow, role, limit, offset);
+        }
+        catch (DataAccessException dataAccessException) {
+            log.debug("Couldn't find entity of type Users with status {}, limit {} and offset {}", role, limit, offset);
+        }
+
+        return users;
+    }
+
+    private static UserView mapUserRow(ResultSet rs, int rowNum) throws SQLException {
+        return new UserView(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("email"),
+                rs.getObject("timestamp", OffsetDateTime.class),
+                rs.getString("image_id"),
+                rs.getString("status"),
+                rs.getString("role")
+        );
     }
 
 }
