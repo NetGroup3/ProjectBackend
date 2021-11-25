@@ -59,7 +59,7 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
     @Override
     public Kitchenware read(int id) {
         Kitchenware kitchenware = null;
-        System.out.println("test");
+        log.info("test");
         try {
             kitchenware = jdbcTemplate.queryForObject(q.getSelect(), KitchenwareDaoImpl::mapKitchenwareRow, id);
         }

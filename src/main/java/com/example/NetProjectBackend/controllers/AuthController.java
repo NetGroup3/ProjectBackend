@@ -9,6 +9,7 @@ import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ import java.time.OffsetDateTime;
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -32,18 +34,18 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity<?> authUser(@RequestBody String  login) {
-        System.out.println("LOGIN");
+        log.info("LOGIN");
         Gson g = new Gson();
         LoginRequest loginRequest = g.fromJson(login, LoginRequest.class);
 
-        System.out.println(loginRequest.getUsername());
+        log.info(loginRequest.getUsername());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(),
                 loginRequest.getPassword());
-        System.out.println(token);
+        log.info(String.valueOf(token));
         Authentication authentication = authenticationManager
                 .authenticate(token);
-        System.out.println(authentication);
+        log.info(String.valueOf(authentication));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
