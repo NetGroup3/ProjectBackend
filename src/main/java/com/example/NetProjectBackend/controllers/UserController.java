@@ -24,7 +24,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public ResponseEntity<User> getUserById(@PathVariable int id) {
-        System.out.println("users_GET");
+        log.info("users_GET");
         User user = userService.readById(id);
 
         if (user == null) {
@@ -35,7 +35,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET, path = "/")
     public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
-        System.out.println("users_GET");
+        log.info("users_GET");
         User user = userService.readByEmail(email);
 
         if (user == null) {
@@ -51,7 +51,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody User user) {
-        System.out.println("users_PUT");
+        log.info("users_PUT");
         User userUpdated = userService.update(user);
         if (userUpdated == null) {
             return ResponseEntity.notFound().build();
@@ -61,7 +61,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable int id) {
-        System.out.println("users_DELETE");
+        log.info("users_DELETE");
         User userDeleted = userService.delete(id);
         if (userDeleted == null) {
             return ResponseEntity.notFound().build();
@@ -73,7 +73,7 @@ public class UserController {
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
         users = userService.getAll();
-        System.out.println(users);
+        log.info(String.valueOf(users));
         if (users == null) {
             return ResponseEntity.notFound().build();
         }
@@ -86,8 +86,10 @@ public class UserController {
             userService.checkOldPassword(passwordCG);
             String userUpdatedPassword = userService.hashPassword(passwordCG.getPassword());
             userService.updatePassword(userUpdatedPassword/*passwordCG.getPassword()*/, passwordCG.getUserId());
+            log.info("Password Changed");
             return ResponseEntity.ok(200);
         } catch (Exception e) {
+            log.error("Incorrect password");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Incorrect password"));
@@ -96,7 +98,7 @@ public class UserController {
 
     @PutMapping("/personal-information")
     public ResponseEntity<?> updatePersonalInformation(@RequestBody User userResponse) {
-        System.out.println("good");
+        log.info("good");
         User user = userService.readById(userResponse.getId());
         user.setFirstname(userResponse.getFirstname());
         user.setLastname(userResponse.getLastname());

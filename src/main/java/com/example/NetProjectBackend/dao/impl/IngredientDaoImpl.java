@@ -60,9 +60,9 @@ public class IngredientDaoImpl implements IngredientDao {
     @Override
     public Ingredient read(int id) {
         Ingredient ingredient = null;
-        System.out.println("test");
+        log.info("test");
         try {
-            System.out.println(q.getSelect());
+            log.info(q.getSelect());
             ingredient = jdbcTemplate.queryForObject(q.getSelect(), IngredientDaoImpl::mapIngredientRow, id);
         }
         catch (DataAccessException dataAccessException) {
@@ -107,9 +107,9 @@ public class IngredientDaoImpl implements IngredientDao {
         List<Ingredient> ingredient = null;
         try {
             if (sortedBy.equals("id")) {
-                System.out.println(key);
-                System.out.println(category);
-                System.out.println(sortedBy);
+                log.info(key);
+                log.info(category);
+                log.info(sortedBy);
                 ingredient = jdbcTemplate.query(q.getSelectSearchPageById(), IngredientDaoImpl::mapIngredientRow, key, category, limit, offset);
             } else if (sortedBy.equals("title")) {
                 ingredient = jdbcTemplate.query(q.getSelectSearchPageByTitle(), IngredientDaoImpl::mapIngredientRow, key, category, limit, offset);

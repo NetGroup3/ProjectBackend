@@ -2,10 +2,12 @@ package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.service.ingredient.IngredientService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Slf4j
 public class IngredientController {
 
     private final IngredientService ingredientService;
@@ -17,7 +19,7 @@ public class IngredientController {
 
     @GetMapping(path = "/ingredient")
     public ResponseEntity<?> readIngredient(@RequestParam int id) {
-        System.out.println("OK");
+        log.info("OK");
 
         return ResponseEntity.ok(ingredientService.read(id));
     }
