@@ -1,27 +1,26 @@
 package com.example.NetProjectBackend.controllers;
 
-import java.util.List;
-
-import com.example.NetProjectBackend.models.enums.ERole;
-import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
+import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.service.UserService;
-
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
-public class AdminController {               //add validation
+public class AdminController {
 
     private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createModerator(@RequestBody User user) {
         user.setRole(ERole.MODERATOR.getAuthority());
-        return userService.create(user);
+        return userService.createModerator(user);
     }
 
     @PutMapping("/update")

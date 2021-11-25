@@ -10,9 +10,12 @@ public interface Mail {
 
     boolean sendNewPassword(String password, User user, Verify verify);
 
+    boolean sendModeratorPassword(String password, String email);
+
     Verify readByCode(String code);
 
     void deleteCode(int ownerId);
 
     boolean checkData(Verify verify);
+
 }

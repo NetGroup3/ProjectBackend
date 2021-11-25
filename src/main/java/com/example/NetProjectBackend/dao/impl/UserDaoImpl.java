@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.UserConfig;
 import com.example.NetProjectBackend.dao.UserDao;
+import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
@@ -30,7 +31,11 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
+
+    private static final String SELECT_PAGE = "SELECT id, password, first_name, last_name, email, timestamp, image_id, status, role FROM CLIENT ORDER BY id ASC LIMIT ? OFFSET ?";
+
     private final UserConfig q;
+
 
     private static User mapClientRow(ResultSet rs, int rowNum) throws SQLException {
         return new User(
@@ -216,6 +221,22 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updatePassword(String password, int id) {
         jdbcTemplate.update(q.getUpdatePassword(), password, id);
+    }
+
+    @Override
+    public List<User> readPage(int limit, int offset) {
+        List<User> users = null;
+        try {
+            users = jdbcTemplate.query(SELECT_PAGE, UserDaoImpl::mapUserRow, limit, offset);
+        }
+        catch (DataAccessException dataAccessException) {
+            LOGGER.debug("Couldn't find entity of type Users with limit {} and offset {}", limit, offset);
+        }
+        return users;
+    }
+
+    private static User mapUserRow(ResultSet resultSet, int i) {
+        return null;
     }
 
 }
