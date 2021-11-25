@@ -82,7 +82,6 @@ public class UserController {
 
     @PutMapping("/change-password")
     public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeGroup passwordCG) {
-//        System.out.println("users_CHANGE_PASSWORD");
         try {
             userService.checkOldPassword(passwordCG);
             String userUpdatedPassword = userService.hashPassword(passwordCG.getPassword());
@@ -95,8 +94,7 @@ public class UserController {
         }
     }
 
-
-    @RequestMapping(method = RequestMethod.PUT, path = "/personal-information")
+    @PutMapping("/personal-information")
     public ResponseEntity<?> updatePersonalInformation(@RequestBody User userResponse) {
         System.out.println("good");
         User user = userService.readById(userResponse.getId());

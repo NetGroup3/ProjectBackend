@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao;
 
-import com.example.NetProjectBackend.models.Ingredient;
+import com.example.NetProjectBackend.models.dto.UserView;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.UserListRequest;
@@ -18,5 +18,5 @@ public interface UserDao {
     void delete(int id);
     void changeStatus(EStatus status, int id);
     void updatePassword(String password, int id);
-    List<User>  readPage(int limit, int offset);
+    List<UserView> readPage(int limit, int offset, String status);
 }
