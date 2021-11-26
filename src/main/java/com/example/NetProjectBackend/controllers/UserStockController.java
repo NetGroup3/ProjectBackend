@@ -15,8 +15,13 @@ public class UserStockController {
         this.userStockService = userStockService;
     }
 
-    @GetMapping(path = "/user-stock")
-    public ResponseEntity<?> readStock( int userId) {
-        return ResponseEntity.ok(userStockService.readStock(userId));
+    @GetMapping(path = "/user/stock")
+    public ResponseEntity<?> readStock(@RequestParam int userid) {
+        return ResponseEntity.ok(userStockService.readStock(userid));
+    }
+
+    @DeleteMapping("/user/stock")
+    public ResponseEntity<?> deleteStockElement(@RequestParam int stockid) {
+        return ResponseEntity.ok(userStockService.deleteStockElement(stockid));
     }
 }

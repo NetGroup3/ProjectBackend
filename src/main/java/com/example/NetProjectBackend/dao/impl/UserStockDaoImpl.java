@@ -46,4 +46,9 @@ public class UserStockDaoImpl implements UserStockDao {
         }
         return userStockElements;
     }
+
+    @Override
+    public void deleteStockElement(int stockid) {
+        jdbcTemplate.update(userStockConfig.getDelete(), stockid);
+    }
 }

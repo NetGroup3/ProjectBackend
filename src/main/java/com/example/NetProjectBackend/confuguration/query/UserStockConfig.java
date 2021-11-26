@@ -10,4 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 public class UserStockConfig {
     @Value("${user_stock.select}")
     private String select;
+
+    @Value("${user_stock.delete}")
+    private String delete;
 }

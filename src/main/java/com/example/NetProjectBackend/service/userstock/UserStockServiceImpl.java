@@ -22,4 +22,10 @@ public class UserStockServiceImpl implements UserStockService{
     public ResponseEntity<?> readStock(int userId) {
         return ResponseEntity.ok(userStockDao.readStock(userId));
     }
+
+    @Override
+    public ResponseEntity<?> deleteStockElement(int stockid) {
+        userStockDao.deleteStockElement(stockid);
+        return ResponseEntity.ok(200);
+    }
 }
