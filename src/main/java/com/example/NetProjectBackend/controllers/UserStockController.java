@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.service.userstock.UserStockService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,5 +24,12 @@ public class UserStockController {
     @DeleteMapping("/user/stock")
     public ResponseEntity<?> deleteStockElement(@RequestParam int stockid) {
         return ResponseEntity.ok(userStockService.deleteStockElement(stockid));
+    }
+
+    @PostMapping("/user/stock")
+    public ResponseEntity<?> createStockElement(@RequestParam int userid,
+                                                @RequestParam String ingredient,
+                                                @RequestParam int amount) {
+        return ResponseEntity.ok(userStockService.createStockElement(userid, ingredient, amount));
     }
 }

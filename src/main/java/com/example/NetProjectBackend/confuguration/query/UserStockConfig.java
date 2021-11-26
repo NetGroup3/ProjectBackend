@@ -13,4 +13,14 @@ public class UserStockConfig {
 
     @Value("${user_stock.delete}")
     private String delete;
+
+    @Value("${user_stock.select_ingredient_id}")
+    private String selectIngredientId;
+
+    @Value("${user_stock.insert}")
+    private String insert;
+
+    @Value("${user_stock.select_by_userid_and_ingredientid}")
+    private String selectByUserIdAndIngredientId;
+
 }

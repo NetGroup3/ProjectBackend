@@ -6,4 +6,6 @@ public interface UserStockService {
     ResponseEntity<?> readStock(int userId);
 
     ResponseEntity<?> deleteStockElement(int stockid);
+
+    ResponseEntity<?> createStockElement(int userId, String ingredient, int amount);
 }
