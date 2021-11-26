@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.service.ingredient.IngredientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class IngredientController {
 
@@ -24,6 +24,7 @@ public class IngredientController {
 
     @PostMapping("/ingredient")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
+        System.out.println(ingredient);
         ingredient.set_active(true);
         ingredientService.create(ingredient);
         return ResponseEntity.ok(200);
