@@ -5,7 +5,7 @@ import com.example.NetProjectBackend.service.kitchenware.KitchenwareService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class KitchenwareController {
 
