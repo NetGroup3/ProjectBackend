@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.Dish;
+import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
 import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
 import com.example.NetProjectBackend.models.dto.dish.DishSearch;
@@ -86,6 +87,11 @@ public class DishDaoImpl implements DishDao {
         return jdbcTemplate.update("UPDATE DISH SET is_active = ? WHERE id = ?", active, id);
     }
 
+    @Override
+    public Dish soloReadDish(int id) {
+        return jdbcTemplate.query("SELECT id, title, description, category, receipt, image_id, is_active FROM DISH WHERE id = ?", DishDaoImpl::mapDishRow, id).get(0);
+    }
+
 
     //Dish Ingredient
     @Override
@@ -113,6 +119,23 @@ public class DishDaoImpl implements DishDao {
         );
 
     }
+
+    private static Ingredient mapIngredientRow(ResultSet rs, int rowNum) throws SQLException {
+        return new Ingredient(
+                rs.getInt("id"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getString("category"),
+                rs.getString("image_id"),
+                rs.getBoolean("is_active"),
+                rs.getString("measurement")
+        );
+    }
+
+    //@Override
+    //public List<DishIngredient> readIngredientsRelation(int id) {
+    //    return jdbcTemplate.query("SELECT id, dish_id, ingredient_id, ingredient_amount FROM DISH_INGREDIENT WHERE dish_id = ?", DishDaoImpl::mapIngredientRow, id);
+    //}
 
     //Dish Kitchenware
     @Override

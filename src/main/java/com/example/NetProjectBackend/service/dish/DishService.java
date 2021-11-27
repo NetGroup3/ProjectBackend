@@ -4,6 +4,7 @@ import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
 import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
 import com.example.NetProjectBackend.models.dto.dish.DishSearch;
+import com.example.NetProjectBackend.models.dto.dish.DishView;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface DishService {
     List<DishKitchenware> removeKitchenware(int id);
 
     List<Dish> readList(int limit, int page, boolean desc, String title, String category);
+
+    DishView getDish(int id);
 }

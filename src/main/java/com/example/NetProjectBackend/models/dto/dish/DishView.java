@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.models.dto.dish;
 
+import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.Kitchenware;
 import lombok.AllArgsConstructor;
@@ -12,15 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DishView {
-    int id;
-    String title;
-    String description;
-    String category;
-    String receipt;
-    String imageId;
-    boolean active;
-
+    Dish dish;
     List<Ingredient> ingredients;
     List<Kitchenware> kitchenware;
     List<DishLabel> labels;
+    List<DishComment> comments;
+    boolean favourite;
+    boolean like;
+    int likes;
 }

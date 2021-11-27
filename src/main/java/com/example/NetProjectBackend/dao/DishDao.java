@@ -17,6 +17,8 @@ public interface DishDao {
 
     int setActive(int id, boolean active);
 
+    Dish soloReadDish(int id);
+
     List<DishIngredient> checkIngredient(int dishId, int ingredientId);
 
     List<DishIngredient> updateIngredient(int id, BigDecimal amount);

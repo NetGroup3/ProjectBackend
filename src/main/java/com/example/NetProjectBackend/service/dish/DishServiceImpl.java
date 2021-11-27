@@ -3,9 +3,9 @@ package com.example.NetProjectBackend.service.dish;
 
 import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.Dish;
-import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
-import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
-import com.example.NetProjectBackend.models.dto.dish.DishSearch;
+import com.example.NetProjectBackend.models.Ingredient;
+import com.example.NetProjectBackend.models.Kitchenware;
+import com.example.NetProjectBackend.models.dto.dish.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -79,5 +79,20 @@ public class DishServiceImpl  implements DishService {
                 category
         );
         return dishDao.readList(search);
+    }
+
+    @Override
+    public DishView getDish(int id) {
+        DishView dishView = new DishView(
+                dishDao.soloReadDish(id),
+                null,
+                null,
+                null,
+                null,
+                false,
+                false,
+                0
+        );
+        return dishView;
     }
 }

@@ -68,7 +68,7 @@ public class DishController {
     // Осталось
     @GetMapping
     public ResponseEntity<?> getDish(@RequestParam int id) {
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok(dishService.getDish(id));
     }
 
 }
