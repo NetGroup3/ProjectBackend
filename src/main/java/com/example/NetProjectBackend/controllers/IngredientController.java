@@ -27,7 +27,6 @@ public class IngredientController {
     @PostMapping("/ingredient")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
         System.out.println(ingredient);
-        ingredient.set_active(true);
         ingredientService.create(ingredient);
         return ResponseEntity.ok(200);
     }
@@ -40,6 +39,7 @@ public class IngredientController {
 
     @DeleteMapping("/ingredient")
     public ResponseEntity<?> deleteIngredient(@RequestParam int id) {
+        System.out.println("ingredient id: " + id);
         ingredientService.delete(id);
         return ResponseEntity.ok(200);
     }

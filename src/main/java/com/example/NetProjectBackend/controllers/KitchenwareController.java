@@ -3,7 +3,6 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.service.kitchenware.KitchenwareService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RestController
@@ -23,7 +22,6 @@ public class KitchenwareController {
 
     @PostMapping("/kitchenware")
     public ResponseEntity<?> createKitchenware(@RequestBody Kitchenware kitchenware) {
-        kitchenware.set_active(true);
         kitchenwareService.create(kitchenware);
         return ResponseEntity.ok(200);
     }
