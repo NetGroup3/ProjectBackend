@@ -4,9 +4,9 @@ package com.example.NetProjectBackend.service.dish;
 import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
+import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,16 +37,27 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public ResponseEntity<?> addIngredient(DishIngredient dishIngredient) {
+    public List<DishIngredient> addIngredient(DishIngredient dishIngredient) {
         List<DishIngredient> check = dishDao.checkIngredient(dishIngredient.getDish(), dishIngredient.getIngredient());
         if (check.size() > 0)
-            return ResponseEntity.ok(dishDao.updateIngredient(check.get(0).getId(), dishIngredient.getAmount()));
-        return ResponseEntity.ok(dishDao.createDishIngredient(dishIngredient));
+            return dishDao.updateIngredient(check.get(0).getId(), dishIngredient.getAmount());
+        return dishDao.createDishIngredient(dishIngredient);
 
     }
 
     @Override
     public List<DishIngredient> removeIngredient(int id) {
         return dishDao.removeIngredient(id);
+    }
+
+    @Override
+    public List<DishKitchenware> addKitchenware(DishKitchenware dishKitchenware) {
+        return dishDao.createDishKitchenware(dishKitchenware);
+
+    }
+
+    @Override
+    public List<DishKitchenware> removeKitchenware(int id) {
+        return dishDao.removeKitchenware(id);
     }
 }

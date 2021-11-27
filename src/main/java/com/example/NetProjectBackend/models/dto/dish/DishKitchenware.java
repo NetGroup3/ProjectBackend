@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DishKitchenware {
     int id;
-    int dishId;
-    int kitchenwareId;
+    int dish;
+    int kitchenware;
 }

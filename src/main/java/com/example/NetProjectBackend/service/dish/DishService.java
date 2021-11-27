@@ -2,7 +2,7 @@ package com.example.NetProjectBackend.service.dish;
 
 import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
-import org.springframework.http.ResponseEntity;
+import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
 
 import java.util.List;
 
@@ -13,7 +13,11 @@ public interface DishService {
 
     int setActive(int id, boolean active);
 
-    ResponseEntity<?> addIngredient (DishIngredient dishIngredient);
+    List<DishIngredient> addIngredient (DishIngredient dishIngredient);
 
     List<DishIngredient> removeIngredient(int id);
+
+    List<DishKitchenware> addKitchenware(DishKitchenware dishKitchenware);
+
+    List<DishKitchenware> removeKitchenware(int id);
 }

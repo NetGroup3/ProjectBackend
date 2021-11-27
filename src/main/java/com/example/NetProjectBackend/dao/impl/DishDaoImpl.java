@@ -3,6 +3,7 @@ package com.example.NetProjectBackend.dao.impl;
 import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
+import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,6 +38,14 @@ public class DishDaoImpl implements DishDao {
                 rs.getInt("dish_id"),
                 rs.getInt("ingredient_id"),
                 rs.getBigDecimal("ingredient_amount")
+        );
+    }
+
+    private static DishKitchenware mapRelationKitchenware(ResultSet rs, int rowNum) throws SQLException {
+        return new DishKitchenware(
+                rs.getInt("id"),
+                rs.getInt("dish_id"),
+                rs.getInt("kitchenware_id")
         );
     }
 
@@ -90,6 +99,22 @@ public class DishDaoImpl implements DishDao {
                 dishIngredient.getDish(),
                 dishIngredient.getIngredient(),
                 dishIngredient.getAmount()
+        );
+
+    }
+
+    //Dish Kitchenware
+    @Override
+    public List<DishKitchenware> removeKitchenware(int id) {
+        return jdbcTemplate.query("DELETE FROM DISH_KITCHENWARE WHERE id = ? RETURNING id, dish_id, kitchenware_id", DishDaoImpl::mapRelationKitchenware, id);
+    }
+
+    @Override
+    public List<DishKitchenware> createDishKitchenware(DishKitchenware dishKitchenware) {
+        return jdbcTemplate.query("INSERT INTO DISH_KITCHENWARE (dish_id, kitchenware_id) VALUES (?, ?) RETURNING id, dish_id, kitchenware_id",
+                DishDaoImpl::mapRelationKitchenware,
+                dishKitchenware.getDish(),
+                dishKitchenware.getKitchenware()
         );
 
     }
