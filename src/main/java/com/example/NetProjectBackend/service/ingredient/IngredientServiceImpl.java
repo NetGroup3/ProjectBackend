@@ -20,6 +20,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public ResponseEntity<?> create(Ingredient ingredient) {
+        ingredient.setActive(true);
         return ResponseEntity.ok(ingredientDao.create(ingredient));
     }
 

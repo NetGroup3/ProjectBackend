@@ -12,6 +12,6 @@ public class Kitchenware {
     String title;
     String description;
     String category;
-    String image_id;
-    boolean is_active;
+    String imageId;
+    boolean isActive;
 }
