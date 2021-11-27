@@ -35,7 +35,7 @@ public class DishController {
 
     @PostMapping("/ingredient")
     public ResponseEntity<?> addIngredient(@RequestBody DishIngredient dishIngredient) {
-        return  ResponseEntity.ok(dishService.addIngredient(dishIngredient));
+        return ResponseEntity.ok(dishService.addIngredient(dishIngredient));
     }
 
     @DeleteMapping("/ingredient")
@@ -54,14 +54,20 @@ public class DishController {
         return ResponseEntity.ok(dishService.removeKitchenware(id));
     }
 
+    @GetMapping("/page")
+    public ResponseEntity<?> searchDishList(
+            @RequestParam int limit,
+            @RequestParam int page,
+            @RequestParam(required = false) boolean desc,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String category
+            ) {
+        return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category));
+    }
+
     // Осталось
     @GetMapping
     public ResponseEntity<?> getDish(@RequestParam int id) {
-        return ResponseEntity.ok(200);
-    }
-
-    @GetMapping("/page")
-    public ResponseEntity<?> getDishList() {
         return ResponseEntity.ok(200);
     }
 

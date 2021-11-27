@@ -5,6 +5,7 @@ import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
 import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
+import com.example.NetProjectBackend.models.dto.dish.DishSearch;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,8 @@ public class DishServiceImpl  implements DishService {
 
     @Override
     public List<DishKitchenware> addKitchenware(DishKitchenware dishKitchenware) {
+        List<DishKitchenware> kitchenware = dishDao.checkKitchenware(dishKitchenware);
+        if (kitchenware.size() > 1) return kitchenware;
         return dishDao.createDishKitchenware(dishKitchenware);
 
     }
@@ -59,5 +62,22 @@ public class DishServiceImpl  implements DishService {
     @Override
     public List<DishKitchenware> removeKitchenware(int id) {
         return dishDao.removeKitchenware(id);
+    }
+
+    @Override
+    public List<Dish> readList(int limit, int page, boolean desc, String title, String category) {
+        if (title == null) title = "%";
+        else title = "%"+title+"%";
+        if (category == null) category = "%";
+        else category = "%"+category+"%";
+        DishSearch search = new DishSearch(
+                limit,
+                page,
+                limit*page,
+                desc,
+                title,
+                category
+        );
+        return dishDao.readList(search);
     }
 }

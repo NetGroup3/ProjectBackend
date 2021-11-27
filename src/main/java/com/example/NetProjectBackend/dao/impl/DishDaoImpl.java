@@ -4,6 +4,7 @@ import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
 import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
+import com.example.NetProjectBackend.models.dto.dish.DishSearch;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +21,7 @@ public class DishDaoImpl implements DishDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static Dish mapIngredientRow(ResultSet rs, int rowNum) throws SQLException {
+    private static Dish mapDishRow(ResultSet rs, int rowNum) throws SQLException {
         return new Dish(
                 rs.getInt("id"),
                 rs.getString("title"),
@@ -53,7 +54,7 @@ public class DishDaoImpl implements DishDao {
     @Override
     public List<Dish> create(Dish dish) {
         return jdbcTemplate.query("INSERT INTO DISH (title, description, category, receipt, image_id, is_active) VALUES (?, ?, ?, ?, ?, ?) RETURNING id, title, description, category, receipt, image_id, is_active",
-                DishDaoImpl::mapIngredientRow,
+                DishDaoImpl::mapDishRow,
                 dish.getTitle(),
                 dish.getDescription(),
                 dish.getCategory(),
@@ -67,7 +68,17 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Dish> delete(int id) {
-        return jdbcTemplate.query("DELETE FROM DISH WHERE id = ? RETURNING id, title, description, category, receipt, image_id, is_active", DishDaoImpl::mapIngredientRow, id);
+        return jdbcTemplate.query("DELETE FROM DISH WHERE id = ? RETURNING id, title, description, category, receipt, image_id, is_active", DishDaoImpl::mapDishRow, id);
+    }
+
+    @Override
+    public List<Dish> readList(DishSearch search) {
+        if (search.getTitle() == null && search.getCategory() == null) {
+            if (search.isDesc()) return jdbcTemplate.query("SELECT id, title, description, category, receipt, image_id, is_active FROM DISH ORDER BY title DESC LIMIT ? OFFSET ?", DishDaoImpl::mapDishRow, search.getLimit(), search.getTitle());
+            return jdbcTemplate.query("SELECT id, title, description, category, receipt, image_id, is_active FROM DISH ORDER BY title ASC LIMIT ? OFFSET ?", DishDaoImpl::mapDishRow, search.getLimit(), search.getTitle());
+        }
+        if (search.isDesc()) return jdbcTemplate.query("SELECT id, title, description, category, receipt, image_id, is_active FROM DISH WHERE UPPER(title) LIKE UPPER(?) and UPPER(category) LIKE UPPER(?) ORDER BY title DESC LIMIT ? OFFSET ?", DishDaoImpl::mapDishRow, search.getTitle(), search.getCategory(), search.getLimit(), search.getOffset());
+        return jdbcTemplate.query("SELECT id, title, description, category, receipt, image_id, is_active FROM DISH WHERE UPPER(title) LIKE UPPER(?) and UPPER(category) LIKE UPPER(?) ORDER BY title ASC LIMIT ? OFFSET ? ", DishDaoImpl::mapDishRow, search.getTitle(), search.getCategory(), search.getLimit(), search.getOffset());
     }
 
     @Override
@@ -104,6 +115,11 @@ public class DishDaoImpl implements DishDao {
     }
 
     //Dish Kitchenware
+    @Override
+    public List<DishKitchenware> checkKitchenware(DishKitchenware dishKitchenware) {
+        return jdbcTemplate.query("SELECT id, dish_id, kitchenware_id FROM DISH_KITCHENWARE WHERE dish_id = ? and kitchenware_id = ?", DishDaoImpl::mapRelationKitchenware, dishKitchenware.getDish(), dishKitchenware.getKitchenware());
+    }
+
     @Override
     public List<DishKitchenware> removeKitchenware(int id) {
         return jdbcTemplate.query("DELETE FROM DISH_KITCHENWARE WHERE id = ? RETURNING id, dish_id, kitchenware_id", DishDaoImpl::mapRelationKitchenware, id);
