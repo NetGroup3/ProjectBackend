@@ -156,7 +156,7 @@ public class DishDaoImpl implements DishDao {
     //Dish
     @Override
     public List<Dish> create(Dish dish) {
-        return jdbcTemplate.query("INSERT INTO DISH (title, description, category, receipt, image_id, is_active) VALUES (?, ?, ?, ?, ?, ?) RETURNING id, title, description, category, receipt, image_id, is_active, likes",
+        return jdbcTemplate.query(q.getCreate(),
                 DishDaoImpl::mapDishRow,
                 dish.getTitle(),
                 dish.getDescription(),
@@ -170,7 +170,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Dish> editDish(Dish dish) {
-        return jdbcTemplate.query("UPDATE DISH SET title = ?, description = ?, category = ?, receipt = ?, image_id = ?, is_active = ?, likes = ? WHERE id = ? RETURNING id, title, description, category, receipt, image_id, is_active, likes",
+        return jdbcTemplate.query(q.getEdit(),
                 DishDaoImpl::mapDishRow,
                 dish.getTitle(),
                 dish.getDescription(),
@@ -186,59 +186,95 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Dish> delete(int id) {
-        return jdbcTemplate.query("DELETE FROM DISH WHERE id = ? RETURNING id, title, description, category, receipt, image_id, is_active", DishDaoImpl::mapDishRow, id);
+        return jdbcTemplate.query(q.getDelete(), DishDaoImpl::mapDishRow, id);
     }
 
     @Override
     public List<DishFormat> readList(DishSearch search, Integer userId) {
         if (search.getTitle() == null && search.getCategory() == null) {
-            if (search.isDesc()) return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes, CASE WHEN favourite.id IS NULL THEN false ELSE true END AS is_favourite FROM DISH LEFT JOIN favourite ON favourite.dish_id=dish.id AND favourite.user_id = ? ORDER BY title DESC LIMIT ? OFFSET ?", DishDaoImpl::mapDishFormatRow, userId, search.getLimit(), search.getTitle());
-            return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes, CASE WHEN favourite.id IS NULL THEN false ELSE true END AS is_favourite FROM DISH LEFT JOIN favourite ON favourite.dish_id=dish.id AND favourite.user_id = ? ORDER BY title ASC LIMIT ? OFFSET ?", DishDaoImpl::mapDishFormatRow, userId, search.getLimit(), search.getTitle());
+            if (search.isDesc()) return jdbcTemplate.query(
+                    q.getReadPageDesc(),
+                    DishDaoImpl::mapDishFormatRow,
+                    userId, search.getLimit(),
+                    search.getTitle()
+            );
+            return jdbcTemplate.query(
+                    q.getReadPageAsc(),
+                    DishDaoImpl::mapDishFormatRow,
+                    userId,
+                    search.getLimit(),
+                    search.getTitle()
+            );
         }
-        if (search.isDesc()) return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes, CASE WHEN favourite.id IS NULL THEN false ELSE true END AS is_favourite FROM DISH LEFT JOIN favourite ON favourite.dish_id=dish.id AND favourite.user_id = ? WHERE UPPER(title) LIKE UPPER(?) and UPPER(category) LIKE UPPER(?) ORDER BY title DESC LIMIT ? OFFSET ?", DishDaoImpl::mapDishFormatRow, userId, search.getTitle(), search.getCategory(), search.getLimit(), search.getOffset());
-        return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes, CASE WHEN favourite.id IS NULL THEN false ELSE true END AS is_favourite FROM DISH LEFT JOIN favourite ON favourite.dish_id=dish.id AND favourite.user_id = ? WHERE UPPER(title) LIKE UPPER(?) and UPPER(category) LIKE UPPER(?) ORDER BY title ASC LIMIT ? OFFSET ?", DishDaoImpl::mapDishFormatRow, userId, search.getTitle(), search.getCategory(), search.getLimit(), search.getOffset());
+        if (search.isDesc()) return jdbcTemplate.query(
+                q.getReadParamsDesc(),
+                DishDaoImpl::mapDishFormatRow,
+                userId, search.getTitle(),
+                search.getCategory(),
+                search.getLimit(),
+                search.getOffset());
+        return jdbcTemplate.query(
+                q.getReadParamsAsc(),
+                DishDaoImpl::mapDishFormatRow,
+                userId, search.getTitle(),
+                search.getCategory(),
+                search.getLimit(),
+                search.getOffset()
+        );
     }
 
     @Override
     public int setActive(int id, boolean active) {
-        return jdbcTemplate.update("UPDATE DISH SET is_active = ? WHERE id = ?", active, id);
+        return jdbcTemplate.update(q.getSetActive(), active, id);
     }
 
     @Override
     public DishFormat soloReadDish(int id, int userId) {
-        return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes,  CASE WHEN favourite.id IS NULL THEN false ELSE true END AS is_favourite FROM DISH LEFT JOIN favourite ON favourite.dish_id=dish.id AND favourite.user_id = ? WHERE dish.id = ?", DishDaoImpl::mapDishFormatRow, userId, id).get(0);
+        return jdbcTemplate.query(q.getSoloRead(), DishDaoImpl::mapDishFormatRow, userId, id).get(0);
     }
 
     @Override
     public List<DishRecommend> getRecommend(int userId, int limit, int offset) {
-        return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes, count.count, CASE WHEN favourite.id IS NULL THEN false ELSE true END AS is_favourite FROM ( SELECT dish_ingredient.dish_id, count(dish_ingredient.dish_id) AS count FROM dish_ingredient INNER JOIN stock ON dish_ingredient.dish_id=stock.ingredient_id WHERE stock.user_id = ? GROUP BY dish_ingredient.dish_id ORDER BY count DESC LIMIT ? OFFSET ? ) AS count, dish LEFT JOIN favourite ON favourite.dish_id=dish.id AND favourite.user_id = ? WHERE dish.id=count.dish_id ORDER BY count DESC", DishDaoImpl::mapDishRecommendRow, userId, limit, offset, userId);
+        return jdbcTemplate.query(
+                q.getRecommend(),
+                DishDaoImpl::mapDishRecommendRow,
+                userId,
+                limit,
+                offset,
+                userId
+        );
     }
 
     @Override
     public List<Dish> getWithIngredients(String list, int limit, int offset) {
-        return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes FROM dish INNER JOIN dish_ingredient ON dish_ingredient.ingredient_id IN ("+ list +") and dish.id=dish_ingredient.dish_id GROUP BY dish.id ORDER BY count(dish_ingredient.id) DESC LIMIT ? OFFSET ?", DishDaoImpl::mapDishRow, limit, offset);
+        return jdbcTemplate.query(
+                q.getWithIngredientsLeft()+list+q.getWithIngredientsRight(),
+                DishDaoImpl::mapDishRow,
+                limit,
+                offset);
     }
 
 
     //Dish Ingredient
     @Override
     public List<DishIngredient> checkIngredient(int dishId, int ingredientId) {
-        return jdbcTemplate.query("SELECT id, dish_id, ingredient_id, ingredient_amount FROM DISH_INGREDIENT WHERE dish_id = ? and ingredient_id = ?", DishDaoImpl::mapRelationIngredient, dishId, ingredientId);
+        return jdbcTemplate.query(q.getIngredientCheck(), DishDaoImpl::mapRelationIngredient, dishId, ingredientId);
     }
 
     @Override
     public List<DishIngredient> updateIngredient(int id, BigDecimal amount) {
-        return jdbcTemplate.query("UPDATE DISH_INGREDIENT SET ingredient_amount = ? WHERE id = ? RETURNING id, dish_id, ingredient_id, ingredient_amount", DishDaoImpl::mapRelationIngredient, amount, id);
+        return jdbcTemplate.query(q.getIngredientUpdate(), DishDaoImpl::mapRelationIngredient, amount, id);
     }
 
     @Override
     public List<DishIngredient> removeIngredient(int id) {
-        return jdbcTemplate.query("DELETE FROM DISH_INGREDIENT WHERE id = ? RETURNING id, dish_id, ingredient_id, ingredient_amount", DishDaoImpl::mapRelationIngredient, id);
+        return jdbcTemplate.query(q.getIngredientRemove(), DishDaoImpl::mapRelationIngredient, id);
     }
 
     @Override
     public List<DishIngredient> createDishIngredient(DishIngredient dishIngredient) {
-        return jdbcTemplate.query("INSERT INTO DISH_INGREDIENT (dish_id, ingredient_id, ingredient_amount) VALUES (?, ?, ?) RETURNING id, dish_id, ingredient_id, ingredient_amount",
+        return jdbcTemplate.query(
+                q.getIngredientCreate(),
                 DishDaoImpl::mapRelationIngredient,
                 dishIngredient.getDish(),
                 dishIngredient.getIngredient(),
@@ -249,23 +285,27 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Ingredient> readIngredientsRelation(int id) {
-        return jdbcTemplate.query("SELECT ingredient.id, ingredient.title, ingredient.description, ingredient.category, ingredient.image_id, ingredient.is_active, ingredient.measurement FROM ingredient LEFT JOIN dish_ingredient ON ingredient.id=dish_ingredient.ingredient_id WHERE dish_id=?", DishDaoImpl::mapIngredientRow, id);
+        return jdbcTemplate.query(q.getIngredientRead(), DishDaoImpl::mapIngredientRow, id);
     }
 
     //Dish Kitchenware
     @Override
     public List<DishKitchenware> checkKitchenware(DishKitchenware dishKitchenware) {
-        return jdbcTemplate.query("SELECT id, dish_id, kitchenware_id FROM DISH_KITCHENWARE WHERE dish_id = ? and kitchenware_id = ?", DishDaoImpl::mapRelationKitchenware, dishKitchenware.getDish(), dishKitchenware.getKitchenware());
+        return jdbcTemplate.query(
+                q.getKitchenwareCheck(),
+                DishDaoImpl::mapRelationKitchenware,
+                dishKitchenware.getDish(),
+                dishKitchenware.getKitchenware());
     }
 
     @Override
     public List<DishKitchenware> removeKitchenware(int id) {
-        return jdbcTemplate.query("DELETE FROM DISH_KITCHENWARE WHERE id = ? RETURNING id, dish_id, kitchenware_id", DishDaoImpl::mapRelationKitchenware, id);
+        return jdbcTemplate.query(q.getKitchenwareRemove(), DishDaoImpl::mapRelationKitchenware, id);
     }
 
     @Override
     public List<DishKitchenware> createDishKitchenware(DishKitchenware dishKitchenware) {
-        return jdbcTemplate.query("INSERT INTO DISH_KITCHENWARE (dish_id, kitchenware_id) VALUES (?, ?) RETURNING id, dish_id, kitchenware_id",
+        return jdbcTemplate.query(q.getKitchenwareCreate(),
                 DishDaoImpl::mapRelationKitchenware,
                 dishKitchenware.getDish(),
                 dishKitchenware.getKitchenware()
@@ -274,24 +314,24 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Kitchenware> readKitchenwareRelation(int id) {
-        return jdbcTemplate.query("SELECT kitchenware.id, kitchenware.title, kitchenware.description, kitchenware.category, kitchenware.image_id, kitchenware.is_active FROM kitchenware LEFT JOIN dish_kitchenware ON kitchenware.id=dish_kitchenware.kitchenware_id WHERE dish_id = ?", DishDaoImpl::mapKitchenwareRow, id);
+        return jdbcTemplate.query(q.getKitchenwareRead(), DishDaoImpl::mapKitchenwareRow, id);
     }
 
     //Comment
     @Override
     public List<CommentView> readCommentRelation(int id) {
-        return jdbcTemplate.query("SELECT comment.id AS id, client.id AS user_id, client.first_name, client.last_name, client.image_id, comment.text, comment.timestamp FROM client LEFT JOIN comment ON client.id=comment.user_id WHERE comment.dish_id = ?", DishDaoImpl::mapCommentViewRow, id);
+        return jdbcTemplate.query(q.getCommentRead(), DishDaoImpl::mapCommentViewRow, id);
     }
 
     @Override
     public List<Comment> createComment(Comment comment, int userId) {
-        List<Comment> check = jdbcTemplate.query("SELECT id, user_id, dish_id, text, timestamp FROM COMMENT WHERE user_id = ? and dish_id = ?",
+        List<Comment> check = jdbcTemplate.query(q.getCommentCreateCheck(),
                 DishDaoImpl::mapCommentRow,
                 userId,
                 comment.getDishId()
         );
         if (check.size() > 0) deleteComment(comment.getId(), userId);
-        return jdbcTemplate.query("INSERT INTO COMMENT (user_id, dish_id, text) VALUES (?, ?, ?) RETURNING id, user_id, dish_id, text, timestamp",
+        return jdbcTemplate.query(q.getCommentCreate(),
                 DishDaoImpl::mapCommentRow,
                 userId,
                 comment.getDishId(),
@@ -301,7 +341,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Comment> deleteComment(int id, int userId) {
-        return jdbcTemplate.query("DELETE FROM COMMENT WHERE id = ? and user_id = ?  RETURNING id, user_id, dish_id, text, timestamp",
+        return jdbcTemplate.query(q.getCommentDelete(),
                 DishDaoImpl::mapCommentRow,
                 id,
                 userId
@@ -311,7 +351,7 @@ public class DishDaoImpl implements DishDao {
     //Favourite
     @Override
     public boolean checkFavourite(int dishId, int userId) {
-        int check = jdbcTemplate.query("SELECT id, user_id, dish_id FROM FAVOURITE WHERE user_id = ? and dish_id = ?",
+        int check = jdbcTemplate.query(q.getFavouriteCheck(),
                 DishDaoImpl::mapFavouriteRow,
                 userId,
                 dishId
@@ -321,7 +361,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public boolean addFavourite(int userId, int dishId) {
-        int check = jdbcTemplate.query("INSERT INTO FAVOURITE (user_id, dish_id) VALUES (?, ?) RETURNING id, user_id, dish_id",
+        int check = jdbcTemplate.query(q.getFavouriteAdd(),
                 DishDaoImpl::mapFavouriteRow,
                 userId,
                 dishId
@@ -331,7 +371,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Favourite> removeFavourite(int id, int userId) {
-        return jdbcTemplate.query("DELETE FROM FAVOURITE WHERE id = ? and user_id = ? RETURNING id, user_id, dish_id",
+        return jdbcTemplate.query(q.getFavouriteRemove(),
                 DishDaoImpl::mapFavouriteRow,
                 id,
                 userId
@@ -340,7 +380,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<DishFormat> getFavourite(int userId) {
-        return jdbcTemplate.query("SELECT dish.id, dish.title, dish.description, dish.category, dish.receipt, dish.image_id, dish.is_active, dish.likes, CASE WHEN fav.id IS NULL THEN false ELSE true END AS is_favourite FROM DISH, (SELECT favourite.* FROM favourite WHERE favourite.user_id = ?) AS fav WHERE dish.id=fav.dish_id",
+        return jdbcTemplate.query(q.getFavouriteGet(),
                 DishDaoImpl::mapDishFormatRow,
                 userId
         );
@@ -349,12 +389,12 @@ public class DishDaoImpl implements DishDao {
     //Labels
     @Override
     public List<Label> readLabelRelation(int id) {
-        return jdbcTemplate.query("SELECT label.id, label.title FROM label LEFT JOIN dish_label ON label.id=dish_label.label_id WHERE dish_label.dish_id = ?", DishDaoImpl::mapLabelRow, id);
+        return jdbcTemplate.query(q.getLabelReadRelation(), DishDaoImpl::mapLabelRow, id);
     }
 
     @Override
     public List<Label> createLabel(Label label) {
-        return jdbcTemplate.query("INSERT INTO label (title) VALUES (?) RETURNING id, title",
+        return jdbcTemplate.query(q.getLabelCreate(),
                 DishDaoImpl::mapLabelRow,
                 label.getTitle()
         );
@@ -362,7 +402,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Label> getLabels(int limit, int offset) {
-        return jdbcTemplate.query("SELECT id, title FROM label LIMIT ? OFFSET ?",
+        return jdbcTemplate.query(q.getLabelGet(),
                 DishDaoImpl::mapLabelRow,
                 limit,
                 offset
@@ -371,7 +411,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Label> editLabel(Label label) {
-        return jdbcTemplate.query("UPDATE label SET title = ? WHERE id = ? RETURNING id, title",
+        return jdbcTemplate.query(q.getLabelEdit(),
                 DishDaoImpl::mapLabelRow,
                 label.getTitle(),
                 label.getId()
@@ -380,7 +420,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<Label> deleteLabel(int id) {
-        return jdbcTemplate.query("DELETE FROM label WHERE id = ? RETURNING id, title",
+        return jdbcTemplate.query(q.getLabelDelete(),
                 DishDaoImpl::mapLabelRow,
                 id
         );
@@ -388,7 +428,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<DishLabel> addLabel(DishLabel label) {
-        return jdbcTemplate.query("INSERT INTO dish_label (dish_id, label_id) VALUES (?, ?) RETURNING id, dish_id, label_id",
+        return jdbcTemplate.query(q.getLabelAdd(),
                 DishDaoImpl::mapDishLabelRow,
                 label.getDish(),
                 label.getLabel()
@@ -397,7 +437,7 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public List<DishLabel> removeLabel(int id) {
-        return jdbcTemplate.query("DELETE FROM dish_label WHERE id = ? RETURNING id, dish_id, label_id",
+        return jdbcTemplate.query(q.getLabelRemove(),
                 DishDaoImpl::mapDishLabelRow,
                 id
         );
@@ -406,7 +446,7 @@ public class DishDaoImpl implements DishDao {
     //Like
     @Override
     public boolean setLike(int dishId) {
-        jdbcTemplate.query("UPDATE DISH SET likes = likes+1 WHERE dish.id = ? RETURNING id, title, description, category, receipt, image_id, is_active, likes", DishDaoImpl::mapDishRow, dishId);
+        jdbcTemplate.query(q.getLikeSetLike(), DishDaoImpl::mapDishRow, dishId);
         return true;
     }
 }
