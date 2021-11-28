@@ -3,9 +3,8 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.service.kitchenware.KitchenwareService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*")
 @RestController
 public class KitchenwareController {
 
@@ -45,6 +44,7 @@ public class KitchenwareController {
         return ResponseEntity.ok(kitchenwareService.readPage(limit, limit * page));
     }
 
+    //////////////////////
     @GetMapping("/kitchenware/search")
     public ResponseEntity<?> readSearchPage(@RequestParam int limit,                            //necessary in request
                                             @RequestParam int page,                             //necessary in request

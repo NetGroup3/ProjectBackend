@@ -25,7 +25,7 @@ public class ModeratorController {
         return ResponseEntity.ok(200);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteModerator(@RequestParam int id) {
         userService.delete(id);
         return ResponseEntity.ok(200);
