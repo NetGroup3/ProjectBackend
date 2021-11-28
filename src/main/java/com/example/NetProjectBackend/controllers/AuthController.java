@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
 import com.example.NetProjectBackend.models.dto.JwtResponse;
 import com.example.NetProjectBackend.models.dto.LoginRequest;
@@ -10,15 +11,20 @@ import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.naming.EjbRef;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,6 +48,7 @@ public class AuthController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(),
                 loginRequest.getPassword());
+       System.out.println(token);
         log.info(String.valueOf(token));
         Authentication authentication = authenticationManager
                 .authenticate(token);
@@ -59,7 +66,8 @@ public class AuthController {
                 userDetails.getStatus(),
                 userDetails.getTimestamp(),
                 userDetails.getImageId(),
-                userDetails.getRole()));
+                userDetails.getRole()
+        ));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/signup")

@@ -43,6 +43,7 @@ public class KitchenwareController {
         return ResponseEntity.ok(kitchenwareService.readPage(limit, limit * page));
     }
 
+    //////////////////////
     @GetMapping("/kitchenware/search")
     public ResponseEntity<?> readSearchPage(@RequestParam int limit,                            //necessary in request
                                             @RequestParam int page,                             //necessary in request
