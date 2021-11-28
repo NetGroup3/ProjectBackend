@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ingredient {
+public class Dish {
     int id;
     String title;
     String description;
     String category;
+    String receipt;
     String imageId;
-    boolean isActive;
-    String measurement;
+    boolean active;
 }

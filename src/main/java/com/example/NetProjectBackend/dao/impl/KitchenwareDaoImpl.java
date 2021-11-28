@@ -1,13 +1,10 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.IngredientConfig;
 import com.example.NetProjectBackend.confuguration.query.KitchenwareConfig;
 import com.example.NetProjectBackend.dao.KitchenwareDao;
 import com.example.NetProjectBackend.models.Kitchenware;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -48,8 +45,8 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
                         ps.setString(1, kitchenware.getTitle());
                         ps.setString(2, kitchenware.getDescription());
                         ps.setString(3, kitchenware.getCategory());
-                        ps.setString(4, kitchenware.getImage_id());
-                        ps.setBoolean(5, kitchenware.is_active());
+                        ps.setString(4, kitchenware.getImageId());
+                        ps.setBoolean(5, kitchenware.isActive());
                         return ps;
                     }
                 }, keyHolder);
@@ -76,8 +73,8 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
                 kitchenware.getTitle(),
                 kitchenware.getDescription(),
                 kitchenware.getCategory(),
-                kitchenware.getImage_id(),
-                kitchenware.is_active(),
+                kitchenware.getImageId(),
+                kitchenware.isActive(),
                 kitchenware.getId()
         );
     }

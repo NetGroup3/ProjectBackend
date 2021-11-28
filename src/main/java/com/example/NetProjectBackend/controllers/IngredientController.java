@@ -5,7 +5,7 @@ import com.example.NetProjectBackend.service.ingredient.IngredientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin(origins = "*")
 @RestController
 @Slf4j
 public class IngredientController {
@@ -26,7 +26,7 @@ public class IngredientController {
 
     @PostMapping("/ingredient")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
-        ingredient.set_active(true);
+        System.out.println(ingredient);
         ingredientService.create(ingredient);
         return ResponseEntity.ok(200);
     }
@@ -39,6 +39,7 @@ public class IngredientController {
 
     @DeleteMapping("/ingredient")
     public ResponseEntity<?> deleteIngredient(@RequestParam int id) {
+        System.out.println("ingredient id: " + id);
         ingredientService.delete(id);
         return ResponseEntity.ok(200);
     }

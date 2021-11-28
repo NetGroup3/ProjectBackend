@@ -16,9 +16,9 @@ VALUES ('Milk', 'Cow''s milk', 'Milk product', TRUE, 'liter'),
        ('Vanilla sugar', 'Cow''s milk', 'Milk product', TRUE, 'gram'),
        ('Strawberry', 'Cow''s milk', 'Milk product', TRUE, 'gram');
 
-INSERT INTO dish (title, description, category, receipt, is_active, amount)
-VALUES ('Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar', TRUE, 2),
-       ('Strawberry Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar, strawberry', TRUE, 3);
+INSERT INTO dish (title, description, category, receipt, is_active)
+VALUES ('Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar', TRUE),
+       ('Strawberry Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar, strawberry', TRUE);
 
 INSERT INTO kitchenware (title, description, category, is_active)
 VALUES ('Glass', 'Glass', 'Dish', TRUE),
@@ -74,7 +74,7 @@ VALUES (4, 1),
 INSERT INTO friend (sender_id, recepient_id, status)
 VALUES (4, 5, 'ACCEPT');
 
-INSERT INTO "like" (user_id, dish_id)
+INSERT INTO "like" (amount, dish_id)
 VALUES (4, 1),
        (5, 2);
 
