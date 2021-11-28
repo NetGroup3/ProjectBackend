@@ -1,7 +1,11 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.entity.User;
+
 import com.example.NetProjectBackend.models.enums.ERole;
+
+import com.example.NetProjectBackend.service.UserService;
+
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
 import com.example.NetProjectBackend.models.dto.JwtResponse;
 import com.example.NetProjectBackend.models.dto.LoginRequest;
@@ -37,6 +41,7 @@ public class AuthController {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity<?> authUser(@RequestBody String  login) {
@@ -70,17 +75,26 @@ public class AuthController {
         ));
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/signup")
+    @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-        signupRequest.setTimestamp(OffsetDateTime.now());
-        if (userDao.readByEmail(signupRequest.getEmail()) != null) {
+        if (userService.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is exist"));
         }
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        userDao.create(signupRequest);
+        userService.create(signupRequest);
         return ResponseEntity.ok(new MessageResponse("User CREATED"));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path="/recovery")
+    public ResponseEntity<?> recoveryPassword(@RequestBody String email) {
+        return userService.recovery(email);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/code")
+    public ResponseEntity<?> code(@RequestParam String param) {
+        return userService.code(param);
     }
 
 }

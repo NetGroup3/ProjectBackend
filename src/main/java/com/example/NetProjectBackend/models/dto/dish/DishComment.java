@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishKitchenware {
+public class DishComment {
     int id;
-    int dish;
-    int kitchenware;
 }

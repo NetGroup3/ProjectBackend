@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.Dish;
 import com.example.NetProjectBackend.models.dto.dish.DishIngredient;
+import com.example.NetProjectBackend.models.dto.dish.DishKitchenware;
 import com.example.NetProjectBackend.service.dish.DishService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class DishController {
 
     @PostMapping("/ingredient")
     public ResponseEntity<?> addIngredient(@RequestBody DishIngredient dishIngredient) {
-        return dishService.addIngredient(dishIngredient);
+        return ResponseEntity.ok(dishService.addIngredient(dishIngredient));
     }
 
     @DeleteMapping("/ingredient")
@@ -42,27 +43,32 @@ public class DishController {
         return ResponseEntity.ok(dishService.removeIngredient(id));
     }
 
-    // Осталось
+
     @PostMapping("/kitchenware")
-    public ResponseEntity<?> addKitchenware(Dish dish) {
-        dishService.createDish(dish);
-        return ResponseEntity.ok(200);
+    public ResponseEntity<?> addKitchenware(@RequestBody DishKitchenware dishKitchenware) {
+        return ResponseEntity.ok(dishService.addKitchenware(dishKitchenware));
     }
 
     @DeleteMapping(path = "/kitchenware")
-    public ResponseEntity<?> removeKitchenware(Dish dish) {
-        dishService.createDish(dish);
-        return ResponseEntity.ok(200);
+    public ResponseEntity<?> removeKitchenware(@RequestParam int id) {
+        return ResponseEntity.ok(dishService.removeKitchenware(id));
     }
 
+    @GetMapping("/page")
+    public ResponseEntity<?> searchDishList(
+            @RequestParam int limit,
+            @RequestParam int page,
+            @RequestParam(required = false) boolean desc,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String category
+            ) {
+        return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category));
+    }
+
+    // Осталось
     @GetMapping
     public ResponseEntity<?> getDish(@RequestParam int id) {
-        return ResponseEntity.ok(200);
-    }
-
-    @GetMapping("/list")
-    public ResponseEntity<?> getDishList() {
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok(dishService.getDish(id));
     }
 
 }
