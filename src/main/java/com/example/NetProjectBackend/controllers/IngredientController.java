@@ -26,7 +26,7 @@ public class IngredientController {
 
     @PostMapping("/ingredient")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
-        ingredient.set_active(true);
+        ingredient.setActive(true);
         ingredientService.create(ingredient);
         return ResponseEntity.ok(200);
     }

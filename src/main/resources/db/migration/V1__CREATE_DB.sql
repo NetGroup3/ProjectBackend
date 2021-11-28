@@ -117,6 +117,7 @@ CREATE TABLE public.dish (
 	receipt varchar NULL,
 	image_id varchar NULL,
 	is_active bool NOT NULL,
+    likes int4 NOT NULL DEFAULT 0,
 	CONSTRAINT dish_pk PRIMARY KEY (id)
 );
 
@@ -149,15 +150,6 @@ CREATE TABLE public."comment" (
 	CONSTRAINT comment_pk PRIMARY KEY (id),
 	CONSTRAINT comment_fk FOREIGN KEY (user_id) REFERENCES public.client(id) ON DELETE CASCADE,
 	CONSTRAINT comment_fk_1 FOREIGN KEY (dish_id) REFERENCES public.dish(id) ON DELETE CASCADE
-);
-
-CREATE TABLE public."like" (
-	id serial4 NOT NULL,
-	amount int4 NULL,
-	dish_id int4 NOT NULL,
-	CONSTRAINT like_pk PRIMARY KEY (id),
-	CONSTRAINT like_un UNIQUE (dish_id),
-	CONSTRAINT like_fk FOREIGN KEY (dish_id) REFERENCES public.dish(id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.ingredient (
