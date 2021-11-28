@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models;
+package com.example.NetProjectBackend.models.dto.dish;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Dish {
+public class DishRecommend {
     int id;
     String title;
     String description;
@@ -16,4 +16,7 @@ public class Dish {
     String receipt;
     String imageId;
     boolean active;
+    int likes;
+    int count;
+    boolean favourite;
 }

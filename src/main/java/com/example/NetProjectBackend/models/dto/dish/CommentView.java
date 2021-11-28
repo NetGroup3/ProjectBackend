@@ -4,11 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishLabel {
+public class CommentView {
     int id;
-    int dish;
-    int label;
+    int userId;
+    String firstname;
+    String lastname;
+    String imageId;
+    String text;
+    OffsetDateTime timestamp;
 }

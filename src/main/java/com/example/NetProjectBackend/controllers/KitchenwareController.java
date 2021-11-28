@@ -22,6 +22,7 @@ public class KitchenwareController {
 
     @PostMapping("/kitchenware")
     public ResponseEntity<?> createKitchenware(@RequestBody Kitchenware kitchenware) {
+        kitchenware.setActive(true);
         kitchenwareService.create(kitchenware);
         return ResponseEntity.ok(200);
     }

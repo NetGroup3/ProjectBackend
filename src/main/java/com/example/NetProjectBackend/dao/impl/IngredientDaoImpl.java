@@ -48,7 +48,7 @@ public class IngredientDaoImpl implements IngredientDao {
                         ps.setString(1, ingredient.getTitle());
                         ps.setString(2, ingredient.getDescription());
                         ps.setString(3, ingredient.getCategory());
-                        ps.setString(4, ingredient.getImageId());
+                        ps.setString(4, ingredient.getImage_id());
                         ps.setBoolean(5, ingredient.isActive());
                         ps.setString(6, ingredient.getMeasurement());
                         return ps;
@@ -78,7 +78,7 @@ public class IngredientDaoImpl implements IngredientDao {
                 ingredient.getTitle(),
                 ingredient.getDescription(),
                 ingredient.getCategory(),
-                ingredient.getImageId(),
+                ingredient.getImage_id(),
                 ingredient.isActive(),
                 ingredient.getMeasurement(),
                 ingredient.getId()
