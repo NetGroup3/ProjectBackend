@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/moderator")
+@CrossOrigin(origins = "*") 
 @AllArgsConstructor
 public class ModeratorController {
 
@@ -25,8 +26,8 @@ public class ModeratorController {
         return ResponseEntity.ok(200);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteModerator(@RequestParam int id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteModerator(@PathVariable int id) {
         userService.delete(id);
         return ResponseEntity.ok(200);
     }
