@@ -49,6 +49,7 @@ public class IngredientController {
         return ResponseEntity.ok(ingredientService.readPage(limit,limit*page));
     }
 
+    ///////////////////////////
     @GetMapping("/ingredient/search")
     public ResponseEntity<?> readSearchPage(@RequestParam int limit,                            //necessary in request
                                             @RequestParam int page,                             //necessary in request
