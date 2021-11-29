@@ -23,4 +23,9 @@ public class UserStockConfig {
     @Value("${user_stock.select_by_userid_and_ingredientid}")
     private String selectByUserIdAndIngredientId;
 
+    @Value("${user_stock.update_by_userid_and_ingredientid}")
+    private String updateByUserIdAndIngredientId;
+
+
+
 }

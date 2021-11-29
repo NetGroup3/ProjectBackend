@@ -24,8 +24,9 @@ public class UserStockServiceImpl implements UserStockService{
     }
 
     @Override
-    public ResponseEntity<?> deleteStockElement(int stockid) {
-        userStockDao.deleteStockElement(stockid);
+    public ResponseEntity<?> deleteStockElement(int userId, String ingredient) {
+        int ingredientId = userStockDao.ingredientExist(ingredient);
+        userStockDao.deleteStockElement(userId, ingredientId);
         return ResponseEntity.ok(200);
     }
 
@@ -37,5 +38,13 @@ public class UserStockServiceImpl implements UserStockService{
         if (userStockDao.readStockElement(userId, ingredientId) != null)
             return ResponseEntity.ok("Already exist in your stock");
         return ResponseEntity.ok(userStockDao.createStockElement(userId, ingredientId, amount));
+    }
+
+    @Override
+    public ResponseEntity<?> updateStockElement(int userId, String ingredient, int amount) {
+        int ingredientId = userStockDao.ingredientExist(ingredient);
+        if (userStockDao.readStockElement(userId, ingredientId) == null)
+            return ResponseEntity.ok("Not found in your stock");
+        return ResponseEntity.ok(userStockDao.updateStockElement(userId, ingredientId, amount));
     }
 }

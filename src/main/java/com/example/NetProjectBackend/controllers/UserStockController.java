@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/user")
 public class UserStockController {
     private final UserStockService userStockService;
 
@@ -13,20 +14,28 @@ public class UserStockController {
         this.userStockService = userStockService;
     }
 
-    @GetMapping(path = "/user/stock")
-    public ResponseEntity<?> readStock(@RequestParam int userid) {
-        return ResponseEntity.ok(userStockService.readStock(userid));
+    @GetMapping(path = "/{userId}/stock")
+    public ResponseEntity<?> readStock(@PathVariable int userId) {
+        return ResponseEntity.ok(userStockService.readStock(userId));
     }
 
-    @DeleteMapping("/user/stock")
-    public ResponseEntity<?> deleteStockElement(@RequestParam int stockid) {
-        return ResponseEntity.ok(userStockService.deleteStockElement(stockid));
+    @DeleteMapping(path = "/{userId}/stock")
+    public ResponseEntity<?> deleteStockElement(@PathVariable int userId,
+                                                @RequestParam String ingredient) {
+        return ResponseEntity.ok(userStockService.deleteStockElement(userId, ingredient));
     }
 
-    @PostMapping("/user/stock")
-    public ResponseEntity<?> createStockElement(@RequestParam int userid,
+    @PostMapping("/{userId}/stock")
+    public ResponseEntity<?> createStockElement(@PathVariable int userId,
                                                 @RequestParam String ingredient,
                                                 @RequestParam int amount) {
-        return ResponseEntity.ok(userStockService.createStockElement(userid, ingredient, amount));
+        return ResponseEntity.ok(userStockService.createStockElement(userId, ingredient, amount));
+    }
+
+    @PatchMapping("/{userId}/stock")
+    public ResponseEntity<?> updateStockElement(@PathVariable int userId,
+                                                @RequestParam String ingredient,
+                                                @RequestParam int amount) {
+        return ResponseEntity.ok(userStockService.updateStockElement(userId, ingredient, amount));
     }
 }
