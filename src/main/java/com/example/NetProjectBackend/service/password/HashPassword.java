@@ -19,7 +19,8 @@ public class HashPassword {
         byte[] saltBytes = salt.getBytes();
 
         byte[] hashedBytes = hashPassword(passwordChars, saltBytes, iterations, keyLength);
-        String hashedString = Hex.encodeHexString(hashedBytes);
+        char[] chars = Hex.encodeHex(hashedBytes);
+        String hashedString =  new String(chars);
         return hashedString;
     }
 
