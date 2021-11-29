@@ -45,7 +45,7 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
                         ps.setString(1, kitchenware.getTitle());
                         ps.setString(2, kitchenware.getDescription());
                         ps.setString(3, kitchenware.getCategory());
-                        ps.setString(4, kitchenware.getImage_id());
+                        ps.setString(4, kitchenware.getImageId());
                         ps.setBoolean(5, kitchenware.isActive());
                         return ps;
                     }
@@ -73,7 +73,7 @@ public class KitchenwareDaoImpl implements KitchenwareDao {
                 kitchenware.getTitle(),
                 kitchenware.getDescription(),
                 kitchenware.getCategory(),
-                kitchenware.getImage_id(),
+                kitchenware.getImageId(),
                 kitchenware.isActive(),
                 kitchenware.getId()
         );
