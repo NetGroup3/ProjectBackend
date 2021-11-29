@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.UserStockConfig;
+import com.example.NetProjectBackend.confuguration.query.UserStockQuery;
 import com.example.NetProjectBackend.dao.UserStockDao;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class UserStockDaoImpl implements UserStockDao {
     private final JdbcTemplate jdbcTemplate;
-    private final UserStockConfig userStockConfig;
+    private final UserStockQuery userStockQuery;
 
     private static UserStockElement mapUserStockRow(ResultSet rs, int rowNum) throws SQLException {
         return new UserStockElement(
@@ -43,7 +43,7 @@ public class UserStockDaoImpl implements UserStockDao {
     public List<UserStockElement> readStock(int userId) {
         List<UserStockElement> userStockElements = null;
         try {
-            userStockElements = jdbcTemplate.query(userStockConfig.getSelect(), UserStockDaoImpl::mapUserStockRow, userId);
+            userStockElements = jdbcTemplate.query(userStockQuery.getSelect(), UserStockDaoImpl::mapUserStockRow, userId);
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find user with id {}", userId);
         }
@@ -52,14 +52,14 @@ public class UserStockDaoImpl implements UserStockDao {
 
     @Override
     public void deleteStockElement(int stockid) {
-        jdbcTemplate.update(userStockConfig.getDelete(), stockid);
+        jdbcTemplate.update(userStockQuery.getDelete(), stockid);
     }
 
     @Override
     public UserStockElement readStockElement(int userId, int ingredientId) {
         UserStockElement userStockElement = null;
         try {
-            userStockElement = jdbcTemplate.queryForObject(userStockConfig.getSelectByUserIdAndIngredientId(), UserStockDaoImpl::mapUserStockRow, userId, ingredientId);
+            userStockElement = jdbcTemplate.queryForObject(userStockQuery.getSelectByUserIdAndIngredientId(), UserStockDaoImpl::mapUserStockRow, userId, ingredientId);
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find user with id {}", userId);
         }
@@ -70,7 +70,7 @@ public class UserStockDaoImpl implements UserStockDao {
     public int ingredientExist(String ingredient) {
         Integer ingredientId = -1;
         try {
-            ingredientId = jdbcTemplate.queryForObject(userStockConfig.getSelectIngredientId(), UserStockDaoImpl::mapIngredientIdRow, ingredient);
+            ingredientId = jdbcTemplate.queryForObject(userStockQuery.getSelectIngredientId(), UserStockDaoImpl::mapIngredientIdRow, ingredient);
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find ingredient with id {}", ingredient);
         }
@@ -79,7 +79,7 @@ public class UserStockDaoImpl implements UserStockDao {
 
     @Override
     public UserStockElement createStockElement(int userId, int ingredientId, int amount) {
-        jdbcTemplate.update(userStockConfig.getInsert(), userId, ingredientId, amount);
+        jdbcTemplate.update(userStockQuery.getInsert(), userId, ingredientId, amount);
         return readStockElement(userId, ingredientId);
     }
 }

@@ -9,8 +9,6 @@ import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
-import com.example.NetProjectBackend.service.mail.Mail;
-import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

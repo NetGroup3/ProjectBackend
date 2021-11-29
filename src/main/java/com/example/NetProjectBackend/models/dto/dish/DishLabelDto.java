@@ -4,14 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishIngredient {
+public class DishLabelDto {
     int id;
     int dish;
-    int ingredient;
-    BigDecimal amount;
+    int label;
 }

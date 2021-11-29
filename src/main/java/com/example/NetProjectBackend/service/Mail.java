@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.mail;
+package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;

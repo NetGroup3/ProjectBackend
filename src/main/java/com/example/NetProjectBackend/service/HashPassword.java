@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.password;
+package com.example.NetProjectBackend.service;
 
 import org.apache.commons.codec.binary.Hex;
 

@@ -1,7 +1,8 @@
-package com.example.NetProjectBackend.service.ingredient;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.IngredientDao;
 import com.example.NetProjectBackend.models.Ingredient;
+import com.example.NetProjectBackend.service.IngredientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

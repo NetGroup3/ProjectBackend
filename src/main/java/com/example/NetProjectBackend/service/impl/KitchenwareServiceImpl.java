@@ -1,7 +1,8 @@
-package com.example.NetProjectBackend.service.kitchenware;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.KitchenwareDao;
 import com.example.NetProjectBackend.models.Kitchenware;
+import com.example.NetProjectBackend.service.KitchenwareService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

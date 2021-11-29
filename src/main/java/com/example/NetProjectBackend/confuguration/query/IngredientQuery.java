@@ -4,11 +4,12 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 @Getter
-@Configuration
+@Component
 @PropertySource("classpath:query.properties")
-public class IngredientConfig {
+public class IngredientQuery {
     @Value("${ingredient.insert}")
     private String insert;
 

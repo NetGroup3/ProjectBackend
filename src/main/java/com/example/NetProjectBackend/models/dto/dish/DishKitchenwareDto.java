@@ -4,18 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishFormat {
+public class DishKitchenwareDto {
     int id;
-    String title;
-    String description;
-    String category;
-    String receipt;
-    String imageId;
-    boolean active;
-    int likes;
-    boolean favourite;
+    int dish;
+    int kitchenware;
 }

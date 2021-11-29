@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.entity.Label;
-import com.example.NetProjectBackend.service.dish.DishService;
+import com.example.NetProjectBackend.service.DishService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +48,8 @@ public class DishController {
 
     @PostMapping("/ingredient")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> addIngredient(@RequestBody DishIngredient dishIngredient) {
-        return ResponseEntity.ok(dishService.addIngredient(dishIngredient));
+    public ResponseEntity<?> addIngredient(@RequestBody DishIngredientDto dishIngredientDto) {
+        return ResponseEntity.ok(dishService.addIngredient(dishIngredientDto));
     }
 
     @DeleteMapping("/ingredient")
@@ -61,8 +61,8 @@ public class DishController {
 
     @PostMapping("/kitchenware")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> addKitchenware(@RequestBody DishKitchenware dishKitchenware) {
-        return ResponseEntity.ok(dishService.addKitchenware(dishKitchenware));
+    public ResponseEntity<?> addKitchenware(@RequestBody DishKitchenwareDto dishKitchenwareDto) {
+        return ResponseEntity.ok(dishService.addKitchenware(dishKitchenwareDto));
     }
 
     @DeleteMapping(path = "/kitchenware")
@@ -143,7 +143,7 @@ public class DishController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> addLike (@RequestBody DishLike like) {
+    public ResponseEntity<?> addLike (@RequestBody DishLikeDto like) {
         System.out.println(like);
         return ResponseEntity.ok(dishService.setLike(like.getDish()));
     }
@@ -201,7 +201,7 @@ public class DishController {
 
     @PostMapping("/label")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> addLabel (@RequestBody DishLabel label) {
+    public ResponseEntity<?> addLabel (@RequestBody DishLabelDto label) {
         System.out.println(label);
         return ResponseEntity.ok(dishService.addLabel(label));
     }

@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishLabel {
-    int id;
-    int dish;
-    int label;
+public class DishSearchDto {
+    int limit;
+    int page;
+    int offset;
+    boolean desc;
+    String title;
+    String category;
 }

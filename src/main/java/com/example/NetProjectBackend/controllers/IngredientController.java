@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.Ingredient;
-import com.example.NetProjectBackend.service.ingredient.IngredientService;
+import com.example.NetProjectBackend.service.IngredientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

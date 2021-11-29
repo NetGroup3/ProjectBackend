@@ -13,9 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DishView {
-    DishFormat dish;
+    DishFormatDto dish;
     List<Ingredient> ingredients;
     List<Kitchenware> kitchenware;
-    List<CommentView> comments;
+    List<CommentDto> comments;
     List<Label> labels;
 }

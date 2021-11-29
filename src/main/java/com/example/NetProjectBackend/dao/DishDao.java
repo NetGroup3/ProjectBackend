@@ -18,35 +18,35 @@ public interface DishDao {
 
     List<Dish> delete(int id);
 
-    List<DishFormat> readList(DishSearch search, Integer userId);
+    List<DishFormatDto> readList(DishSearchDto search, Integer userId);
 
     int setActive(int id, boolean active);
 
-    DishFormat soloReadDish(int id, int userId);
+    DishFormatDto soloReadDish(int id, int userId);
 
-    List<DishRecommend> getRecommend(int userId, int limit, int offset);
+    List<DishRecommendDto> getRecommend(int userId, int limit, int offset);
 
     List<Dish> getWithIngredients(String list, int limit, int offset);
 
-    List<DishIngredient> checkIngredient(int dishId, int ingredientId);
+    List<DishIngredientDto> checkIngredient(int dishId, int ingredientId);
 
-    List<DishIngredient> updateIngredient(int id, BigDecimal amount);
+    List<DishIngredientDto> updateIngredient(int id, BigDecimal amount);
 
-    List<DishIngredient> removeIngredient(int id);
+    List<DishIngredientDto> removeIngredient(int id);
 
-    List<DishIngredient> createDishIngredient(DishIngredient dishIngredient);
+    List<DishIngredientDto> createDishIngredient(DishIngredientDto dishIngredientDto);
 
     List<Ingredient> readIngredientsRelation(int id);
 
-    List<DishKitchenware> checkKitchenware(DishKitchenware dishKitchenware);
+    List<DishKitchenwareDto> checkKitchenware(DishKitchenwareDto dishKitchenwareDto);
 
-    List<DishKitchenware> removeKitchenware(int id);
+    List<DishKitchenwareDto> removeKitchenware(int id);
 
-    List<DishKitchenware> createDishKitchenware(DishKitchenware dishKitchenware);
+    List<DishKitchenwareDto> createDishKitchenware(DishKitchenwareDto dishKitchenwareDto);
 
     List<Kitchenware> readKitchenwareRelation(int id);
 
-    List<CommentView> readCommentRelation(int id);
+    List<CommentDto> readCommentRelation(int id);
 
     List<Comment> createComment(Comment comment, int userId);
 
@@ -58,7 +58,7 @@ public interface DishDao {
 
     List<Favourite> removeFavourite(int id, int userId);
 
-    List<DishFormat> getFavourite(int userId);
+    List<DishFormatDto> getFavourite(int userId);
 
     List<Label> readLabelRelation(int id);
 
@@ -70,9 +70,9 @@ public interface DishDao {
 
     List<Label> deleteLabel(int id);
 
-    List<DishLabel> addLabel(DishLabel label);
+    List<DishLabelDto> addLabel(DishLabelDto label);
 
-    List<DishLabel> removeLabel(int id);
+    List<DishLabelDto> removeLabel(int id);
 
     boolean setLike(int dishId);
 }

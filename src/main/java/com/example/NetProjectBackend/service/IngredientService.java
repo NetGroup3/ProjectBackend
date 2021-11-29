@@ -1,14 +1,14 @@
-package com.example.NetProjectBackend.service.kitchenware;
+package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.Kitchenware;
+import com.example.NetProjectBackend.models.Ingredient;
 import org.springframework.http.ResponseEntity;
 
-public interface KitchenwareService {
-    ResponseEntity<?> create(Kitchenware kitchenware);
+public interface IngredientService {
+    ResponseEntity<?> create(Ingredient ingredient);
 
     ResponseEntity<?> read(int id);
 
-    ResponseEntity<?> update(Kitchenware kitchenware);
+    ResponseEntity<?> update(Ingredient ingredient);
 
     ResponseEntity<?> delete(int id);
 

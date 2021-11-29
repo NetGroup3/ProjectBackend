@@ -4,17 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentView {
+public class DishCommentDto {
     int id;
-    int userId;
-    String firstname;
-    String lastname;
-    String imageId;
-    String text;
-    OffsetDateTime timestamp;
 }

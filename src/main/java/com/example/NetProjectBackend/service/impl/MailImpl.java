@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.mail;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.confuguration.LinkConfig;
 import com.example.NetProjectBackend.dao.UserDao;
@@ -6,6 +6,7 @@ import com.example.NetProjectBackend.dao.VerifyDao;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
+import com.example.NetProjectBackend.service.Mail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,7 +24,7 @@ import java.util.Objects;
 
 @Service
 @Slf4j
-public class MailImpl implements Mail{
+public class MailImpl implements Mail {
 
     private final JavaMailSender emailSender;
     private final SpringTemplateEngine thymeleafTemplateEngine;

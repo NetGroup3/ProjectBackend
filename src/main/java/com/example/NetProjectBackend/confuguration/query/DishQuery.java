@@ -4,11 +4,12 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 @Getter
-@Configuration
+@Component
 @PropertySource("classpath:query.properties")
-public class DishConfig {
+public class DishQuery {
     @Value("${dish.dish.create}")
     private String create;
 
