@@ -5,8 +5,6 @@ import com.example.NetProjectBackend.dao.IngredientDao;
 import com.example.NetProjectBackend.models.Ingredient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -48,7 +46,7 @@ public class IngredientDaoImpl implements IngredientDao {
                         ps.setString(1, ingredient.getTitle());
                         ps.setString(2, ingredient.getDescription());
                         ps.setString(3, ingredient.getCategory());
-                        ps.setString(4, ingredient.getImage_id());
+                        ps.setString(4, ingredient.getImageId());
                         ps.setBoolean(5, ingredient.isActive());
                         ps.setString(6, ingredient.getMeasurement());
                         return ps;
@@ -78,7 +76,7 @@ public class IngredientDaoImpl implements IngredientDao {
                 ingredient.getTitle(),
                 ingredient.getDescription(),
                 ingredient.getCategory(),
-                ingredient.getImage_id(),
+                ingredient.getImageId(),
                 ingredient.isActive(),
                 ingredient.getMeasurement(),
                 ingredient.getId()
