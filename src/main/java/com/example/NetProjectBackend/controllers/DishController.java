@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*")
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -89,6 +89,7 @@ public class DishController {
             @RequestParam int id,
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
+        log.info(String.valueOf(id));
         return ResponseEntity.ok(dishService.getDish(id, userId));
     }
 
