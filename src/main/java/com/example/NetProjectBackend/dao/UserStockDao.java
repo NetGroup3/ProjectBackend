@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserStockDao {
     List<UserStockElement> readStock(int userId);
 
-    void deleteStockElement(int stockid);
+    void deleteStockElement(int userId, int ingredientId);
 
     UserStockElement createStockElement(int userId, int ingredientId, int amount);
 

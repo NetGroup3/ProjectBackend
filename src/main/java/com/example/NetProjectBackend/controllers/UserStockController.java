@@ -19,9 +19,10 @@ public class UserStockController {
         return ResponseEntity.ok(userStockService.readStock(userId));
     }
 
-    @DeleteMapping("/stock")
-    public ResponseEntity<?> deleteStockElement(@RequestParam int stockId) {
-        return ResponseEntity.ok(userStockService.deleteStockElement(stockId));
+    @DeleteMapping(path = "/{userId}/stock")
+    public ResponseEntity<?> deleteStockElement(@PathVariable int userId,
+                                                @RequestParam String ingredient) {
+        return ResponseEntity.ok(userStockService.deleteStockElement(userId, ingredient));
     }
 
     @PostMapping("/{userId}/stock")

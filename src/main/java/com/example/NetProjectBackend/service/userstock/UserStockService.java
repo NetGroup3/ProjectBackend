@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 public interface UserStockService {
     ResponseEntity<?> readStock(int userId);
 
-    ResponseEntity<?> deleteStockElement(int stockid);
+    ResponseEntity<?> deleteStockElement(int userId, String ingredient);
 
     ResponseEntity<?> createStockElement(int userId, String ingredient, int amount);
 
