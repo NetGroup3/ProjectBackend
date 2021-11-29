@@ -16,9 +16,9 @@ VALUES ('Milk', 'Cow''s milk', 'Milk product', TRUE, 'liter'),
        ('Vanilla sugar', 'Cow''s milk', 'Milk product', TRUE, 'gram'),
        ('Strawberry', 'Cow''s milk', 'Milk product', TRUE, 'gram');
 
-INSERT INTO dish (title, description, category, receipt, is_active)
-VALUES ('Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar', TRUE),
-       ('Strawberry Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar, strawberry', TRUE);
+INSERT INTO dish (title, description, category, receipt, is_active, likes)
+VALUES ('Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar', TRUE, 2),
+       ('Strawberry Milkshake', 'Cool sweet drink', 'Non-alcoholic drinks', 'Milk, ice cream, vanilla sugar, strawberry', TRUE, 20);
 
 INSERT INTO kitchenware (title, description, category, is_active)
 VALUES ('Glass', 'Glass', 'Dish', TRUE),
@@ -74,10 +74,6 @@ VALUES (4, 1),
 INSERT INTO friend (sender_id, recepient_id, status)
 VALUES (4, 5, 'ACCEPT');
 
-INSERT INTO "like" (amount, dish_id)
-VALUES (4, 1),
-       (5, 2);
-
 INSERT INTO message (user_id, event_id, text)
 VALUES (5, 1, 'Good job');
 
@@ -102,4 +98,14 @@ VALUES (4, 1, 'Delicious Milkshake'),
 
 INSERT INTO wish_list (user_id, ingredient_id, event_id, amount)
 VALUES (4, 4, 1, 1);
+
+INSERT INTO label (title)
+VALUES ('Milk'),
+       ('Sweet');
+
+INSERT INTO dish_label (dish_id, label_id)
+VALUES ( 1, 1),
+       ( 1, 2),
+       ( 2, 1),
+       ( 2, 2);
 

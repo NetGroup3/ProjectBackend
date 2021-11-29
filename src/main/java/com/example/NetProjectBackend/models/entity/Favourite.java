@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models.dto.dish;
+package com.example.NetProjectBackend.models.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishLabel {
+public class Favourite {
     int id;
-    int dish;
-    int label;
+    int userId;
+    int dishId;
 }

@@ -4,8 +4,9 @@ import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.service.kitchenware.KitchenwareService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "*")
+
 @RestController
+@CrossOrigin(origins = "*")
 public class KitchenwareController {
 
     private final KitchenwareService kitchenwareService;
@@ -22,6 +23,7 @@ public class KitchenwareController {
 
     @PostMapping("/kitchenware")
     public ResponseEntity<?> createKitchenware(@RequestBody Kitchenware kitchenware) {
+        kitchenware.setActive(true);
         kitchenwareService.create(kitchenware);
         return ResponseEntity.ok(200);
     }
@@ -43,6 +45,7 @@ public class KitchenwareController {
         return ResponseEntity.ok(kitchenwareService.readPage(limit, limit * page));
     }
 
+    //////////////////////
     @GetMapping("/kitchenware/search")
     public ResponseEntity<?> readSearchPage(@RequestParam int limit,                            //necessary in request
                                             @RequestParam int page,                             //necessary in request
