@@ -67,6 +67,12 @@ public class UserStockDaoImpl implements UserStockDao {
     }
 
     @Override
+    public UserStockElement updateStockElement(int userId, int ingredientId, int amount) {
+        jdbcTemplate.update(userStockConfig.getUpdateByUserIdAndIngredientId(), amount, userId, ingredientId);
+        return readStockElement(userId, ingredientId);
+    }
+
+    @Override
     public int ingredientExist(String ingredient) {
         Integer ingredientId = -1;
         try {

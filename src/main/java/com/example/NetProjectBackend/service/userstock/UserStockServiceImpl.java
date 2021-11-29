@@ -38,4 +38,12 @@ public class UserStockServiceImpl implements UserStockService{
             return ResponseEntity.ok("Already exist in your stock");
         return ResponseEntity.ok(userStockDao.createStockElement(userId, ingredientId, amount));
     }
+
+    @Override
+    public ResponseEntity<?> updateStockElement(int userId, String ingredient, int amount) {
+        int ingredientId = userStockDao.ingredientExist(ingredient);
+        if (userStockDao.readStockElement(userId, ingredientId) == null)
+            return ResponseEntity.ok("Not found in your stock");
+        return ResponseEntity.ok(userStockDao.updateStockElement(userId, ingredientId, amount));
+    }
 }

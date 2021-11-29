@@ -15,4 +15,6 @@ public interface UserStockDao {
     int ingredientExist(String ingredient);
 
     UserStockElement readStockElement(int userId, int ingredientId);
+
+    UserStockElement updateStockElement(int userId, int ingredientId, int amount);
 }

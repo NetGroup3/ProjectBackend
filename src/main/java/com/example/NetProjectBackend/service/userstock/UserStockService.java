@@ -8,4 +8,6 @@ public interface UserStockService {
     ResponseEntity<?> deleteStockElement(int stockid);
 
     ResponseEntity<?> createStockElement(int userId, String ingredient, int amount);
+
+    ResponseEntity<?> updateStockElement(int userId, String ingredient, int amount);
 }
