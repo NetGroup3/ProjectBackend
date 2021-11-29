@@ -4,8 +4,9 @@ import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.service.kitchenware.KitchenwareService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "*")
+
 @RestController
+@CrossOrigin(origins = "*")
 public class KitchenwareController {
 
     private final KitchenwareService kitchenwareService;
