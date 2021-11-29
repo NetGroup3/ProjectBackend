@@ -1,6 +1,5 @@
 package com.example.NetProjectBackend.controllers;
 
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,15 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    //final private Mail mail;
-
-    //public HelloController(Mail mail) {
-    //    this.mail = mail;
-    //}
-
     @GetMapping("/hello")
     public String getHello(){
-        //mail.confirmationCode("https://ourproject.space/code?param=", "d.averianoff@gmail.com");
         return "hello world!!";
     }
     @GetMapping("/hello/user")

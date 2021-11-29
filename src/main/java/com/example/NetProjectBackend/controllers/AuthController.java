@@ -1,35 +1,23 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.entity.User;
-
-import com.example.NetProjectBackend.models.enums.ERole;
-
-import com.example.NetProjectBackend.service.UserService;
-
-import com.example.NetProjectBackend.service.jwt.JwtUtils;
 import com.example.NetProjectBackend.models.dto.JwtResponse;
 import com.example.NetProjectBackend.models.dto.LoginRequest;
 import com.example.NetProjectBackend.models.dto.MessageResponse;
-import com.example.NetProjectBackend.dao.UserDao;
+import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
+import com.example.NetProjectBackend.service.UserService;
+import com.example.NetProjectBackend.service.jwt.JwtUtils;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.naming.EjbRef;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -39,7 +27,6 @@ import java.util.stream.Collectors;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final UserService userService;
