@@ -3,7 +3,10 @@ INSERT INTO client (password, first_name, last_name, email, status, role) VALUES
   ('$2a$10$0oKmdozNetD3MFv1iBn1d.nBMLDKDr4ZgWTrvJNaShSYWu5PEipEW', 'Katy',  'Perry',      'moder1@gmail.com', 'ACTIVE', 'MODERATOR'), -- password=newrandompassword5678
   ('$2a$10$NBG/G0XIvpiv/QaoJzWdVeAUxQqWuhqlxVIJqCz3X.v3eNwtqwEdq', 'Joe',   'Biden',      'moder2@gmail.com', 'ACTIVE', 'MODERATOR'), -- password=newrandompassword9012
   ('$2a$10$rM/041rKavYnAmIcJrsA6.pF5Ku0jWJTOE7u1LV8iY/7q6mKOS9Te', 'Taras', 'Shevchenko', 'user1@gmail.com',  'ACTIVE', 'USER'),      -- password=newrandompassword3456
-  ('$2a$10$NzkfeJYbmLFbsBXDQGgpzujd4rZPoCdbOWLIw/2NdStbtaGA970cG', 'Lesia', 'Ukrainka',   'user2@gmail.com',  'ACTIVE', 'USER');      -- password=newrandompassword7890
+  ('$2a$10$NzkfeJYbmLFbsBXDQGgpzujd4rZPoCdbOWLIw/2NdStbtaGA970cG', 'Lesia', 'Ukrainka',   'user2@gmail.com',  'ACTIVE', 'USER'),      -- password=newrandompassword7890
+  ('$2a$10$iGYxmFb/Nuz6sdqqy3eRueeESuq77RIefHnxcF4PvJmLdUF33i3qa', 'Ivan', 'Franko',      'user3@gmail.com',  'ACTIVE', 'USER'),      -- password=newrandompassword9087
+  ('$2a$10$BDDfdOrWzD6GFh7qKWxBy.zinoFBfgj.yM/4dXOYiJ0UK6l/oY92K', 'Lina', 'Kostenko',    'user4@gmail.com',  'ACTIVE', 'USER'),      -- password=newrandompassword2965
+  ('$2a$10$eJBncs6wxqce5v/vJL118uV./ga/NVMklbHgXCFE..E.i6aAMFye.', 'Ivan', 'Kotliarevsky','user5@gmail.com',  'ACTIVE', 'USER');      -- password=newrandompassword4143
 
 INSERT INTO event (title, description, status)
 VALUES ('First event', 'First event', 'ACTIVE'),
@@ -71,8 +74,11 @@ INSERT INTO favourite (user_id, dish_id)
 VALUES (4, 1),
        (5, 2);
 
-INSERT INTO friend (sender_id, recepient_id, status)
-VALUES (4, 5, 'ACCEPT');
+INSERT INTO friend (sender_id, recipient_id, status)
+VALUES (4, 5, 'FRIEND'),
+       (4, 6, 'AWAITING'),
+       (7, 4, 'FRIEND'),
+       (8, 4, 'AWAITING');
 
 INSERT INTO message (user_id, event_id, text)
 VALUES (5, 1, 'Good job');

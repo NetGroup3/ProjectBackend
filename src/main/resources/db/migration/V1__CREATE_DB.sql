@@ -46,13 +46,13 @@ CREATE TABLE public.subscribe (
 CREATE TABLE public.friend (
 	id serial4 NOT NULL,
 	sender_id int4 NOT NULL,
-	recepient_id int4 NOT NULL,
+    recipient_id int4 NOT NULL,
 	status varchar NOT NULL,
 	"timestamp" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT friend_pk PRIMARY KEY (id),
-	CONSTRAINT friend_un UNIQUE (sender_id, recepient_id),
+	CONSTRAINT friend_un UNIQUE (sender_id, recipient_id),
 	CONSTRAINT friend_fk FOREIGN KEY (sender_id) REFERENCES public.client(id) ON DELETE CASCADE,
-	CONSTRAINT friend_fk_1 FOREIGN KEY (recepient_id) REFERENCES public.client(id) ON DELETE CASCADE
+	CONSTRAINT friend_fk_1 FOREIGN KEY (recipient_id) REFERENCES public.client(id) ON DELETE CASCADE
 );
 
 CREATE TABLE public."event" (
