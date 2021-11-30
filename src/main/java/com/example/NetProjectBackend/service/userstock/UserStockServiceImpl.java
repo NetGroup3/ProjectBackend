@@ -27,7 +27,7 @@ public class UserStockServiceImpl implements UserStockService{
     public ResponseEntity<?> deleteStockElement(int userId, String ingredient) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         userStockDao.deleteStockElement(userId, ingredientId);
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("Successfully deleted from the stock");
     }
 
     @Override
