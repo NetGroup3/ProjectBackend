@@ -2,10 +2,13 @@ package com.example.NetProjectBackend.service.userstock;
 
 import com.example.NetProjectBackend.dao.KitchenwareDao;
 import com.example.NetProjectBackend.dao.UserStockDao;
+import com.example.NetProjectBackend.models.UserStockElement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -19,32 +22,39 @@ public class UserStockServiceImpl implements UserStockService{
 
 
     @Override
-    public ResponseEntity<?> readStock(int userId) {
-        return ResponseEntity.ok(userStockDao.readStock(userId));
+    public List<UserStockElement> readStock(int userId, int limit, int offset) {
+        return userStockDao.readStock(userId, limit, offset);
     }
 
     @Override
-    public ResponseEntity<?> deleteStockElement(int userId, String ingredient) {
+    public void deleteStockElement(int userId, String ingredient) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         userStockDao.deleteStockElement(userId, ingredientId);
-        return ResponseEntity.ok(200);
     }
 
     @Override
-    public ResponseEntity<?> createStockElement(int userId, String ingredient, int amount) {
+    public String createStockElement(int userId, String ingredient, int amount) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         if (ingredientId == -1)
-            return ResponseEntity.ok("Not found ingredient");
+            return "Not found ingredient";
         if (userStockDao.readStockElement(userId, ingredientId) != null)
-            return ResponseEntity.ok("Already exist in your stock");
-        return ResponseEntity.ok(userStockDao.createStockElement(userId, ingredientId, amount));
+            return "Already exist in your stock";
+        userStockDao.createStockElement(userId, ingredientId, amount);
+        return "Ok";
     }
 
     @Override
-    public ResponseEntity<?> updateStockElement(int userId, String ingredient, int amount) {
+    public String updateStockElement(int userId, String ingredient, int amount) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         if (userStockDao.readStockElement(userId, ingredientId) == null)
-            return ResponseEntity.ok("Not found in your stock");
-        return ResponseEntity.ok(userStockDao.updateStockElement(userId, ingredientId, amount));
+            return "Not found in your stock";
+        userStockDao.updateStockElement(userId, ingredientId, amount);
+        return "Ok";
+    }
+
+    @Override
+    public UserStockElement readStockElement(int userId, String ingredient) {
+        int ingredientId = userStockDao.ingredientExist(ingredient);
+        return userStockDao.readStockElement(userId, ingredientId);
     }
 }
