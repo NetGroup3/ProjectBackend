@@ -20,6 +20,7 @@ public class KitchenwareServiceImpl implements KitchenwareService {
 
     @Override
     public ResponseEntity<?> create(Kitchenware kitchenware) {
+        kitchenware.setActive(true);
         return ResponseEntity.ok(kitchenwareDao.create(kitchenware));
     }
 

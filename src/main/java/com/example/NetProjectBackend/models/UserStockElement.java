@@ -5,14 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Ingredient {
+@AllArgsConstructor
+public class UserStockElement {
     int id;
-    String title;
-    String description;
-    String category;
-    String imageId;
-    boolean active;
-    String measurement;
+    int userId;
+    Ingredient ingredient;
+    int amount;
 }
