@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.dto.MessageResponse;
-import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.dto.PasswordChangeRequest;
 import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.service.UserService;
@@ -81,9 +81,9 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeGroup passwordCG) {
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequest passwordCR) {
         try {
-            userService.updatePassword(passwordCG);
+            userService.updatePassword(passwordCR);
             log.info("Password Changed");
             return ResponseEntity.ok(200);
         } catch (Exception e) {
