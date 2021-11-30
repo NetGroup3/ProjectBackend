@@ -1,9 +1,12 @@
 package com.example.NetProjectBackend.service.userstock;
 
+import com.example.NetProjectBackend.models.UserStockElement;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface UserStockService {
-    ResponseEntity<?> readStock(int userId);
+    List<UserStockElement> readStock(int userId);
 
     ResponseEntity<?> deleteStockElement(int userId, String ingredient);
 

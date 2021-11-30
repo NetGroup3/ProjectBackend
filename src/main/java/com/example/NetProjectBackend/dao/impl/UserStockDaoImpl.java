@@ -36,7 +36,7 @@ public class UserStockDaoImpl implements UserStockDao {
     }
 
     private static Integer mapIngredientIdRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Integer(rs.getInt("id"));
+        return rs.getInt("id");
     }
 
     @Override
