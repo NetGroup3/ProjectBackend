@@ -29,7 +29,8 @@ public class UserStockController {
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> deleteStockElement(@RequestParam String ingredient) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        return ResponseEntity.ok(userStockService.deleteStockElement(userId, ingredient));
+        userStockService.deleteStockElement(userId, ingredient);
+        return ResponseEntity.ok("Successfully deleted from the stock");
     }
 
     @PostMapping("/stock")
@@ -37,7 +38,13 @@ public class UserStockController {
     public ResponseEntity<?> createStockElement(@RequestParam String ingredient,
                                                 @RequestParam int amount) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        return ResponseEntity.ok(userStockService.createStockElement(userId, ingredient, amount));
+        String result = userStockService.createStockElement(userId, ingredient, amount);
+        if (result.equals("Not found ingredient"))
+            return ResponseEntity.ok("Not found ingredient");
+        else if (result.equals("Already exist in your stock"))
+            return ResponseEntity.ok("Already exist in your stock");
+        else
+            return ResponseEntity.ok(userStockService.readStockElement(userId, ingredient));
     }
 
     @PatchMapping("/stock")
@@ -45,6 +52,10 @@ public class UserStockController {
     public ResponseEntity<?> updateStockElement(@RequestParam String ingredient,
                                                 @RequestParam int amount) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        return ResponseEntity.ok(userStockService.updateStockElement(userId, ingredient, amount));
+        String result = userStockService.updateStockElement(userId, ingredient, amount);
+        if (result.equals("Not found in your stock"))
+            return ResponseEntity.ok("Not found in your stock");
+        else
+            return ResponseEntity.ok(userStockService.readStockElement(userId, ingredient));
     }
 }

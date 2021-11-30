@@ -27,27 +27,34 @@ public class UserStockServiceImpl implements UserStockService{
     }
 
     @Override
-    public ResponseEntity<?> deleteStockElement(int userId, String ingredient) {
+    public void deleteStockElement(int userId, String ingredient) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         userStockDao.deleteStockElement(userId, ingredientId);
-        return ResponseEntity.ok("Successfully deleted from the stock");
     }
 
     @Override
-    public ResponseEntity<?> createStockElement(int userId, String ingredient, int amount) {
+    public String createStockElement(int userId, String ingredient, int amount) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         if (ingredientId == -1)
-            return ResponseEntity.ok("Not found ingredient");
+            return "Not found ingredient";
         if (userStockDao.readStockElement(userId, ingredientId) != null)
-            return ResponseEntity.ok("Already exist in your stock");
-        return ResponseEntity.ok(userStockDao.createStockElement(userId, ingredientId, amount));
+            return "Already exist in your stock";
+        userStockDao.createStockElement(userId, ingredientId, amount);
+        return "Ok";
     }
 
     @Override
-    public ResponseEntity<?> updateStockElement(int userId, String ingredient, int amount) {
+    public String updateStockElement(int userId, String ingredient, int amount) {
         int ingredientId = userStockDao.ingredientExist(ingredient);
         if (userStockDao.readStockElement(userId, ingredientId) == null)
-            return ResponseEntity.ok("Not found in your stock");
-        return ResponseEntity.ok(userStockDao.updateStockElement(userId, ingredientId, amount));
+            return "Not found in your stock";
+        userStockDao.updateStockElement(userId, ingredientId, amount);
+        return "Ok";
+    }
+
+    @Override
+    public UserStockElement readStockElement(int userId, String ingredient) {
+        int ingredientId = userStockDao.ingredientExist(ingredient);
+        return userStockDao.readStockElement(userId, ingredientId);
     }
 }
