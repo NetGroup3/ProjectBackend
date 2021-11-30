@@ -18,12 +18,9 @@ public class FriendConfig {
     @Value("${friend.delete}")
     private String delete;
 
-    @Value("${friend.select_sender_id}")
-    private String selectSenderId;
-
-    @Value("${friend.select_recipient_id}")
-    private String selectRecipientId;
+    @Value("${friend.select_friend_id}")
+    private String selectFriendId;
 
     @Value("${friend.select_request}")
-    private String selectRequestId;
+    private String selectRequest;
 }

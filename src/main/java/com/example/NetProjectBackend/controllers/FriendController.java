@@ -1,10 +1,13 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.Friend;
+import com.example.NetProjectBackend.models.dto.FriendRequest;
 import com.example.NetProjectBackend.models.dto.MessageResponse;
+import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.example.NetProjectBackend.service.friend.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,9 +21,15 @@ public class FriendController {
         this.friendService = friendService;
     }
 
+    /**
+     * {
+     *  "recipientId":
+     * }
+     */
     @PostMapping("/send-invite")
     public ResponseEntity<?> addFriend(@RequestBody Friend friend) {
         try {
+            friend.setSenderId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
             friendService.addFriend(friend);
             log.info("Invite sent");
             return ResponseEntity.ok(200);
@@ -33,6 +42,12 @@ public class FriendController {
         }
     }
 
+    /**
+     * {
+     *  request id
+     *  "id":
+     * }
+     */
     @PutMapping("/accept-invite")
     public ResponseEntity<?> acceptInvite(@RequestBody Friend friend) {
         try {
@@ -47,6 +62,12 @@ public class FriendController {
         }
     }
 
+    /**
+     * {
+     *  request id
+     *  "id":
+     * }
+     */
     @DeleteMapping("/decline-invite")
     public ResponseEntity<?> declineInvite(@RequestBody Friend friend) {
         try {
@@ -75,10 +96,17 @@ public class FriendController {
         }
     }
 
+    /**
+     * {
+     * "limit":
+     * "offset":
+     * }
+     */
     @GetMapping("/friends")
-    public ResponseEntity<?> readFriends(@RequestParam int id) {
+    public ResponseEntity<?> readFriends(@RequestBody FriendRequest friendRequest) {
         try {
-            return ResponseEntity.ok(friendService.readFriends(id));
+            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+            return ResponseEntity.ok(friendService.readFriends(friendRequest, userId));
         } catch (Exception e) {
             log.error("Read friends failed");
             return ResponseEntity
@@ -87,10 +115,17 @@ public class FriendController {
         }
     }
 
+    /**
+     * {
+     * "limit":
+     * "offset":
+     * }
+     */
     @GetMapping("/requests")
-    public ResponseEntity<?> readRequests(@RequestParam int id) {
+    public ResponseEntity<?> readRequests(@RequestBody FriendRequest friendRequest) {
         try {
-            return ResponseEntity.ok(friendService.readRequests(id));
+            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+            return ResponseEntity.ok(friendService.readRequests(friendRequest, userId));
         } catch (Exception e) {
             log.error("Read requests failed");
             return ResponseEntity

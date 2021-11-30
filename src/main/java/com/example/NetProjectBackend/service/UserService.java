@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.models.dto.MessageResponse;
-import com.example.NetProjectBackend.models.dto.PasswordChangeGroup;
+import com.example.NetProjectBackend.models.dto.PasswordChangeRequest;
 import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
@@ -123,9 +123,9 @@ public class UserService implements UserDetailsService {
                 .toString();
     }
 
-    public void checkOldPassword(PasswordChangeGroup passwordCG) throws Exception {
-        User user = readById(passwordCG.getUserId());
-        if (!passwordEncoder.matches(passwordCG.getOldPassword(), user.getPassword())) {
+    public void checkOldPassword(PasswordChangeRequest passwordCR) throws Exception {
+        User user = readById(passwordCR.getUserId());
+        if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
             throw new Exception("Incorrect password");
         }
     }
@@ -134,10 +134,10 @@ public class UserService implements UserDetailsService {
         return passwordEncoder.encode(password);
     }
 
-    public void updatePassword(PasswordChangeGroup passwordCG) throws Exception {
-        checkOldPassword(passwordCG);
-        String hashedPassword = hashPassword(passwordCG.getPassword());
-        userDao.updatePassword(hashedPassword, passwordCG.getUserId());
+    public void updatePassword(PasswordChangeRequest passwordCR) throws Exception {
+        checkOldPassword(passwordCR);
+        String hashedPassword = hashPassword(passwordCR.getPassword());
+        userDao.updatePassword(hashedPassword, passwordCR.getUserId());
     }
 
     public void changeStatus(EStatus status, int id) {
