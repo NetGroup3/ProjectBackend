@@ -19,8 +19,8 @@ public class UserStockServiceImpl implements UserStockService{
 
 
     @Override
-    public ResponseEntity<?> readStock(int userId) {
-        return ResponseEntity.ok(userStockDao.readStock(userId));
+    public ResponseEntity<?> readStock(int userId, int limit, int offset) {
+        return ResponseEntity.ok(userStockDao.readStock(userId, limit, offset));
     }
 
     @Override

@@ -40,10 +40,10 @@ public class UserStockDaoImpl implements UserStockDao {
     }
 
     @Override
-    public List<UserStockElement> readStock(int userId) {
+    public List<UserStockElement> readStock(int userId, int limit, int offset) {
         List<UserStockElement> userStockElements = null;
         try {
-            userStockElements = jdbcTemplate.query(userStockConfig.getSelect(), UserStockDaoImpl::mapUserStockRow, userId);
+            userStockElements = jdbcTemplate.query(userStockConfig.getSelect(), UserStockDaoImpl::mapUserStockRow, userId, limit, offset);
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find user with id {}", userId);
         }
