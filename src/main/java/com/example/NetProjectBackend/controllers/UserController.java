@@ -83,9 +83,7 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeGroup passwordCG) {
         try {
-            userService.checkOldPassword(passwordCG);
-            String userUpdatedPassword = userService.hashPassword(passwordCG.getPassword());
-            userService.updatePassword(userUpdatedPassword/*passwordCG.getPassword()*/, passwordCG.getUserId());
+            userService.updatePassword(passwordCG);
             log.info("Password Changed");
             return ResponseEntity.ok(200);
         } catch (Exception e) {

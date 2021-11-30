@@ -37,8 +37,10 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserDao userDao;
 
-    /**Sign Up */
-    public ResponseEntity<?> create (User user){
+    /**
+     * Sign Up
+     */
+    public ResponseEntity<?> create(User user) {
 
         if (readByEmail(user.getEmail()) != null) {
             return ResponseEntity
@@ -56,10 +58,12 @@ public class UserService implements UserDetailsService {
         return ResponseEntity.badRequest().build();
     }
 
-    /** Recovery Password */
-    public ResponseEntity<?> recovery (String email){
+    /**
+     * Recovery Password
+     */
+    public ResponseEntity<?> recovery(String email) {
         log.info(email);
-        if(readByEmail(email) == null){ //проверка на ниличие в бд
+        if (readByEmail(email) == null) { //проверка на ниличие в бд
             return ResponseEntity.notFound().build();
         } else {
             if (!mail.recoveryCode(email))
@@ -68,8 +72,10 @@ public class UserService implements UserDetailsService {
         return ResponseEntity.ok(200);
     }
 
-    /** Code processing */
-    public ResponseEntity<?> code (String param) {
+    /**
+     * Code processing
+     */
+    public ResponseEntity<?> code(String param) {
         Verify verify = mail.readByCode(param);
         if (verify == null) {
             return ResponseEntity.notFound().build();
@@ -119,9 +125,19 @@ public class UserService implements UserDetailsService {
 
     public void checkOldPassword(PasswordChangeGroup passwordCG) throws Exception {
         User user = readById(passwordCG.getUserId());
-        if(!passwordEncoder.matches(passwordCG.getOldPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(passwordCG.getOldPassword(), user.getPassword())) {
             throw new Exception("Incorrect password");
         }
+    }
+
+    public String hashPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
+    public void updatePassword(PasswordChangeGroup passwordCG) throws Exception {
+        checkOldPassword(passwordCG);
+        String hashedPassword = hashPassword(passwordCG.getPassword());
+        userDao.updatePassword(hashedPassword, passwordCG.getUserId());
     }
 
     public void changeStatus(EStatus status, int id) {
@@ -131,11 +147,6 @@ public class UserService implements UserDetailsService {
     public void changePassword(User user, String password) {
         user.setPassword(HashPassword.getHashPassword(password));
         userDao.update(user);
-    }
-
-    public User updatePassword(String password, int id) {
-        userDao.updatePassword(password, id);
-        return userDao.readById(id);
     }
 
     public List<User> getAll() {
@@ -150,8 +161,7 @@ public class UserService implements UserDetailsService {
         int endIndex = startIndex + Math.abs(req.getPerPage());
         if (startIndex > lastIndex) {
             return null;
-        }
-        else if (endIndex > lastIndex + 1) {
+        } else if (endIndex > lastIndex + 1) {
             endIndex = lastIndex + 1;
         }
         return list.subList(startIndex, endIndex);
@@ -186,14 +196,9 @@ public class UserService implements UserDetailsService {
         return userDao.readByName(name);
     }
 
-    public String hashPassword(String password){
-        String hashedPassword = passwordEncoder.encode(password);
-        return hashedPassword;
-    }
-
     public void updateUserImage(UserImage response) {
         User user = readById(response.getId());
-        if(user!=null) {
+        if (user != null) {
             user.setImageId(response.getImageId());
             update(user);
         }
@@ -220,7 +225,7 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseEntity<?> readPage(int limit, int offset, String role) {
-            if (limit > 100) limit = 100;
-            return ResponseEntity.ok(userDao.readPage(limit, offset, role));
+        if (limit > 100) limit = 100;
+        return ResponseEntity.ok(userDao.readPage(limit, offset, role));
     }
 }
