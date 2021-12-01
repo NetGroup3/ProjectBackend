@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.service.jwt;
 
-import com.example.NetProjectBackend.service.UserDetailsServiceImpl;
+import com.example.NetProjectBackend.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

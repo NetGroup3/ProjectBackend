@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.service.UserDetailsImpl;
-import com.example.NetProjectBackend.service.userstock.UserStockService;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
+import com.example.NetProjectBackend.service.UserStockService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;

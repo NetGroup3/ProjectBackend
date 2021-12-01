@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.dao;
+package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.Friend;
 import com.example.NetProjectBackend.models.dto.FriendRequestDto;
@@ -6,13 +6,14 @@ import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 
 import java.util.List;
 
-public interface FriendDao {
+public interface FriendService {
+    void addFriend(Friend friend);
 
-    void create(Friend friend);
+    void acceptInvite(Friend friend);
 
-    void update(String status, int id);
+    void declineInvite(int id);
 
-    void delete(int id);
+    void removeFriend(int id);
 
     List<FriendResponseDto> readFriends(FriendRequestDto friendRequestDto, int id);
 

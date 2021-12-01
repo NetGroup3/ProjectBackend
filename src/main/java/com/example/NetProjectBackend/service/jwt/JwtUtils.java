@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.service.jwt;
 
 
-import com.example.NetProjectBackend.service.UserDetailsImpl;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;

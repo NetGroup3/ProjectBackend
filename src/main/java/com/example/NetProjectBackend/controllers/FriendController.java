@@ -1,10 +1,9 @@
 package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequest;
-import com.example.NetProjectBackend.models.dto.MessageResponse;
-import com.example.NetProjectBackend.service.UserDetailsImpl;
-import com.example.NetProjectBackend.service.friend.FriendService;
+import com.example.NetProjectBackend.models.dto.FriendRequestDto;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
+import com.example.NetProjectBackend.service.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,19 +26,10 @@ public class FriendController {
      * }
      */
     @PostMapping("/send-invite")
-    public ResponseEntity<?> addFriend(@RequestBody Friend friend) {
-        try {
-            friend.setSenderId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            friendService.addFriend(friend);
-            log.info("Invite sent");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Failed to send invitation");
-            log.error(String.valueOf(friend));
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Failed to send invitation "));
-        }
+    public void addFriend(@RequestBody Friend friend) {
+        friend.setSenderId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        friendService.addFriend(friend);
+        log.info("Invite sent");
     }
 
     /**
@@ -49,17 +39,9 @@ public class FriendController {
      * }
      */
     @PutMapping("/accept-invite")
-    public ResponseEntity<?> acceptInvite(@RequestBody Friend friend) {
-        try {
-            friendService.acceptInvite(friend);
-            log.info("Invite accepted");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Accept invite failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Accept invite failed"));
-        }
+    public void acceptInvite(@RequestBody Friend friend) {
+        friendService.acceptInvite(friend);
+        log.info("Invite accepted");
     }
 
     /**
@@ -69,31 +51,15 @@ public class FriendController {
      * }
      */
     @DeleteMapping("/decline-invite")
-    public ResponseEntity<?> declineInvite(@RequestBody Friend friend) {
-        try {
-            friendService.declineInvite(friend.getId());
-            log.info("Invite declined");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Decline invite failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Decline invite failed"));
-        }
+    public void declineInvite(@RequestBody Friend friend) {
+        friendService.declineInvite(friend.getId());
+        log.info("Invite declined");
     }
 
     @DeleteMapping("/remove-friend")
-    public ResponseEntity<?> removeFriend(@RequestBody Friend friend) {
-        try {
+    public void removeFriend(@RequestBody Friend friend) {
             friendService.removeFriend(friend.getId());
             log.info("Friend removed");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Remove friend failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Remove friend failed"));
-        }
     }
 
     /**
@@ -103,16 +69,9 @@ public class FriendController {
      * }
      */
     @GetMapping("/friends")
-    public ResponseEntity<?> readFriends(@RequestBody FriendRequest friendRequest) {
-        try {
-            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            return ResponseEntity.ok(friendService.readFriends(friendRequest, userId));
-        } catch (Exception e) {
-            log.error("Read friends failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: read friends failed"));
-        }
+    public ResponseEntity<?> readFriends(@RequestBody FriendRequestDto friendRequestDto) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(friendService.readFriends(friendRequestDto, userId));
     }
 
     /**
@@ -122,16 +81,9 @@ public class FriendController {
      * }
      */
     @GetMapping("/requests")
-    public ResponseEntity<?> readRequests(@RequestBody FriendRequest friendRequest) {
-        try {
-            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            return ResponseEntity.ok(friendService.readRequests(friendRequest, userId));
-        } catch (Exception e) {
-            log.error("Read requests failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: read requests failed"));
-        }
+    public ResponseEntity<?> readRequests(@RequestBody FriendRequestDto friendRequestDto) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(friendService.readRequests(friendRequestDto, userId));
     }
 
 }
