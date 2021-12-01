@@ -27,15 +27,15 @@ public class UserStockServiceImpl implements UserStockService{
     }
 
     @Override
-    public void deleteStockElement(int userId, int id) {
-        userStockDao.deleteStockElement(userId, id);
+    public String deleteStockElement(int userId, int ingredientId) {
+        if (userStockDao.readStockElement(userId, ingredientId) == null)
+            return "Not found";
+        userStockDao.deleteStockElement(userId, ingredientId);
+        return "Ok";
     }
 
     @Override
-    public String createStockElement(int userId, String ingredient, int amount) {
-        int ingredientId = userStockDao.ingredientExist(ingredient);
-        if (ingredientId == -1)
-            return "Not found ingredient";
+    public String createStockElement(int userId, int ingredientId, int amount) {
         if (userStockDao.readStockElement(userId, ingredientId) != null)
             return "Already exist in your stock";
         userStockDao.createStockElement(userId, ingredientId, amount);
@@ -43,17 +43,15 @@ public class UserStockServiceImpl implements UserStockService{
     }
 
     @Override
-    public String updateStockElement(int userId, String ingredient, int amount) {
-        int ingredientId = userStockDao.ingredientExist(ingredient);
+    public String updateStockElement(int userId, int ingredientId, int amount) {
         if (userStockDao.readStockElement(userId, ingredientId) == null)
-            return "Not found in your stock";
+            return "Not found";
         userStockDao.updateStockElement(userId, ingredientId, amount);
         return "Ok";
     }
 
     @Override
-    public UserStockElement readStockElement(int userId, String ingredient) {
-        int ingredientId = userStockDao.ingredientExist(ingredient);
+    public UserStockElement readStockElement(int userId, int ingredientId) {
         return userStockDao.readStockElement(userId, ingredientId);
     }
 }
