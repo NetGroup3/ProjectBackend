@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.ingredient;
+package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.Ingredient;
 

@@ -4,8 +4,8 @@ import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
 import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
-import com.example.NetProjectBackend.service.UserDetailsImpl;
-import com.example.NetProjectBackend.service.UserService;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
+import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +22,12 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     public ResponseEntity<User> getUserById(@PathVariable int id) {
         log.info("users_GET");
-        User user = userService.readById(id);
+        User user = userServiceImpl.readById(id);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -38,7 +38,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, path = "/")
     public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
         log.info("users_GET");
-        User user = userService.readByEmail(email);
+        User user = userServiceImpl.readByEmail(email);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -48,13 +48,13 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.create(user));
+        return ResponseEntity.ok(userServiceImpl.create(user));
     }
 
     @PutMapping
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         log.info("users_PUT");
-        User userUpdated = userService.update(user);
+        User userUpdated = userServiceImpl.update(user);
         if (userUpdated == null) {
             return ResponseEntity.notFound().build();
         }
@@ -64,7 +64,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable int id) {
         log.info("users_DELETE");
-        User userDeleted = userService.delete(id);
+        User userDeleted = userServiceImpl.delete(id);
         if (userDeleted == null) {
             return ResponseEntity.notFound().build();
         }
@@ -74,7 +74,7 @@ public class UserController {
     @GetMapping("/get")
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
-        users = userService.getAll();
+        users = userServiceImpl.getAll();
         log.info(String.valueOf(users));
         if (users == null) {
             return ResponseEntity.notFound().build();
@@ -86,7 +86,7 @@ public class UserController {
     public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {
         try {
             passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            userService.updatePassword(passwordCR);
+            userServiceImpl.updatePassword(passwordCR);
             log.info("Password Changed");
             return ResponseEntity.ok(200);
         } catch (Exception e) {
@@ -100,16 +100,16 @@ public class UserController {
     @PutMapping("/personal-information")
     public void updatePersonalInformation(@RequestBody User userResponse) {
         log.info("good");
-        User user = userService.readById(userResponse.getId());
+        User user = userServiceImpl.readById(userResponse.getId());
         user.setFirstname(userResponse.getFirstname());
         user.setLastname(userResponse.getLastname());
-        userService.update(user);
+        userServiceImpl.update(user);
     }
 
     @PutMapping("/user-image")
     public void updateImage(@RequestBody UserImageDto response) {
         log.debug("Controller update user image");
-        userService.updateUserImage(response);
+        userServiceImpl.updateUserImage(response);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.DishConfig;
+import com.example.NetProjectBackend.confuguration.query.DishQuery;
 import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.*;
 import com.example.NetProjectBackend.models.dto.dish.*;
@@ -24,7 +24,7 @@ import java.util.List;
 public class DishDaoImpl implements DishDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final DishConfig q;
+    private final DishQuery q;
 
     private static Dish mapDishRow(ResultSet rs, int rowNum) throws SQLException {
         return new Dish(

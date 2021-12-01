@@ -1,7 +1,6 @@
-package com.example.NetProjectBackend.service;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.models.entity.User;
-import com.example.NetProjectBackend.models.enums.ERole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;

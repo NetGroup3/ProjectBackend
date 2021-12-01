@@ -2,7 +2,7 @@ package com.example.NetProjectBackend.confuguration;
 
 import com.example.NetProjectBackend.service.jwt.AuthEntryPointJwt;
 import com.example.NetProjectBackend.service.jwt.AuthTokenFilter;
-import com.example.NetProjectBackend.service.UserDetailsServiceImpl;
+import com.example.NetProjectBackend.service.impl.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

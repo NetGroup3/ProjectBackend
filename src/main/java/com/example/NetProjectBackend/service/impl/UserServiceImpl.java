@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
@@ -9,7 +9,7 @@ import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
-import com.example.NetProjectBackend.service.mail.Mail;
+import com.example.NetProjectBackend.service.Mail;
 import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import java.util.Random;
 @Transactional
 @Slf4j
 @AllArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService {
 
     private final Mail mail;
     private final PasswordEncoder passwordEncoder;

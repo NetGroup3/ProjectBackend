@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.userstock;
+package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.UserStockElement;
 

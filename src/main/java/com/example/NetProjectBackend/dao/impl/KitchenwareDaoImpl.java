@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.KitchenwareConfig;
+import com.example.NetProjectBackend.confuguration.query.KitchenwareQuery;
 import com.example.NetProjectBackend.dao.KitchenwareDao;
 import com.example.NetProjectBackend.models.Kitchenware;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class KitchenwareDaoImpl implements KitchenwareDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final KitchenwareConfig q;
+    private final KitchenwareQuery q;
 
     private static Kitchenware mapKitchenwareRow(ResultSet rs, int rowNum) throws SQLException {
         return new Kitchenware(

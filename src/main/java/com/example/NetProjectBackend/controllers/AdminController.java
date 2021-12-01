@@ -3,7 +3,7 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
-import com.example.NetProjectBackend.service.UserService;
+import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 public class AdminController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @PostMapping("/create")
     public ResponseEntity<?> createModerator(@RequestBody User user) {
         user.setRole(ERole.MODERATOR.getAuthority());
-        return ResponseEntity.ok(userService.createModerator(user));
+        return ResponseEntity.ok(userServiceImpl.createModerator(user));
     }
 
     @PutMapping("/update")
     public ResponseEntity<User> updateModerator(@RequestBody User user) {
-        User userUpdated = userService.update(user);
+        User userUpdated = userServiceImpl.update(user);
         if (userUpdated == null) {
             return ResponseEntity.notFound().build();
         }
@@ -34,7 +34,7 @@ public class AdminController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteModerator(@PathVariable int id) {
-        User userDeleted = userService.delete(id);
+        User userDeleted = userServiceImpl.delete(id);
         if (userDeleted == null) {
             return ResponseEntity.notFound().build();
         }
@@ -44,7 +44,7 @@ public class AdminController {
     @PostMapping("/moderators")
     public ResponseEntity<List<User>> getModerators(@RequestBody UserListRequest req) {
         req.setSearchRole("moderator");
-        List<User> moderators = userService.getAllSuitable(req);
+        List<User> moderators = userServiceImpl.getAllSuitable(req);
         if (moderators == null) {
             return ResponseEntity.notFound().build();
         }

@@ -1,15 +1,12 @@
-package com.example.NetProjectBackend.service;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.entity.User;
-import com.example.NetProjectBackend.models.enums.ERole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 @Service
 @AllArgsConstructor

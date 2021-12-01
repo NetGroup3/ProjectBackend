@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.IngredientConfig;
+import com.example.NetProjectBackend.confuguration.query.IngredientQuery;
 import com.example.NetProjectBackend.dao.IngredientDao;
 import com.example.NetProjectBackend.models.Ingredient;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class IngredientDaoImpl implements IngredientDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final IngredientConfig q;
+    private final IngredientQuery q;
 
     private static Ingredient mapIngredientRow(ResultSet rs, int rowNum) throws SQLException {
         return new Ingredient(

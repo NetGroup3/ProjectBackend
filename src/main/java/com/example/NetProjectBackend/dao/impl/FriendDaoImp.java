@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.FriendConfig;
+import com.example.NetProjectBackend.confuguration.query.FriendQuery;
 import com.example.NetProjectBackend.dao.FriendDao;
 import com.example.NetProjectBackend.models.Friend;
 import com.example.NetProjectBackend.models.dto.FriendRequestDto;
@@ -22,7 +22,7 @@ import java.util.List;
 public class FriendDaoImp implements FriendDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final FriendConfig q;
+    private final FriendQuery q;
 
     private static FriendResponseDto mapFriendRow(ResultSet rs, int rowNum) throws SQLException {
         return new FriendResponseDto(

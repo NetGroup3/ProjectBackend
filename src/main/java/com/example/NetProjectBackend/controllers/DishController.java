@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.entity.Label;
-import com.example.NetProjectBackend.service.dish.DishService;
+import com.example.NetProjectBackend.service.DishService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

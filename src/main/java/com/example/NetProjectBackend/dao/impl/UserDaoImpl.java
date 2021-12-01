@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.UserConfig;
+import com.example.NetProjectBackend.confuguration.query.UserQuery;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.UserListRequest.SortProps;
@@ -26,7 +26,7 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserConfig q;
+    private final UserQuery q;
 
     private static User mapClientRow(ResultSet rs, int rowNum) throws SQLException {
         return new User(

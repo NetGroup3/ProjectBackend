@@ -1,7 +1,8 @@
-package com.example.NetProjectBackend.service.userstock;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserStockDao;
 import com.example.NetProjectBackend.models.UserStockElement;
+import com.example.NetProjectBackend.service.UserStockService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,7 @@ import java.util.List;
 @Service
 @Transactional
 @Slf4j
-public class UserStockServiceImpl implements UserStockService{
+public class UserStockServiceImpl implements UserStockService {
     private final UserStockDao userStockDao;
 
     public UserStockServiceImpl(UserStockDao userStockDao) {

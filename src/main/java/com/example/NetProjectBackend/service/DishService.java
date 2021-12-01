@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.dish;
+package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;

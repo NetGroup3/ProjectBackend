@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.service.friend;
+package com.example.NetProjectBackend.service;
 
 import com.example.NetProjectBackend.models.Friend;
 import com.example.NetProjectBackend.models.dto.FriendRequestDto;

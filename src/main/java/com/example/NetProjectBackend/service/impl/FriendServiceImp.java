@@ -1,10 +1,11 @@
-package com.example.NetProjectBackend.service.friend;
+package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.FriendDao;
 import com.example.NetProjectBackend.models.Friend;
 import com.example.NetProjectBackend.models.dto.FriendRequestDto;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import com.example.NetProjectBackend.models.enums.EFriendStatus;
+import com.example.NetProjectBackend.service.FriendService;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
