@@ -1,8 +1,8 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.dto.MessageResponse;
-import com.example.NetProjectBackend.models.dto.PasswordChangeRequest;
-import com.example.NetProjectBackend.models.dto.UserImage;
+import com.example.NetProjectBackend.models.dto.MessageResponseDto;
+import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
+import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserService;
@@ -83,7 +83,7 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequest passwordCR) {
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {
         try {
             passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
             userService.updatePassword(passwordCR);
@@ -93,7 +93,7 @@ public class UserController {
             log.error("Incorrect password");
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Incorrect password"));
+                    .body(new MessageResponseDto("Error: Incorrect password"));
         }
     }
 
@@ -108,7 +108,7 @@ public class UserController {
     }
 
     @PutMapping("/user-image")
-    public void updateImage(@RequestBody UserImage response) {
+    public void updateImage(@RequestBody UserImageDto response) {
         log.debug("Controller update user image");
         userService.updateUserImage(response);
     }

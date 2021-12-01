@@ -2,8 +2,8 @@ package com.example.NetProjectBackend.service.friend;
 
 import com.example.NetProjectBackend.dao.FriendDao;
 import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequest;
-import com.example.NetProjectBackend.models.dto.FriendResponse;
+import com.example.NetProjectBackend.models.dto.FriendRequestDto;
+import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import com.example.NetProjectBackend.models.enums.EFriendStatus;
 import org.springframework.stereotype.Service;
 
@@ -43,14 +43,14 @@ public class FriendServiceImp implements FriendService {
     }
 
     @Override
-    public List<FriendResponse> readFriends(FriendRequest friendRequest, int id) {
-        friendRequest.setStatus(EFriendStatus.FRIEND.name());
-        return friendDao.readFriends(friendRequest, id);
+    public List<FriendResponseDto> readFriends(FriendRequestDto friendRequestDto, int id) {
+        friendRequestDto.setStatus(EFriendStatus.FRIEND.name());
+        return friendDao.readFriends(friendRequestDto, id);
     }
 
     @Override
-    public List<FriendResponse> readRequests(FriendRequest friendRequest, int id) {
-        friendRequest.setStatus(EFriendStatus.AWAITING.name());
-        return friendDao.readRequests(friendRequest, id);
+    public List<FriendResponseDto> readRequests(FriendRequestDto friendRequestDto, int id) {
+        friendRequestDto.setStatus(EFriendStatus.AWAITING.name());
+        return friendDao.readRequests(friendRequestDto, id);
     }
 }

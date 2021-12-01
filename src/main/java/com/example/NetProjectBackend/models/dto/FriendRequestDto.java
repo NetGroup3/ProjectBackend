@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FriendResponse {
-    private int id;
+public class FriendRequestDto {
+    private String status;
+    private int limit;
+    private int offset;
 }

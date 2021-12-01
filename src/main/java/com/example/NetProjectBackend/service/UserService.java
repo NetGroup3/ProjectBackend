@@ -3,9 +3,9 @@ package com.example.NetProjectBackend.service;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
-import com.example.NetProjectBackend.models.dto.MessageResponse;
-import com.example.NetProjectBackend.models.dto.PasswordChangeRequest;
-import com.example.NetProjectBackend.models.dto.UserImage;
+import com.example.NetProjectBackend.models.dto.MessageResponseDto;
+import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
+import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
         if (readByEmail(user.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is exist"));
+                    .body(new MessageResponseDto("Error: Username is exist"));
         }
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.NOT_VERIFY.name());
@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
         int id = userDao.create(user);
         if (id > 0) {
             mail.confirmationCode(user.getEmail());
-            return ResponseEntity.ok(new MessageResponse("User CREATED"));
+            return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
         }
         return ResponseEntity.badRequest().build();
     }
@@ -123,7 +123,7 @@ public class UserService implements UserDetailsService {
                 .toString();
     }
 
-    public void checkOldPassword(PasswordChangeRequest passwordCR) throws Exception {
+    public void checkOldPassword(PasswordChangeRequestDto passwordCR) throws Exception {
         User user = readById(passwordCR.getUserId());
         if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
             throw new Exception("Incorrect password");
@@ -134,7 +134,7 @@ public class UserService implements UserDetailsService {
         return passwordEncoder.encode(password);
     }
 
-    public void updatePassword(PasswordChangeRequest passwordCR) throws Exception {
+    public void updatePassword(PasswordChangeRequestDto passwordCR) throws Exception {
         checkOldPassword(passwordCR);
         String hashedPassword = hashPassword(passwordCR.getPassword());
         userDao.updatePassword(hashedPassword, passwordCR.getUserId());
@@ -196,7 +196,7 @@ public class UserService implements UserDetailsService {
         return userDao.readByName(name);
     }
 
-    public void updateUserImage(UserImage response) {
+    public void updateUserImage(UserImageDto response) {
         User user = readById(response.getId());
         if (user != null) {
             user.setImageId(response.getImageId());
@@ -208,7 +208,7 @@ public class UserService implements UserDetailsService {
         if (readByEmail(user.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is exist"));
+                    .body(new MessageResponseDto("Error: Username is exist"));
         }
 
         user.setRole(ERole.MODERATOR.getAuthority());
@@ -219,7 +219,7 @@ public class UserService implements UserDetailsService {
 
         if (userDao.create(user) > 0) {
             mail.sendModeratorPassword(password, user.getEmail());
-            return ResponseEntity.ok(new MessageResponse("Moderator CREATED"));
+            return ResponseEntity.ok(new MessageResponseDto("Moderator CREATED"));
         }
         return ResponseEntity.badRequest().build();
     }

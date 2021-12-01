@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.models.dto;
 
-public class SignupReques {
+public class SignupRequestDto {
     private String password;
     private String firstname;
     private String lastname;

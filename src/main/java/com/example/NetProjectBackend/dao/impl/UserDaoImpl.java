@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.confuguration.query.UserConfig;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.UserListRequest.SortProps;
-import com.example.NetProjectBackend.models.dto.UserView;
+import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import lombok.AllArgsConstructor;
@@ -215,8 +215,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<UserView> readPage(int limit, int offset, String role) {
-        List<UserView> users = null;
+    public List<UserDto> readPage(int limit, int offset, String role) {
+        List<UserDto> users = null;
         try {
             users = jdbcTemplate.query(q.getSelectPage(), UserDaoImpl::mapUserRow, role, limit, offset);
         }
@@ -227,8 +227,8 @@ public class UserDaoImpl implements UserDao {
         return users;
     }
 
-    private static UserView mapUserRow(ResultSet rs, int rowNum) throws SQLException {
-        return new UserView(
+    private static UserDto mapUserRow(ResultSet rs, int rowNum) throws SQLException {
+        return new UserDto(
                 rs.getInt("id"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),

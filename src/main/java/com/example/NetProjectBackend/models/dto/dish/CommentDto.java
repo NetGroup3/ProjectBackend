@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentView {
+public class CommentDto {
     int id;
     int userId;
     String firstname;

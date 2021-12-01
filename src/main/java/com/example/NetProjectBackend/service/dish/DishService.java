@@ -17,23 +17,23 @@ public interface DishService {
 
     int setActive(int id, boolean active);
 
-    List<DishIngredient> addIngredient (DishIngredient dishIngredient);
+    List<DishIngredientDto> addIngredient (DishIngredientDto dishIngredientDto);
 
-    List<DishIngredient> removeIngredient(int id);
+    List<DishIngredientDto> removeIngredient(int id);
 
-    List<DishKitchenware> addKitchenware(DishKitchenware dishKitchenware);
+    List<DishKitchenwareDto> addKitchenware(DishKitchenwareDto dishKitchenwareDto);
 
-    List<DishKitchenware> removeKitchenware(int id);
+    List<DishKitchenwareDto> removeKitchenware(int id);
 
-    List<DishFormat> readList(int limit, int page, boolean desc, String title, String category, Integer userId);
+    List<DishFormatDto> readList(int limit, int page, boolean desc, String title, String category, Integer userId);
 
-    DishView getDish(int id, Integer userId);
+    DishDto getDish(int id, Integer userId);
 
-    List<DishRecommend> getRecommend(int userId, int limit, int page);
+    List<DishRecommendDto> getRecommend(int userId, int limit, int page);
 
     List<Dish> getWithIngredients(List<Integer> values, int limit, int page);
 
-    List<DishFormat> getFavourite(int userId);
+    List<DishFormatDto> getFavourite(int userId);
 
     boolean addFavourite(int userId, int dishId);
 
@@ -53,7 +53,7 @@ public interface DishService {
 
     List<Label> deleteLabel(int id);
 
-    List<DishLabel> addLabel(DishLabel label);
+    List<DishLabelDto> addLabel(DishLabelDto label);
 
-    List<DishLabel> removeLabel(int id);
+    List<DishLabelDto> removeLabel(int id);
 }

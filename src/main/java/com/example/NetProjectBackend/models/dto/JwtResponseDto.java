@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-public class JwtResponse {
+public class JwtResponseDto {
     private String token;
     private String type = "Bearer";
     private int id;
@@ -17,7 +17,7 @@ public class JwtResponse {
     private String imageId;
     private String role;
 
-    public JwtResponse(String token, int id, String email, String firstname, String lastname, String status,  OffsetDateTime timestamp, String imageId,String role)
+    public JwtResponseDto(String token, int id, String email, String firstname, String lastname, String status, OffsetDateTime timestamp, String imageId, String role)
     {
         this.token = token;
         this.id = id;

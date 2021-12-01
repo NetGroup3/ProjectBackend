@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PasswordChangeRequest {
-    private int userId;
-    private String password;
-    private String oldPassword;
-
+public class FriendResponseDto {
+    private int id;
 }

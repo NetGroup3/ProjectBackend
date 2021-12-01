@@ -44,39 +44,39 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public List<DishIngredient> addIngredient(DishIngredient dishIngredient) {
-        List<DishIngredient> check = dishDao.checkIngredient(dishIngredient.getDish(), dishIngredient.getIngredient());
+    public List<DishIngredientDto> addIngredient(DishIngredientDto dishIngredientDto) {
+        List<DishIngredientDto> check = dishDao.checkIngredient(dishIngredientDto.getDish(), dishIngredientDto.getIngredient());
         if (check.size() > 0)
-            return dishDao.updateIngredient(check.get(0).getId(), dishIngredient.getAmount());
-        return dishDao.createDishIngredient(dishIngredient);
+            return dishDao.updateIngredient(check.get(0).getId(), dishIngredientDto.getAmount());
+        return dishDao.createDishIngredient(dishIngredientDto);
 
     }
 
     @Override
-    public List<DishIngredient> removeIngredient(int id) {
+    public List<DishIngredientDto> removeIngredient(int id) {
         return dishDao.removeIngredient(id);
     }
 
     @Override
-    public List<DishKitchenware> addKitchenware(DishKitchenware dishKitchenware) {
-        List<DishKitchenware> kitchenware = dishDao.checkKitchenware(dishKitchenware);
+    public List<DishKitchenwareDto> addKitchenware(DishKitchenwareDto dishKitchenwareDto) {
+        List<DishKitchenwareDto> kitchenware = dishDao.checkKitchenware(dishKitchenwareDto);
         if (kitchenware.size() > 1) return kitchenware;
-        return dishDao.createDishKitchenware(dishKitchenware);
+        return dishDao.createDishKitchenware(dishKitchenwareDto);
 
     }
 
     @Override
-    public List<DishKitchenware> removeKitchenware(int id) {
+    public List<DishKitchenwareDto> removeKitchenware(int id) {
         return dishDao.removeKitchenware(id);
     }
 
     @Override
-    public List<DishFormat> readList(int limit, int page, boolean desc, String title, String category, Integer userId) {
+    public List<DishFormatDto> readList(int limit, int page, boolean desc, String title, String category, Integer userId) {
         if (title == null) title = "%";
         else title = "%"+title+"%";
         if (category == null) category = "%";
         else category = "%"+category+"%";
-        DishSearch search = new DishSearch(
+        DishSearchDto search = new DishSearchDto(
                 limit,
                 page,
                 limit*page,
@@ -88,19 +88,19 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public DishView getDish(int id, Integer userId) {
-        DishView dishView = new DishView(
+    public DishDto getDish(int id, Integer userId) {
+        DishDto dishDto = new DishDto(
                 dishDao.soloReadDish(id, userId),
                 dishDao.readIngredientsRelation(id),
                 dishDao.readKitchenwareRelation(id),
                 dishDao.readCommentRelation(id),
                 dishDao.readLabelRelation(id)
         );
-        return dishView;
+        return dishDto;
     }
 
     @Override
-    public List<DishRecommend> getRecommend(int userId, int limit, int page) {
+    public List<DishRecommendDto> getRecommend(int userId, int limit, int page) {
         return dishDao.getRecommend(userId, limit, limit*page);
     }
 
@@ -113,7 +113,7 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public List<DishFormat> getFavourite (int userId) {
+    public List<DishFormatDto> getFavourite (int userId) {
         return dishDao.getFavourite(userId);
     }
 
@@ -164,12 +164,12 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public List<DishLabel> addLabel(DishLabel label) {
+    public List<DishLabelDto> addLabel(DishLabelDto label) {
         return dishDao.addLabel(label);
     }
 
     @Override
-    public List<DishLabel> removeLabel(int id) {
+    public List<DishLabelDto> removeLabel(int id) {
         return dishDao.removeLabel(id);
     }
 }

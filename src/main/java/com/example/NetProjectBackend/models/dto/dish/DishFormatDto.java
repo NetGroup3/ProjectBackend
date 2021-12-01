@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DishRecommend {
+public class DishFormatDto {
     int id;
     String title;
     String description;
@@ -17,6 +17,5 @@ public class DishRecommend {
     String imageId;
     boolean active;
     int likes;
-    int count;
     boolean favourite;
 }

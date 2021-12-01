@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models.dto;
+package com.example.NetProjectBackend.models.dto.dish;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserImage {
-    private int id;
-    private String imageId;
+public class DishCommentDto {
+    int id;
 }

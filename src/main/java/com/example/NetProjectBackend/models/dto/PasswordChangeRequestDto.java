@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FriendRequest {
-    private String status;
-    private int limit;
-    private int offset;
+public class PasswordChangeRequestDto {
+    private int userId;
+    private String password;
+    private String oldPassword;
+
 }

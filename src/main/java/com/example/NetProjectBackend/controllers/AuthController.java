@@ -1,8 +1,8 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.dto.JwtResponse;
-import com.example.NetProjectBackend.models.dto.LoginRequest;
-import com.example.NetProjectBackend.models.dto.MessageResponse;
+import com.example.NetProjectBackend.models.dto.JwtResponseDto;
+import com.example.NetProjectBackend.models.dto.LoginRequestDto;
+import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserService;
@@ -34,12 +34,12 @@ public class AuthController {
     public ResponseEntity<?> authUser(@RequestBody String  login) {
         log.info("LOGIN");
         Gson g = new Gson();
-        LoginRequest loginRequest = g.fromJson(login, LoginRequest.class);
+        LoginRequestDto loginRequestDto = g.fromJson(login, LoginRequestDto.class);
 
-        log.info(loginRequest.getUsername());
+        log.info(loginRequestDto.getUsername());
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(),
-                loginRequest.getPassword());
+                loginRequestDto.getUsername(),
+                loginRequestDto.getPassword());
         log.info(String.valueOf(token));
         Authentication authentication = authenticationManager
                 .authenticate(token);
@@ -49,7 +49,7 @@ public class AuthController {
         log.info(jwt);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         log.info(userDetails.toString());
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return ResponseEntity.ok(new JwtResponseDto(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getFirstname(),
@@ -66,11 +66,11 @@ public class AuthController {
         if (userService.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is exist"));
+                    .body(new MessageResponseDto("Error: Username is exist"));
         }
         signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         userService.create(signupRequest);
-        return ResponseEntity.ok(new MessageResponse("User CREATED"));
+        return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
