@@ -27,19 +27,10 @@ public class FriendController {
      * }
      */
     @PostMapping("/send-invite")
-    public ResponseEntity<?> addFriend(@RequestBody Friend friend) {
-        try {
-            friend.setSenderId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            friendService.addFriend(friend);
-            log.info("Invite sent");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Failed to send invitation");
-            log.error(String.valueOf(friend));
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Failed to send invitation "));
-        }
+    public void addFriend(@RequestBody Friend friend) {
+        friend.setSenderId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        friendService.addFriend(friend);
+        log.info("Invite sent");
     }
 
     /**
@@ -49,17 +40,9 @@ public class FriendController {
      * }
      */
     @PutMapping("/accept-invite")
-    public ResponseEntity<?> acceptInvite(@RequestBody Friend friend) {
-        try {
-            friendService.acceptInvite(friend);
-            log.info("Invite accepted");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Accept invite failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Accept invite failed"));
-        }
+    public void acceptInvite(@RequestBody Friend friend) {
+        friendService.acceptInvite(friend);
+        log.info("Invite accepted");
     }
 
     /**
@@ -69,31 +52,15 @@ public class FriendController {
      * }
      */
     @DeleteMapping("/decline-invite")
-    public ResponseEntity<?> declineInvite(@RequestBody Friend friend) {
-        try {
-            friendService.declineInvite(friend.getId());
-            log.info("Invite declined");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Decline invite failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Decline invite failed"));
-        }
+    public void declineInvite(@RequestBody Friend friend) {
+        friendService.declineInvite(friend.getId());
+        log.info("Invite declined");
     }
 
     @DeleteMapping("/remove-friend")
-    public ResponseEntity<?> removeFriend(@RequestBody Friend friend) {
-        try {
+    public void removeFriend(@RequestBody Friend friend) {
             friendService.removeFriend(friend.getId());
             log.info("Friend removed");
-            return ResponseEntity.ok(200);
-        } catch (Exception e) {
-            log.error("Remove friend failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Remove friend failed"));
-        }
     }
 
     /**
@@ -104,15 +71,8 @@ public class FriendController {
      */
     @GetMapping("/friends")
     public ResponseEntity<?> readFriends(@RequestBody FriendRequestDto friendRequestDto) {
-        try {
-            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            return ResponseEntity.ok(friendService.readFriends(friendRequestDto, userId));
-        } catch (Exception e) {
-            log.error("Read friends failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: read friends failed"));
-        }
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(friendService.readFriends(friendRequestDto, userId));
     }
 
     /**
@@ -123,15 +83,8 @@ public class FriendController {
      */
     @GetMapping("/requests")
     public ResponseEntity<?> readRequests(@RequestBody FriendRequestDto friendRequestDto) {
-        try {
-            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            return ResponseEntity.ok(friendService.readRequests(friendRequestDto, userId));
-        } catch (Exception e) {
-            log.error("Read requests failed");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: read requests failed"));
-        }
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(friendService.readRequests(friendRequestDto, userId));
     }
 
 }

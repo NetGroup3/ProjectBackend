@@ -1,18 +1,19 @@
 package com.example.NetProjectBackend.service.kitchenware;
 
 import com.example.NetProjectBackend.models.Kitchenware;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface KitchenwareService {
-    ResponseEntity<?> create(Kitchenware kitchenware);
+    int create(Kitchenware kitchenware);
 
-    ResponseEntity<?> read(int id);
+    Kitchenware read(int id);
 
-    ResponseEntity<?> update(Kitchenware kitchenware);
+    void update(Kitchenware kitchenware);
 
-    ResponseEntity<?> delete(int id);
+    void delete(int id);
 
-    ResponseEntity<?> readPage(int limit, int offset);
+    List<Kitchenware> readPage(int limit, int offset);
 
-    ResponseEntity<?> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
+    List<Kitchenware> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
 }

@@ -24,20 +24,17 @@ public class KitchenwareController {
     @PostMapping("/kitchenware")
     public ResponseEntity<?> createKitchenware(@RequestBody Kitchenware kitchenware) {
         kitchenware.setActive(true);
-        kitchenwareService.create(kitchenware);
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok(kitchenwareService.create(kitchenware));
     }
 
     @PutMapping("/kitchenware")
-    public ResponseEntity<?> updateKitchenware(@RequestBody Kitchenware kitchenware) {
+    public void updateKitchenware(@RequestBody Kitchenware kitchenware) {
         kitchenwareService.update(kitchenware);
-        return ResponseEntity.ok(200);
     }
 
     @DeleteMapping("/kitchenware")
-    public ResponseEntity<?> deleteKitchenware(@RequestParam int id) {
+    public void deleteKitchenware(@RequestParam int id) {
         kitchenwareService.delete(id);
-        return ResponseEntity.ok(200);
     }
 
     @GetMapping("/kitchenware/page")

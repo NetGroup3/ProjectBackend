@@ -48,7 +48,7 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> createUser(@RequestBody User user) {
-        return userService.create(user);
+        return ResponseEntity.ok(userService.create(user));
     }
 
     @PutMapping
@@ -98,13 +98,12 @@ public class UserController {
     }
 
     @PutMapping("/personal-information")
-    public ResponseEntity<?> updatePersonalInformation(@RequestBody User userResponse) {
+    public void updatePersonalInformation(@RequestBody User userResponse) {
         log.info("good");
         User user = userService.readById(userResponse.getId());
         user.setFirstname(userResponse.getFirstname());
         user.setLastname(userResponse.getLastname());
         userService.update(user);
-        return ResponseEntity.ok(200);
     }
 
     @PutMapping("/user-image")

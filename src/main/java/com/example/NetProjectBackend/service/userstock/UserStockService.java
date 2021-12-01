@@ -1,7 +1,6 @@
 package com.example.NetProjectBackend.service.userstock;
 
 import com.example.NetProjectBackend.models.UserStockElement;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 

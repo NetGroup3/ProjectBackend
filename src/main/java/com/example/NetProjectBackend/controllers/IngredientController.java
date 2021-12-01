@@ -19,28 +19,23 @@ public class IngredientController {
 
     @GetMapping(path = "/ingredient")
     public ResponseEntity<?> readIngredient(@RequestParam int id) {
-        log.info("OK");
-
         return ResponseEntity.ok(ingredientService.read(id));
     }
 
     @PostMapping("/ingredient")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
         ingredient.setActive(true);
-        ingredientService.create(ingredient);
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok(ingredientService.create(ingredient));
     }
 
     @PutMapping("/ingredient")
-    public ResponseEntity<?> updateIngredient(@RequestBody Ingredient ingredient) {
+    public void updateIngredient(@RequestBody Ingredient ingredient) {
         ingredientService.update(ingredient);
-        return ResponseEntity.ok(200);
     }
 
     @DeleteMapping("/ingredient")
-    public ResponseEntity<?> deleteIngredient(@RequestParam int id) {
+    public void deleteIngredient(@RequestParam int id) {
         ingredientService.delete(id);
-        return ResponseEntity.ok(200);
     }
 
     @GetMapping("/ingredient/page")

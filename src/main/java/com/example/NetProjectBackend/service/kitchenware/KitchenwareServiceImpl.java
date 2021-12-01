@@ -3,9 +3,10 @@ package com.example.NetProjectBackend.service.kitchenware;
 import com.example.NetProjectBackend.dao.KitchenwareDao;
 import com.example.NetProjectBackend.models.Kitchenware;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -19,36 +20,34 @@ public class KitchenwareServiceImpl implements KitchenwareService {
     }
 
     @Override
-    public ResponseEntity<?> create(Kitchenware kitchenware) {
+    public int create(Kitchenware kitchenware) {
         kitchenware.setActive(true);
-        return ResponseEntity.ok(kitchenwareDao.create(kitchenware));
+        return kitchenwareDao.create(kitchenware);
     }
 
     @Override
-    public ResponseEntity<?> read(int id) {
-        return ResponseEntity.ok(kitchenwareDao.read(id));
+    public Kitchenware read(int id) {
+        return kitchenwareDao.read(id);
     }
 
     @Override
-    public ResponseEntity<?> update(Kitchenware kitchenware) {
+    public void update(Kitchenware kitchenware) {
         kitchenwareDao.update(kitchenware);
-        return ResponseEntity.ok(200);
     }
 
     @Override
-    public ResponseEntity<?> delete(int id) {
+    public void delete(int id) {
         kitchenwareDao.delete(id);
-        return ResponseEntity.ok(200);
     }
 
     @Override
-    public ResponseEntity<?> readPage(int limit, int offset) {
+    public List<Kitchenware> readPage(int limit, int offset) {
         if (limit > 100) limit = 100;
-        return ResponseEntity.ok(kitchenwareDao.readPage(limit, offset));
+        return kitchenwareDao.readPage(limit, offset);
     }
 
     @Override
-    public ResponseEntity<?> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
-        return ResponseEntity.ok(kitchenwareDao.readSearchPage(limit, offset, key, category, sortedBy));
+    public List<Kitchenware> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
+        return kitchenwareDao.readSearchPage(limit, offset, key, category, sortedBy);
     }
 }

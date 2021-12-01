@@ -17,19 +17,17 @@ public class ModeratorController {
     /** Create only moderator, and send new random password to email */
     @PostMapping
     public ResponseEntity<?> createModerator(@RequestBody User user) {
-        return userService.createModerator(user);
+        return ResponseEntity.ok(userService.createModerator(user));
     }
 
     @PutMapping
-    public ResponseEntity<?> updateModerator(@RequestBody User user) {
+    public void updateModerator(@RequestBody User user) {
         userService.update(user);
-        return ResponseEntity.ok(200);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteModerator(@PathVariable int id) {
+    public void deleteModerator(@PathVariable int id) {
         userService.delete(id);
-        return ResponseEntity.ok(200);
     }
 
     /** Return Arrays of moderator where limit it is size and offset it is start point */

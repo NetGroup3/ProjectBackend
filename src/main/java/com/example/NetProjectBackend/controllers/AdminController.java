@@ -20,7 +20,7 @@ public class AdminController {
     @PostMapping("/create")
     public ResponseEntity<?> createModerator(@RequestBody User user) {
         user.setRole(ERole.MODERATOR.getAuthority());
-        return userService.createModerator(user);
+        return ResponseEntity.ok(userService.createModerator(user));
     }
 
     @PutMapping("/update")

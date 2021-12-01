@@ -1,18 +1,19 @@
 package com.example.NetProjectBackend.service.ingredient;
 
 import com.example.NetProjectBackend.models.Ingredient;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface IngredientService {
-    ResponseEntity<?> create(Ingredient ingredient);
+    int create(Ingredient ingredient);
 
-    ResponseEntity<?> read(int id);
+    Ingredient read(int id);
 
-    ResponseEntity<?> update(Ingredient ingredient);
+    void update(Ingredient ingredient);
 
-    ResponseEntity<?> delete(int id);
+    void delete(int id);
 
-    ResponseEntity<?> readPage(int limit, int offset);
+    List<Ingredient> readPage(int limit, int offset);
 
-    ResponseEntity<?> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
+    List<Ingredient> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
 }

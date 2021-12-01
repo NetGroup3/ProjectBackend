@@ -3,8 +3,8 @@ package com.example.NetProjectBackend.service;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
-import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
+import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
@@ -13,7 +13,6 @@ import com.example.NetProjectBackend.service.mail.Mail;
 import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,13 +38,12 @@ public class UserService implements UserDetailsService {
 
     /**
      * Sign Up
+     * @return
      */
-    public ResponseEntity<?> create(User user) {
+    public int create(User user) {
 
         if (readByEmail(user.getEmail()) != null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Username is exist"));
+            return 0;
         }
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.NOT_VERIFY.name());
@@ -53,32 +51,34 @@ public class UserService implements UserDetailsService {
         int id = userDao.create(user);
         if (id > 0) {
             mail.confirmationCode(user.getEmail());
-            return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
+            return id;
         }
-        return ResponseEntity.badRequest().build();
+        return 0;
     }
 
     /**
      * Recovery Password
+     * @return
      */
-    public ResponseEntity<?> recovery(String email) {
+    public boolean recovery(String email) {
         log.info(email);
         if (readByEmail(email) == null) { //проверка на ниличие в бд
-            return ResponseEntity.notFound().build();
+            return false;
         } else {
             if (!mail.recoveryCode(email))
-                return ResponseEntity.notFound().build();
+                return false;
         }
-        return ResponseEntity.ok(200);
+        return true;
     }
 
     /**
      * Code processing
+     * @return
      */
-    public ResponseEntity<?> code(String param) {
+    public boolean code(String param) {
         Verify verify = mail.readByCode(param);
         if (verify == null) {
-            return ResponseEntity.notFound().build();
+            return false;
         }
         User user = readById(verify.getUserId());
 
@@ -98,7 +98,7 @@ public class UserService implements UserDetailsService {
 
         }
         mail.deleteCode(verify.getUserId());
-        return ResponseEntity.ok(200);
+        return true;
     }
 
 
@@ -204,11 +204,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<?> createModerator(User user) {
+    public boolean createModerator(User user) {
         if (readByEmail(user.getEmail()) != null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Username is exist"));
+            return false;
         }
 
         user.setRole(ERole.MODERATOR.getAuthority());
@@ -219,13 +217,13 @@ public class UserService implements UserDetailsService {
 
         if (userDao.create(user) > 0) {
             mail.sendModeratorPassword(password, user.getEmail());
-            return ResponseEntity.ok(new MessageResponseDto("Moderator CREATED"));
+            return true;
         }
-        return ResponseEntity.badRequest().build();
+        return false;
     }
 
-    public ResponseEntity<?> readPage(int limit, int offset, String role) {
+    public List<UserDto> readPage(int limit, int offset, String role) {
         if (limit > 100) limit = 100;
-        return ResponseEntity.ok(userDao.readPage(limit, offset, role));
+        return userDao.readPage(limit, offset, role);
     }
 }

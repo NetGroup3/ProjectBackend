@@ -75,12 +75,12 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
     public ResponseEntity<?> recoveryPassword(@RequestBody String email) {
-        return userService.recovery(email);
+        return ResponseEntity.ok(userService.recovery(email));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/code")
     public ResponseEntity<?> code(@RequestParam String param) {
-        return userService.code(param);
+        return ResponseEntity.ok(userService.code(param));
     }
 
 }
