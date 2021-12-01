@@ -49,7 +49,6 @@ public class KitchenwareServiceImpl implements KitchenwareService {
 
     @Override
     public ResponseEntity<?> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
-        if (limit > 100) limit = 100;
         return ResponseEntity.ok(kitchenwareDao.readSearchPage(limit, offset, key, category, sortedBy));
     }
 }
