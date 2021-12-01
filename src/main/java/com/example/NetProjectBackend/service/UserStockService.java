@@ -7,11 +7,11 @@ import java.util.List;
 public interface UserStockService {
     List<UserStockElement> readStock(int userId, int limit, int offset);
 
-    void deleteStockElement(int userId, int id);
+    String deleteStockElement(int userId, int id);
 
-    String createStockElement(int userId, String ingredient, int amount);
+    String createStockElement(int userId, int ingredientId, int amount);
 
-    String updateStockElement(int userId, String ingredient, int amount);
+    String updateStockElement(int userId, int ingredientId, int amount);
 
-    UserStockElement readStockElement(int userId, String ingredient);
+    UserStockElement readStockElement(int userId, int ingredientId);
 }
