@@ -4,10 +4,12 @@ import com.example.NetProjectBackend.models.dto.MessageResponse;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequest;
 import com.example.NetProjectBackend.models.dto.UserImage;
 import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.service.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -83,6 +85,7 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequest passwordCR) {
         try {
+            passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
             userService.updatePassword(passwordCR);
             log.info("Password Changed");
             return ResponseEntity.ok(200);
@@ -105,7 +108,7 @@ public class UserController {
     }
 
     @PutMapping("/user-image")
-    public void updateImage (@RequestBody UserImage response){
+    public void updateImage(@RequestBody UserImage response) {
         log.debug("Controller update user image");
         userService.updateUserImage(response);
     }
