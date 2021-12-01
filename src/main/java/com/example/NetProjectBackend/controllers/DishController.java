@@ -121,7 +121,6 @@ public class DishController {
             @RequestBody FavouriteDto favouriteDto,
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
-        System.out.println(favouriteDto);
         return ResponseEntity.ok(dishService.addFavourite(userId, favouriteDto.getDish()));
     }
 
@@ -144,7 +143,6 @@ public class DishController {
 
     @PostMapping("/like")
     public ResponseEntity<?> addLike (@RequestBody DishLikeDto like) {
-        System.out.println(like);
         return ResponseEntity.ok(dishService.setLike(like.getDish()));
     }
 
@@ -174,7 +172,6 @@ public class DishController {
     @PostMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> createLabel (@RequestBody Label label) {
-        System.out.println(label);
         return ResponseEntity.ok(dishService.createLabel(label));
     }
 
@@ -202,7 +199,6 @@ public class DishController {
     @PostMapping("/label")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> addLabel (@RequestBody DishLabelDto label) {
-        System.out.println(label);
         return ResponseEntity.ok(dishService.addLabel(label));
     }
 

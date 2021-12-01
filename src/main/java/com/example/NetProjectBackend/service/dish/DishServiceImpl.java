@@ -39,7 +39,6 @@ public class DishServiceImpl  implements DishService {
 
     @Override
     public int setActive(int id, boolean active) {
-        System.out.println(dishDao.setActive(id, active));
         return dishDao.setActive(id, active);
     }
 
