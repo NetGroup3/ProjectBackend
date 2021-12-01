@@ -27,9 +27,8 @@ public class UserStockServiceImpl implements UserStockService{
     }
 
     @Override
-    public void deleteStockElement(int userId, String ingredient) {
-        int ingredientId = userStockDao.ingredientExist(ingredient);
-        userStockDao.deleteStockElement(userId, ingredientId);
+    public void deleteStockElement(int userId, int id) {
+        userStockDao.deleteStockElement(userId, id);
     }
 
     @Override
