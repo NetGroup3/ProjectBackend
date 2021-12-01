@@ -27,9 +27,9 @@ public class UserStockController {
 
     @DeleteMapping(path = "/stock")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deleteStockElement(@RequestParam int id) {
+    public ResponseEntity<?> deleteStockElement(@RequestParam int ingredientId) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        userStockService.deleteStockElement(userId, id);
+        userStockService.deleteStockElement(userId, ingredientId);
         return ResponseEntity.ok("Successfully deleted from the stock");
     }
 
