@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.dto.StockAddDto;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserStockService;
 import org.springframework.http.ResponseEntity;
@@ -27,34 +28,34 @@ public class UserStockController {
 
     @GetMapping("/ingredients")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> readIngredients(@RequestParam int limit,
-                                       @RequestParam int page) {
+    public ResponseEntity<?> readIngredients(@RequestParam(defaultValue = "100") int limit ,
+                                       @RequestParam(defaultValue = "0") int page) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
         return ResponseEntity.ok(userStockService.readIngredients(userId, limit, limit * page));
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deleteStockElement(@RequestParam int ingredientId) {
+    public void deleteStockElement(@RequestParam int ingredientId) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        if (userStockService.deleteStockElement(userId, ingredientId) == "Not found")
+        userStockService.deleteStockElement(userId, ingredientId);
+/*        if (userStockService.deleteStockElement(userId, ingredientId) == "Not found")
             return ResponseEntity.ok("Not found in your stock");
         else
-            return ResponseEntity.ok("Successfully deleted from the stock");
+            return ResponseEntity.ok("Successfully deleted from the stock");*/
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createStockElement(@RequestParam int ingredientId,
-                                                @RequestParam int amount) {
+    public void createStockElement(@RequestBody StockAddDto stockAddDto) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        String result = userStockService.createStockElement(userId, ingredientId, amount);
-        if (result.equals("Not found ingredient"))
+        String result = userStockService.createStockElement(userId, stockAddDto.getId(), stockAddDto.getAmount());
+/*        if (result.equals("Not found ingredient"))
             return ResponseEntity.ok("Not found ingredient");
         else if (result.equals("Already exist in your stock"))
             return ResponseEntity.ok("Already exist in your stock");
         else
-            return ResponseEntity.ok(userStockService.readStockElement(userId, ingredientId));
+            return ResponseEntity.ok(userStockService.readStockElement(userId, ingredientId));*/
     }
 
     @PatchMapping
