@@ -25,6 +25,14 @@ public class UserStockController {
         return ResponseEntity.ok(userStockService.readStock(userId, limit, limit * page));
     }
 
+    @GetMapping("/ingredients")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> readIngredients(@RequestParam int limit,
+                                       @RequestParam int page) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(userStockService.readIngredients(userId, limit, limit * page));
+    }
+
     @DeleteMapping
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> deleteStockElement(@RequestParam int ingredientId) {

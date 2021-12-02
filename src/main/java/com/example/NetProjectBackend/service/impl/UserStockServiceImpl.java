@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserStockDao;
+import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
 import com.example.NetProjectBackend.service.UserStockService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,11 @@ public class UserStockServiceImpl implements UserStockService {
     @Override
     public List<UserStockElement> readStock(int userId, int limit, int offset) {
         return userStockDao.readStock(userId, limit, offset);
+    }
+
+    @Override
+    public List<Ingredient> readIngredients(int userId, int limit, int offset) {
+        return userStockDao.readIngredients(userId, limit, offset);
     }
 
     @Override

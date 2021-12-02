@@ -27,6 +27,7 @@ public class UserStockQuery {
     @Value("${user_stock.update_by_userid_and_ingredientid}")
     private String updateByUserIdAndIngredientId;
 
-
+    @Value("${user_stock.select_ingredients_not_present_in_stock}")
+    private String selectIngredientNotPresentInStock;
 
 }
