@@ -154,7 +154,6 @@ public class UserDaoImpl implements UserDao {
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(q.getSelectByEmail(), UserDaoImpl::mapClientRow, email);
-            System.out.println(user);
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find entity of type Person with email {}", email);
         }

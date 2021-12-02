@@ -86,15 +86,9 @@ public class MailImpl implements Mail {
     public void confirmationCode(String email) {
         String code = getCode(email);
         sendMail(email, 0, code, "");
-        codeDao(email, code);
-    }
-
-
-    private void codeDao (String email, String code) {
         int user_id = userDao.readByEmail(email).getId();
         verifyDao.delete(user_id);
         verifyDao.create(new Verify(user_id, code, OffsetDateTime.now()));
-
     }
 
     @Override

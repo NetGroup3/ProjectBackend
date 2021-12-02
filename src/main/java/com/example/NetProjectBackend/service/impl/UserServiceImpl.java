@@ -64,12 +64,10 @@ public class UserServiceImpl implements UserDetailsService {
     public boolean recovery(String email) {
         log.info(email);
         if (readByEmail(email) == null) { //проверка на ниличие в бд
-            log.info("Тут");
             return false;
         } else {
-            if (!mail.recoveryCode(email)) {
-                log.info("Тута");
-                return false;}
+            if (!mail.recoveryCode(email))
+                return false;
         }
         return true;
     }
