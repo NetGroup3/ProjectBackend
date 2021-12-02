@@ -32,12 +32,6 @@ public class MailImpl implements Mail {
     private final VerifyDao verifyDao;
     private final LinkConfig l;
 
-    private int type;
-    private String password;
-    private String email;
-    private String link = "https://ourproject.space/login";
-    private String code;
-
     public MailImpl(JavaMailSender emailSender, SpringTemplateEngine thymeleafTemplateEngine, UserDao userDao, VerifyDao verifyDao, LinkConfig l) {
         this.emailSender = emailSender;
         this.thymeleafTemplateEngine = thymeleafTemplateEngine;
@@ -46,16 +40,16 @@ public class MailImpl implements Mail {
         this.l = l;
     }
 
-    protected void sendMail() {
+    protected void sendMail(String email, int type, String code, String password) {
         MimeMessage message = emailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(email);
             helper.setSubject(email);
             if (type == 1) {
-                helper.setText(getBodyPassword(), true);
+                helper.setText(getBodyPassword(password), true);
             } else {
-                helper.setText(getBody(), true);
+                helper.setText(getBody(code), true);
             }
             emailSender.send(message);
         } catch (MessagingException e) {
@@ -63,15 +57,15 @@ public class MailImpl implements Mail {
         }
     }
 
-    protected String getBody() {
+    protected String getBody(String code) {
         Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("link", link + code);
+        thymeleafContext.setVariable("link", l.getUrl() + code);
         return thymeleafTemplateEngine.process("mail-template.html", thymeleafContext);
     }
 
-    protected String getBodyPassword() {
+    protected String getBodyPassword(String password) {
         Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("link", link);
+        thymeleafContext.setVariable("link", l.getUrl());
         thymeleafContext.setVariable("password", password);
         return thymeleafTemplateEngine.process("mail-template-password.html", thymeleafContext);
     }
@@ -80,7 +74,7 @@ public class MailImpl implements Mail {
         return DigestUtils.md5DigestAsHex(string.getBytes(StandardCharsets.UTF_8));
     }
 
-    protected String getCode() {
+    protected String getCode(String email) {
         long calendar = Calendar.getInstance().getTimeInMillis();
         String part1 = md5Code(String.valueOf(calendar) + Math.random() * 1000);
         String part2 = md5Code(String.valueOf(email) + Math.random() * 1000);
@@ -90,15 +84,13 @@ public class MailImpl implements Mail {
 
     @Override
     public void confirmationCode(String email) {
-        this.email = email;
-        this.link = l.getUrl()+l.getUrl();
-        code = getCode();
-        sendMail();
-        codeDao();
+        String code = getCode(email);
+        sendMail(email, 0, code, "");
+        codeDao(email, code);
     }
 
 
-    private void codeDao () {
+    private void codeDao (String email, String code) {
         int user_id = userDao.readByEmail(email).getId();
         verifyDao.delete(user_id);
         verifyDao.create(new Verify(user_id, code, OffsetDateTime.now()));
@@ -117,24 +109,17 @@ public class MailImpl implements Mail {
 
     @Override
     public boolean sendNewPassword(String password, User user, Verify verify) {
-        this.password = password;
-        this.email = user.getEmail();
-        this.link = l.getUrl()+l.getCode();
         if (!checkData(verify)) {
             confirmationCode(user.getEmail());
             return false;
         }
-        type = 1;
-        sendMail();
+        sendMail(user.getEmail(), 1, "", password);
         return true;
     }
 
     @Override
     public boolean sendModeratorPassword(String password, String email) {
-        this.password = password;
-        this.email = email;
-        type = 1;
-        sendMail();
+        sendMail(email, 1, "", password);
         return true;
     }
 

@@ -40,13 +40,14 @@ public class UserServiceImpl implements UserDetailsService {
      * Sign Up
      * @return
      */
-    public int create(User user) {
+    public int create(User user, String role) {
 
         if (readByEmail(user.getEmail()) != null) {
             return 0;
         }
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.NOT_VERIFY.name());
+        user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         int id = userDao.create(user);
         if (id > 0) {
@@ -63,10 +64,12 @@ public class UserServiceImpl implements UserDetailsService {
     public boolean recovery(String email) {
         log.info(email);
         if (readByEmail(email) == null) { //проверка на ниличие в бд
+            log.info("Тут");
             return false;
         } else {
-            if (!mail.recoveryCode(email))
-                return false;
+            if (!mail.recoveryCode(email)) {
+                log.info("Тута");
+                return false;}
         }
         return true;
     }
@@ -77,9 +80,8 @@ public class UserServiceImpl implements UserDetailsService {
      */
     public boolean code(String param) {
         Verify verify = mail.readByCode(param);
-        if (verify == null) {
+        if (verify == null)
             return false;
-        }
         User user = readById(verify.getUserId());
 
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
