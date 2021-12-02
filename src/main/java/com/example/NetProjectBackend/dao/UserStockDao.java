@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.dao;
 
+import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
 
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.List;
 
 public interface UserStockDao {
     List<UserStockElement> readStock(int userId, int limit, int offset);
+
+    List<Ingredient> readIngredients(int userId, int limit, int offset);
 
     void deleteStockElement(int userId, int ingredientId);
 

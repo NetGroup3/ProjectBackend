@@ -39,6 +39,18 @@ public class UserStockDaoImpl implements UserStockDao {
         return rs.getInt("id");
     }
 
+    private static Ingredient mapIngredientRow(ResultSet rs, int rowNum) throws SQLException {
+        return new Ingredient(
+                rs.getInt("id"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getString("category"),
+                rs.getString("image_id"),
+                rs.getBoolean("is_active"),
+                rs.getString("measurement")
+        );
+    }
+
     @Override
     public List<UserStockElement> readStock(int userId, int limit, int offset) {
         List<UserStockElement> userStockElements = null;
@@ -49,6 +61,19 @@ public class UserStockDaoImpl implements UserStockDao {
         }
         return userStockElements;
     }
+
+    @Override
+    public List<Ingredient> readIngredients(int userId, int limit, int offset) {
+        List<Ingredient> ingredients = null;
+        try {
+            ingredients = jdbcTemplate.query(userStockQuery.getSelectIngredientNotPresentInStock(), UserStockDaoImpl::mapIngredientRow, userId, limit, offset);
+        } catch (DataAccessException dataAccessException) {
+            log.debug("Couldn't find user with id {}", userId);
+        }
+        return ingredients;
+    }
+
+
 
     @Override
     public void deleteStockElement(int userId, int ingredientId) {
@@ -65,6 +90,8 @@ public class UserStockDaoImpl implements UserStockDao {
         }
         return userStockElement;
     }
+
+
 
     @Override
     public UserStockElement updateStockElement(int userId, int ingredientId, int amount) {
