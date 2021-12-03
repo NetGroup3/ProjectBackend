@@ -5,6 +5,7 @@ import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.entity.Label;
 import com.example.NetProjectBackend.service.DishService;
+import com.example.NetProjectBackend.service.Paginator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -146,28 +147,27 @@ public class DishController {
         return ResponseEntity.ok(dishService.setLike(like.getDish()));
     }
 
-    //{
-    //    "dishId":2,
-    //    "text":"example text"
-    //}
-    @PostMapping("/comment")
+    @GetMapping("/comments")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createComment (
-            @RequestBody Comment comment,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
-    ) {
-        return ResponseEntity.ok(dishService.createComment(comment, userId));
+    public ResponseEntity<?> getComments(@RequestParam int dishId, int pageNo, int perPage) {
+        Paginator.PaginatedResponse res = dishService.getPaginatedComments(dishId, pageNo, perPage);
+        return ResponseEntity.ok(res);
     }
 
+    @PostMapping("/comment")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> createComment (@RequestBody Comment comment) {  //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+        return ResponseEntity.ok(dishService.createComment(comment));
+    }
 
-    @DeleteMapping("/comment")
+    /*@DeleteMapping("/comment")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> deleteComment (
             @RequestParam int comment,
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
         return ResponseEntity.ok(dishService.deleteComment(comment, userId));
-    }
+    }*/
 
     @PostMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")

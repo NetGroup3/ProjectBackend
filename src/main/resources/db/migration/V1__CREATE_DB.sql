@@ -143,7 +143,7 @@ CREATE TABLE public.suggestion (
 
 CREATE TABLE public."comment" (
 	id serial4 NOT NULL,
-	user_id int4 NOT NULL,
+	user_id int4 NULL,
 	dish_id int4 NOT NULL,
 	"text" varchar NOT NULL,
 	"timestamp" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
