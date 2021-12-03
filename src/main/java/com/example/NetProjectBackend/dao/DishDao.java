@@ -48,7 +48,7 @@ public interface DishDao {
 
     List<CommentDto> readCommentRelation(int id);
 
-    List<Comment> createComment(Comment comment, int userId);
+    List<Comment> createComment(Comment comment);//, int userId);
 
     List<Comment> deleteComment(int id, int userId);
 
