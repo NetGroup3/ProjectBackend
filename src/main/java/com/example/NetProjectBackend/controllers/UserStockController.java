@@ -1,12 +1,15 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.service.userstock.UserStockService;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
+import com.example.NetProjectBackend.service.UserStockService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/user")
+@RequestMapping("/user/stock")
 public class UserStockController {
     private final UserStockService userStockService;
 
@@ -14,28 +17,55 @@ public class UserStockController {
         this.userStockService = userStockService;
     }
 
-    @GetMapping(path = "/{userId}/stock")
-    public ResponseEntity<?> readStock(@PathVariable int userId) {
-        return ResponseEntity.ok(userStockService.readStock(userId));
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> readStock(@RequestParam int limit,
+                                       @RequestParam int page) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(userStockService.readStock(userId, limit, limit * page));
     }
 
-    @DeleteMapping(path = "/{userId}/stock")
-    public ResponseEntity<?> deleteStockElement(@PathVariable int userId,
-                                                @RequestParam String ingredient) {
-        return ResponseEntity.ok(userStockService.deleteStockElement(userId, ingredient));
+    @GetMapping("/ingredients")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> readIngredients(@RequestParam int limit,
+                                       @RequestParam int page) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return ResponseEntity.ok(userStockService.readIngredients(userId, limit, limit * page));
     }
 
-    @PostMapping("/{userId}/stock")
-    public ResponseEntity<?> createStockElement(@PathVariable int userId,
-                                                @RequestParam String ingredient,
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> deleteStockElement(@RequestParam int ingredientId) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        if (userStockService.deleteStockElement(userId, ingredientId) == "Not found")
+            return ResponseEntity.ok("Not found in your stock");
+        else
+            return ResponseEntity.ok("Successfully deleted from the stock");
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> createStockElement(@RequestParam int ingredientId,
                                                 @RequestParam int amount) {
-        return ResponseEntity.ok(userStockService.createStockElement(userId, ingredient, amount));
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        String result = userStockService.createStockElement(userId, ingredientId, amount);
+        if (result.equals("Not found ingredient"))
+            return ResponseEntity.ok("Not found ingredient");
+        else if (result.equals("Already exist in your stock"))
+            return ResponseEntity.ok("Already exist in your stock");
+        else
+            return ResponseEntity.ok(userStockService.readStockElement(userId, ingredientId));
     }
 
-    @PatchMapping("/{userId}/stock")
-    public ResponseEntity<?> updateStockElement(@PathVariable int userId,
-                                                @RequestParam String ingredient,
+    @PatchMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> updateStockElement(@RequestParam int ingredientId,
                                                 @RequestParam int amount) {
-        return ResponseEntity.ok(userStockService.updateStockElement(userId, ingredient, amount));
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        String result = userStockService.updateStockElement(userId, ingredientId, amount);
+        if (result.equals("Not found"))
+            return ResponseEntity.ok("Not found in your stock");
+        else
+            return ResponseEntity.ok(userStockService.readStockElement(userId, ingredientId));
     }
 }

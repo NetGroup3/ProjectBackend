@@ -1,6 +1,6 @@
 package com.example.NetProjectBackend.dao.impl;
 
-import com.example.NetProjectBackend.confuguration.query.DishConfig;
+import com.example.NetProjectBackend.confuguration.query.DishQuery;
 import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.*;
 import com.example.NetProjectBackend.models.dto.dish.*;
@@ -24,7 +24,7 @@ import java.util.List;
 public class DishDaoImpl implements DishDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final DishConfig q;
+    private final DishQuery q;
 
     private static Dish mapDishRow(ResultSet rs, int rowNum) throws SQLException {
         return new Dish(
@@ -39,8 +39,8 @@ public class DishDaoImpl implements DishDao {
         );
     }
 
-    private static DishIngredient mapRelationIngredient(ResultSet rs, int rowNum) throws SQLException {
-        return new DishIngredient(
+    private static DishIngredientDto mapRelationIngredient(ResultSet rs, int rowNum) throws SQLException {
+        return new DishIngredientDto(
                 rs.getInt("id"),
                 rs.getInt("dish_id"),
                 rs.getInt("ingredient_id"),
@@ -48,8 +48,8 @@ public class DishDaoImpl implements DishDao {
         );
     }
 
-    private static DishKitchenware mapRelationKitchenware(ResultSet rs, int rowNum) throws SQLException {
-        return new DishKitchenware(
+    private static DishKitchenwareDto mapRelationKitchenware(ResultSet rs, int rowNum) throws SQLException {
+        return new DishKitchenwareDto(
                 rs.getInt("id"),
                 rs.getInt("dish_id"),
                 rs.getInt("kitchenware_id")
@@ -79,8 +79,8 @@ public class DishDaoImpl implements DishDao {
         );
     }
 
-    private static CommentView mapCommentViewRow(ResultSet rs, int rowNum) throws SQLException {
-        return new CommentView(
+    private static CommentDto mapCommentViewRow(ResultSet rs, int rowNum) throws SQLException {
+        return new CommentDto(
                 rs.getInt("id"),
                 rs.getInt("user_id"),
                 rs.getString("first_name"),
@@ -116,16 +116,16 @@ public class DishDaoImpl implements DishDao {
         );
     }
 
-    private static DishLabel mapDishLabelRow(ResultSet rs, int rowNum) throws SQLException {
-        return new DishLabel(
+    private static DishLabelDto mapDishLabelRow(ResultSet rs, int rowNum) throws SQLException {
+        return new DishLabelDto(
                 rs.getInt("id"),
                 rs.getInt("dish_id"),
                 rs.getInt("label_id")
         );
     }
 
-    private static DishFormat mapDishFormatRow(ResultSet rs, int rowNum) throws SQLException {
-        return new DishFormat(
+    private static DishFormatDto mapDishFormatRow(ResultSet rs, int rowNum) throws SQLException {
+        return new DishFormatDto(
                 rs.getInt("id"),
                 rs.getString("title"),
                 rs.getString("description"),
@@ -138,8 +138,8 @@ public class DishDaoImpl implements DishDao {
         );
     }
 
-    private static DishRecommend mapDishRecommendRow(ResultSet rs, int rowNum) throws SQLException {
-        return new DishRecommend(
+    private static DishRecommendDto mapDishRecommendRow(ResultSet rs, int rowNum) throws SQLException {
+        return new DishRecommendDto(
                 rs.getInt("id"),
                 rs.getString("title"),
                 rs.getString("description"),
@@ -190,7 +190,7 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public List<DishFormat> readList(DishSearch search, Integer userId) {
+    public List<DishFormatDto> readList(DishSearchDto search, Integer userId) {
         if (search.getTitle() == null && search.getCategory() == null) {
             if (search.isDesc()) return jdbcTemplate.query(
                     q.getReadPageDesc(),
@@ -229,12 +229,12 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public DishFormat soloReadDish(int id, int userId) {
+    public DishFormatDto soloReadDish(int id, int userId) {
         return jdbcTemplate.query(q.getSoloRead(), DishDaoImpl::mapDishFormatRow, userId, id).get(0);
     }
 
     @Override
-    public List<DishRecommend> getRecommend(int userId, int limit, int offset) {
+    public List<DishRecommendDto> getRecommend(int userId, int limit, int offset) {
         return jdbcTemplate.query(
                 q.getRecommend(),
                 DishDaoImpl::mapDishRecommendRow,
@@ -257,28 +257,28 @@ public class DishDaoImpl implements DishDao {
 
     //Dish Ingredient
     @Override
-    public List<DishIngredient> checkIngredient(int dishId, int ingredientId) {
+    public List<DishIngredientDto> checkIngredient(int dishId, int ingredientId) {
         return jdbcTemplate.query(q.getIngredientCheck(), DishDaoImpl::mapRelationIngredient, dishId, ingredientId);
     }
 
     @Override
-    public List<DishIngredient> updateIngredient(int id, BigDecimal amount) {
+    public List<DishIngredientDto> updateIngredient(int id, BigDecimal amount) {
         return jdbcTemplate.query(q.getIngredientUpdate(), DishDaoImpl::mapRelationIngredient, amount, id);
     }
 
     @Override
-    public List<DishIngredient> removeIngredient(int id) {
+    public List<DishIngredientDto> removeIngredient(int id) {
         return jdbcTemplate.query(q.getIngredientRemove(), DishDaoImpl::mapRelationIngredient, id);
     }
 
     @Override
-    public List<DishIngredient> createDishIngredient(DishIngredient dishIngredient) {
+    public List<DishIngredientDto> createDishIngredient(DishIngredientDto dishIngredientDto) {
         return jdbcTemplate.query(
                 q.getIngredientCreate(),
                 DishDaoImpl::mapRelationIngredient,
-                dishIngredient.getDish(),
-                dishIngredient.getIngredient(),
-                dishIngredient.getAmount()
+                dishIngredientDto.getDish(),
+                dishIngredientDto.getIngredient(),
+                dishIngredientDto.getAmount()
         );
 
     }
@@ -290,25 +290,25 @@ public class DishDaoImpl implements DishDao {
 
     //Dish Kitchenware
     @Override
-    public List<DishKitchenware> checkKitchenware(DishKitchenware dishKitchenware) {
+    public List<DishKitchenwareDto> checkKitchenware(DishKitchenwareDto dishKitchenwareDto) {
         return jdbcTemplate.query(
                 q.getKitchenwareCheck(),
                 DishDaoImpl::mapRelationKitchenware,
-                dishKitchenware.getDish(),
-                dishKitchenware.getKitchenware());
+                dishKitchenwareDto.getDish(),
+                dishKitchenwareDto.getKitchenware());
     }
 
     @Override
-    public List<DishKitchenware> removeKitchenware(int id) {
+    public List<DishKitchenwareDto> removeKitchenware(int id) {
         return jdbcTemplate.query(q.getKitchenwareRemove(), DishDaoImpl::mapRelationKitchenware, id);
     }
 
     @Override
-    public List<DishKitchenware> createDishKitchenware(DishKitchenware dishKitchenware) {
+    public List<DishKitchenwareDto> createDishKitchenware(DishKitchenwareDto dishKitchenwareDto) {
         return jdbcTemplate.query(q.getKitchenwareCreate(),
                 DishDaoImpl::mapRelationKitchenware,
-                dishKitchenware.getDish(),
-                dishKitchenware.getKitchenware()
+                dishKitchenwareDto.getDish(),
+                dishKitchenwareDto.getKitchenware()
         );
     }
 
@@ -319,21 +319,21 @@ public class DishDaoImpl implements DishDao {
 
     //Comment
     @Override
-    public List<CommentView> readCommentRelation(int id) {
+    public List<CommentDto> readCommentRelation(int id) {
         return jdbcTemplate.query(q.getCommentRead(), DishDaoImpl::mapCommentViewRow, id);
     }
 
     @Override
-    public List<Comment> createComment(Comment comment, int userId) {
-        List<Comment> check = jdbcTemplate.query(q.getCommentCreateCheck(),
+    public List<Comment> createComment(Comment comment) {//, int userId) {
+        /*List<Comment> check = jdbcTemplate.query(q.getCommentCreateCheck(),
                 DishDaoImpl::mapCommentRow,
                 userId,
                 comment.getDishId()
         );
-        if (check.size() > 0) deleteComment(comment.getId(), userId);
+        if (check.size() > 0) deleteComment(comment.getId(), userId);*/
         return jdbcTemplate.query(q.getCommentCreate(),
                 DishDaoImpl::mapCommentRow,
-                userId,
+                comment.getUserId(),
                 comment.getDishId(),
                 comment.getText()
         );
@@ -379,7 +379,7 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public List<DishFormat> getFavourite(int userId) {
+    public List<DishFormatDto> getFavourite(int userId) {
         return jdbcTemplate.query(q.getFavouriteGet(),
                 DishDaoImpl::mapDishFormatRow,
                 userId
@@ -427,7 +427,7 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public List<DishLabel> addLabel(DishLabel label) {
+    public List<DishLabelDto> addLabel(DishLabelDto label) {
         return jdbcTemplate.query(q.getLabelAdd(),
                 DishDaoImpl::mapDishLabelRow,
                 label.getDish(),
@@ -436,7 +436,7 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public List<DishLabel> removeLabel(int id) {
+    public List<DishLabelDto> removeLabel(int id) {
         return jdbcTemplate.query(q.getLabelRemove(),
                 DishDaoImpl::mapDishLabelRow,
                 id

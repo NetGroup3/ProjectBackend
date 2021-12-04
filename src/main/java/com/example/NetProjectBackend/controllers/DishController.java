@@ -4,7 +4,8 @@ import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.entity.Label;
-import com.example.NetProjectBackend.service.dish.DishService;
+import com.example.NetProjectBackend.service.DishService;
+import com.example.NetProjectBackend.service.Paginator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +49,8 @@ public class DishController {
 
     @PostMapping("/ingredient")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> addIngredient(@RequestBody DishIngredient dishIngredient) {
-        return ResponseEntity.ok(dishService.addIngredient(dishIngredient));
+    public ResponseEntity<?> addIngredient(@RequestBody DishIngredientDto dishIngredientDto) {
+        return ResponseEntity.ok(dishService.addIngredient(dishIngredientDto));
     }
 
     @DeleteMapping("/ingredient")
@@ -61,8 +62,8 @@ public class DishController {
 
     @PostMapping("/kitchenware")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> addKitchenware(@RequestBody DishKitchenware dishKitchenware) {
-        return ResponseEntity.ok(dishService.addKitchenware(dishKitchenware));
+    public ResponseEntity<?> addKitchenware(@RequestBody DishKitchenwareDto dishKitchenwareDto) {
+        return ResponseEntity.ok(dishService.addKitchenware(dishKitchenwareDto));
     }
 
     @DeleteMapping(path = "/kitchenware")
@@ -121,7 +122,6 @@ public class DishController {
             @RequestBody FavouriteDto favouriteDto,
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
-        System.out.println(favouriteDto);
         return ResponseEntity.ok(dishService.addFavourite(userId, favouriteDto.getDish()));
     }
 
@@ -143,38 +143,35 @@ public class DishController {
     }
 
     @PostMapping("/like")
-    public ResponseEntity<?> addLike (@RequestBody DishLike like) {
-        System.out.println(like);
+    public ResponseEntity<?> addLike (@RequestBody DishLikeDto like) {
         return ResponseEntity.ok(dishService.setLike(like.getDish()));
     }
 
-    //{
-    //    "dishId":2,
-    //    "text":"example text"
-    //}
-    @PostMapping("/comment")
+    @GetMapping("/comments")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createComment (
-            @RequestBody Comment comment,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
-    ) {
-        return ResponseEntity.ok(dishService.createComment(comment, userId));
+    public ResponseEntity<?> getComments(@RequestParam int dishId, int pageNo, int perPage) {
+        Paginator.PaginatedResponse res = dishService.getPaginatedComments(dishId, pageNo, perPage);
+        return ResponseEntity.ok(res);
     }
 
+    @PostMapping("/comment")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<?> createComment (@RequestBody Comment comment) {  //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+        return ResponseEntity.ok(dishService.createComment(comment));
+    }
 
-    @DeleteMapping("/comment")
+    /*@DeleteMapping("/comment")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> deleteComment (
             @RequestParam int comment,
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
         return ResponseEntity.ok(dishService.deleteComment(comment, userId));
-    }
+    }*/
 
     @PostMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> createLabel (@RequestBody Label label) {
-        System.out.println(label);
         return ResponseEntity.ok(dishService.createLabel(label));
     }
 
@@ -201,8 +198,7 @@ public class DishController {
 
     @PostMapping("/label")
     @PreAuthorize("hasAuthority('MODERATOR')")
-    public ResponseEntity<?> addLabel (@RequestBody DishLabel label) {
-        System.out.println(label);
+    public ResponseEntity<?> addLabel (@RequestBody DishLabelDto label) {
         return ResponseEntity.ok(dishService.addLabel(label));
     }
 
