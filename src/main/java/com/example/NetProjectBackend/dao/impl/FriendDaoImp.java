@@ -26,13 +26,17 @@ public class FriendDaoImp implements FriendDao {
 
     private static FriendResponseDto mapFriendRow(ResultSet rs, int rowNum) throws SQLException {
         return new FriendResponseDto(
-                rs.getInt("friend_id")
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("image_id")
         );
     }
 
     private static FriendResponseDto mapRequestRow(ResultSet rs, int rowNum) throws SQLException {
         return new FriendResponseDto(
-                rs.getInt("sender_id")
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("image_id")
         );
     }
 
@@ -63,7 +67,7 @@ public class FriendDaoImp implements FriendDao {
     }
 
     /**
-     *  removeFriend, declineInvite
+     * removeFriend, declineInvite
      */
     @Override
     public void delete(int id) {
@@ -74,7 +78,7 @@ public class FriendDaoImp implements FriendDao {
     }
 
     @Override
-    public List<FriendResponseDto> readFriends(FriendRequestDto friendRequestDto, int id) {
+    public List<FriendResponseDto> readFriends(String status, int limit, int offset, int id) {
         List<FriendResponseDto> friends = new ArrayList<>();
         try {
             friends =
@@ -83,9 +87,9 @@ public class FriendDaoImp implements FriendDao {
                             FriendDaoImp::mapFriendRow,
                             id,
                             id,
-                            friendRequestDto.getStatus(),
-                            friendRequestDto.getLimit(),
-                            friendRequestDto.getOffset()
+                            status,
+                            limit,
+                            offset
                     );
             log.info(String.valueOf(friends));
         } catch (DataAccessException dataAccessException) {
@@ -95,17 +99,17 @@ public class FriendDaoImp implements FriendDao {
     }
 
     @Override
-    public List<FriendResponseDto> readRequests(FriendRequestDto friendRequestDto, int id) {
+    public List<FriendResponseDto> readRequests(String status, int limit, int offset, int id) {
         List<FriendResponseDto> requests = new ArrayList<>();
         try {
             requests =
                     jdbcTemplate.query(
                             q.getSelectRequest(),
                             FriendDaoImp::mapRequestRow,
-                            friendRequestDto.getStatus(),
+                            status,
                             id,
-                            friendRequestDto.getLimit(),
-                            friendRequestDto.getOffset()
+                            limit,
+                            offset
                     );
             log.info(String.valueOf(requests));
         } catch (DataAccessException dataAccessException) {
