@@ -120,4 +120,13 @@ public class DishQuery {
 
     @Value("${dish.like.set.like}")
     private String likeSetLike;
+
+    @Value("${dish.ingredient.push.list}")
+    private String pushListDishIngredient;
+
+    @Value("${dish.kitchenware.push.list}")
+    private String pushListKitchenwareIngredient;
+
+    @Value("${dish.label.push.list}")
+    private String pushListLabelsIngredient;
 }

@@ -89,14 +89,13 @@ public class DishServiceImpl  implements DishService {
 
     @Override
     public DishDto getDish(int id, Integer userId) {
-        DishDto dishDto = new DishDto(
+        return new DishDto(
                 dishDao.soloReadDish(id, userId),
                 dishDao.readIngredientsRelation(id),
                 dishDao.readKitchenwareRelation(id),
                 dishDao.readCommentRelation(id),
                 dishDao.readLabelRelation(id)
         );
-        return dishDto;
     }
 
     @Override
@@ -171,5 +170,15 @@ public class DishServiceImpl  implements DishService {
     @Override
     public List<DishLabelDto> removeLabel(int id) {
         return dishDao.removeLabel(id);
+    }
+
+    @Override
+    public List<Dish> createDishFromList(DishWrapperDto dishWrapperDto) {
+        List<Dish> dish = createDish(dishWrapperDto.getDish());
+        int dishId = dish.get(0).getId();
+        dishDao.pushListDishIngredient(dishWrapperDto.getIngredients(), dishId);
+        dishDao.pushListKitchenwareIngredient(dishWrapperDto.getKitchenware(), dishId);
+        dishDao.pushListLabelsIngredient(dishWrapperDto.getLabel(), dishId);
+        return dish;
     }
 }
