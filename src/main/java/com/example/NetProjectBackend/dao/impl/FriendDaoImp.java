@@ -3,7 +3,6 @@ package com.example.NetProjectBackend.dao.impl;
 import com.example.NetProjectBackend.confuguration.query.FriendConfig;
 import com.example.NetProjectBackend.dao.FriendDao;
 import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequest;
 import com.example.NetProjectBackend.models.dto.FriendResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +25,17 @@ public class FriendDaoImp implements FriendDao {
 
     private static FriendResponse mapFriendRow(ResultSet rs, int rowNum) throws SQLException {
         return new FriendResponse(
-                rs.getInt("friend_id")
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("image_id")
         );
     }
 
     private static FriendResponse mapRequestRow(ResultSet rs, int rowNum) throws SQLException {
         return new FriendResponse(
-                rs.getInt("sender_id")
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("image_id")
         );
     }
 
@@ -63,7 +66,7 @@ public class FriendDaoImp implements FriendDao {
     }
 
     /**
-     *  removeFriend, declineInvite
+     * removeFriend, declineInvite
      */
     @Override
     public void delete(int id) {
@@ -74,7 +77,7 @@ public class FriendDaoImp implements FriendDao {
     }
 
     @Override
-    public List<FriendResponse> readFriends(FriendRequest friendRequest, int id) {
+    public List<FriendResponse> readFriends(String status, int limit, int offset, int id) {
         List<FriendResponse> friends = new ArrayList<>();
         try {
             friends =
@@ -83,9 +86,9 @@ public class FriendDaoImp implements FriendDao {
                             FriendDaoImp::mapFriendRow,
                             id,
                             id,
-                            friendRequest.getStatus(),
-                            friendRequest.getLimit(),
-                            friendRequest.getOffset()
+                            status,
+                            limit,
+                            offset
                     );
             log.info(String.valueOf(friends));
         } catch (DataAccessException dataAccessException) {
@@ -95,17 +98,17 @@ public class FriendDaoImp implements FriendDao {
     }
 
     @Override
-    public List<FriendResponse> readRequests(FriendRequest friendRequest, int id) {
+    public List<FriendResponse> readRequests(String status, int limit, int offset, int id) {
         List<FriendResponse> requests = new ArrayList<>();
         try {
             requests =
                     jdbcTemplate.query(
                             q.getSelectRequest(),
                             FriendDaoImp::mapRequestRow,
-                            friendRequest.getStatus(),
+                            status,
                             id,
-                            friendRequest.getLimit(),
-                            friendRequest.getOffset()
+                            limit,
+                            offset
                     );
             log.info(String.valueOf(requests));
         } catch (DataAccessException dataAccessException) {

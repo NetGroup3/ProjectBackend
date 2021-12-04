@@ -1,7 +1,6 @@
 package com.example.NetProjectBackend.dao;
 
 import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequest;
 import com.example.NetProjectBackend.models.dto.FriendResponse;
 
 import java.util.List;
@@ -14,8 +13,8 @@ public interface FriendDao {
 
     void delete(int id);
 
-    List<FriendResponse> readFriends(FriendRequest friendRequest, int id);
+    List<FriendResponse> readFriends(String status, int limit, int offset, int id);
 
-    List<FriendResponse> readRequests(FriendRequest friendRequest, int id);
+    List<FriendResponse> readRequests(String status, int limit, int offset, int id);
 
 }
