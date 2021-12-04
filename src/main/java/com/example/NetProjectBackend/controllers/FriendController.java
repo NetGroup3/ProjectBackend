@@ -1,11 +1,6 @@
 package com.example.NetProjectBackend.controllers;
-//
-//import com.example.NetProjectBackend.models.dto.MessageResponse;
-//import com.example.NetProjectBackend.service.UserDetailsImpl;
-//import com.example.NetProjectBackend.service.friend.FriendService;
-//
+
 import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequestDto;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.FriendService;
 import lombok.extern.slf4j.Slf4j;
