@@ -1,5 +1,7 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.Ingredient;
+import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
@@ -29,19 +31,27 @@ public class DishController {
         return ResponseEntity.ok(dishService.createDish(dish));
     }
 
-    @DeleteMapping("/")
+    @PostMapping("/full")
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    public ResponseEntity<?> createDishFromList(
+        @RequestBody DishWrapperDto dishWrapperDto
+    ) {
+        return ResponseEntity.ok(dishService.createDishFromList(dishWrapperDto));
+    }
+
+    @DeleteMapping
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> deleteDish(@RequestParam int id) {
         return ResponseEntity.ok(dishService.deleteDish(id));
     }
 
-    @PatchMapping("/")
+    @PutMapping
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> updateDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.editDish(dish));
     }
 
-    @PatchMapping("/active")
+    @PutMapping("/active")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> setActiveDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.setActive(dish.getId(), dish.isActive()));
@@ -173,7 +183,7 @@ public class DishController {
         return ResponseEntity.ok(dishService.createLabel(label));
     }
 
-    @PatchMapping("/label/edit")
+    @PutMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> editLabel (@RequestBody Label label) {
         return ResponseEntity.ok(dishService.editLabel(label));

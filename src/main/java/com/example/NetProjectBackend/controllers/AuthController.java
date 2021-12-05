@@ -3,7 +3,9 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.dto.JwtResponseDto;
 import com.example.NetProjectBackend.models.dto.LoginRequestDto;
 import com.example.NetProjectBackend.models.dto.MessageResponseDto;
+import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
@@ -76,14 +78,13 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponseDto("Error: Username exists"));
         }
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        userServiceImpl.create(signupRequest);
+        userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
         return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
-    public ResponseEntity<?> recoveryPassword(@RequestBody String email) {
-        return ResponseEntity.ok(userServiceImpl.recovery(email));
+    public ResponseEntity<?> recoveryPassword(@RequestBody UserDto email) {
+        return ResponseEntity.ok(userServiceImpl.recovery(email.getEmail()));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/code")

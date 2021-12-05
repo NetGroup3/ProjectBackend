@@ -43,10 +43,10 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userServiceImpl.create(user));
-    }
+    //@RequestMapping(method = RequestMethod.POST)
+    //public ResponseEntity<?> createUser(@RequestBody User user) {
+    //    return ResponseEntity.ok(userServiceImpl.create(user));
+    //}
 
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {

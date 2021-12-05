@@ -43,13 +43,14 @@ public class UserServiceImpl implements UserDetailsService {
      * Sign Up
      * @return
      */
-    public int create(User user) {
+    public int create(User user, String role) {
 
         if (userDao.readByEmail(user.getEmail()) != null) {
             return 0;
         }
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.NOT_VERIFY.name());
+        user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         int id = userDao.create(user);
         if (id > 0) {
@@ -80,9 +81,8 @@ public class UserServiceImpl implements UserDetailsService {
      */
     public boolean code(String param) {
         Verify verify = mail.readByCode(param);
-        if (verify == null) {
+        if (verify == null)
             return false;
-        }
         User user = userDao.readById(verify.getUserId());
 
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
