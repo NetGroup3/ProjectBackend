@@ -28,9 +28,9 @@ public class FriendServiceImp implements FriendService {
     }
 
     @Override
-    public void acceptInvite(Friend friend) {
-        friend.setStatus(EFriendStatus.FRIEND.name());
-        friendDao.update(friend.getStatus(), friend.getId());
+    public void acceptInvite(int id) {
+        String status = EFriendStatus.FRIEND.name();
+        friendDao.update(status, id);
     }
 
     @Override
@@ -44,14 +44,14 @@ public class FriendServiceImp implements FriendService {
     }
 
     @Override
-    public List<FriendResponseDto> readFriends(FriendRequestDto friendRequestDto, int id) {
-        friendRequestDto.setStatus(EFriendStatus.FRIEND.name());
-        return friendDao.readFriends(friendRequestDto, id);
+    public List<FriendResponseDto> readFriends(int limit, int offset, int id) {
+        String status = EFriendStatus.FRIEND.name();
+        return friendDao.readFriends(status, limit, offset, id);
     }
 
     @Override
-    public List<FriendResponseDto> readRequests(FriendRequestDto friendRequestDto, int id) {
-        friendRequestDto.setStatus(EFriendStatus.AWAITING.name());
-        return friendDao.readRequests(friendRequestDto, id);
+    public List<FriendResponseDto> readRequests(int limit, int offset, int id) {
+        String status = EFriendStatus.AWAITING.name();
+        return friendDao.readRequests(status, limit, offset, id);
     }
 }
