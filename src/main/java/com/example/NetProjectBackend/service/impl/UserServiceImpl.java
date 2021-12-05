@@ -1,15 +1,17 @@
 package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserDao;
-import com.example.NetProjectBackend.models.UserListRequest;
+import com.example.NetProjectBackend.models.dto.UserDto;
+import com.example.NetProjectBackend.models.dto.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
-import com.example.NetProjectBackend.models.dto.UserDto;
+//import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.service.Mail;
+import com.example.NetProjectBackend.service.Paginator;
 import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserDetailsService {
     private final Mail mail;
     private final PasswordEncoder passwordEncoder;
     private final UserDao userDao;
+    private Paginator paginator;
 
     /**
      * Sign Up
@@ -42,7 +45,7 @@ public class UserServiceImpl implements UserDetailsService {
      */
     public int create(User user, String role) {
 
-        if (readByEmail(user.getEmail()) != null) {
+        if (userDao.readByEmail(user.getEmail()) != null) {
             return 0;
         }
         user.setTimestamp(OffsetDateTime.now());
@@ -63,7 +66,7 @@ public class UserServiceImpl implements UserDetailsService {
      */
     public boolean recovery(String email) {
         log.info(email);
-        if (readByEmail(email) == null) { //проверка на ниличие в бд
+        if (userDao.readByEmail(email) == null) { //проверка на ниличие в бд
             return false;
         } else {
             if (!mail.recoveryCode(email))
@@ -80,7 +83,7 @@ public class UserServiceImpl implements UserDetailsService {
         Verify verify = mail.readByCode(param);
         if (verify == null)
             return false;
-        User user = readById(verify.getUserId());
+        User user = userDao.readById(verify.getUserId());
 
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
             String newPassword = randomPassword();
@@ -104,7 +107,7 @@ public class UserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User u = readByEmail(login);
+        User u = userDao.readByEmail(login);
         if (Objects.isNull(u)) {
             throw new UsernameNotFoundException(String.format("User %s is not found", login));
         }
@@ -124,7 +127,7 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     public void checkOldPassword(PasswordChangeRequestDto passwordCR) throws Exception {
-        User user = readById(passwordCR.getUserId());
+        User user = userDao.readById(passwordCR.getUserId());
         if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
             throw new Exception("Incorrect password");
         }
@@ -149,34 +152,29 @@ public class UserServiceImpl implements UserDetailsService {
         userDao.update(user);
     }
 
+    /*
     public List<User> getAll() {
         return userDao.getAll();
     }
+    */
 
-    public List<User> getAllSuitable(UserListRequest req) {
+    public Paginator.PaginatedResponse getAllSuitable(UserListRequest req) {
         List<User> list = userDao.getAllSuitable(req);
-        if (list == null) return null;
-        int lastIndex = list.size() - 1;
-        int startIndex = Math.abs(req.getPerPage()) * (Math.abs(req.getPageNo()) - 1);
-        int endIndex = startIndex + Math.abs(req.getPerPage());
-        if (startIndex > lastIndex) {
-            return null;
-        } else if (endIndex > lastIndex + 1) {
-            endIndex = lastIndex + 1;
-        }
-        return list.subList(startIndex, endIndex);
+        Paginator.PaginatedResponse res = paginator.paginate(list, req.getPageNo(), req.getPerPage());
+        res.setList(UserDto.transformList(res.getList()));
+        return res;
     }
 
-    public User update(User user) {
+    public UserDto update(User user) {
         if (userDao.readById(user.getId()) == null) {
             return null;
         }
-        userDao.update(user);
-        return userDao.readById(user.getId());
+        userDao.update(user);     //updates first and last names
+        return UserDto.transform(userDao.readById(user.getId()));
     }
 
-    public User delete(int id) {
-        User user = userDao.readById(id);
+    public UserDto delete(int id) {
+        UserDto user = UserDto.transform(userDao.readById(id));
         if (user == null) {
             return null;
         }
@@ -184,28 +182,29 @@ public class UserServiceImpl implements UserDetailsService {
         return user;
     }
 
-    public User readById(int id) {
-        return userDao.readById(id);
+    public UserDto readById(int id) {
+        return UserDto.transform(userDao.readById(id));
     }
 
-    public User readByEmail(String email) {
-        return userDao.readByEmail(email);
+    public UserDto readByEmail(String email) {
+        return UserDto.transform(userDao.readByEmail(email));
     }
 
+    /*
     public User readByName(String name) {
-        return userDao.readByName(name);
+            return userDao.readByName(name);
     }
+    */
 
-    public void updateUserImage(UserImageDto response) {
-        User user = readById(response.getId());
+    public void updateUserImage(UserImageDto obj) {
+        User user = userDao.readById(obj.getId());
         if (user != null) {
-            user.setImageId(response.getImageId());
-            update(user);
+            userDao.updateImageId(obj.getId(), obj.getImageId());
         }
     }
 
     public boolean createModerator(User user) {
-        if (readByEmail(user.getEmail()) != null) {
+        if (userDao.readByEmail(user.getEmail()) != null) {
             return false;
         }
 
@@ -222,8 +221,10 @@ public class UserServiceImpl implements UserDetailsService {
         return false;
     }
 
+    /*
     public List<UserDto> readPage(int limit, int offset, String role) {
         if (limit > 100) limit = 100;
         return userDao.readPage(limit, offset, role);
     }
+    */
 }

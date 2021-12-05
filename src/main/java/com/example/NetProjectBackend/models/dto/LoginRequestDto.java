@@ -8,7 +8,7 @@ public class LoginRequestDto {
         return username;
     }
 
-    public void getUsername(String email) {
+    public void setUsername(String email) {
         this.username = email;
     }
 

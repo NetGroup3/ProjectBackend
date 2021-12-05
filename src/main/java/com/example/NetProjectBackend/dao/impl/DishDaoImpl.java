@@ -351,13 +351,7 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public List<Comment> createComment(Comment comment) {//, int userId) {
-        /*List<Comment> check = jdbcTemplate.query(q.getCommentCreateCheck(),
-                DishDaoImpl::mapCommentRow,
-                userId,
-                comment.getDishId()
-        );
-        if (check.size() > 0) deleteComment(comment.getId(), userId);*/
+    public List<Comment> createComment(Comment comment) {
         return jdbcTemplate.query(q.getCommentCreate(),
                 DishDaoImpl::mapCommentRow,
                 comment.getUserId(),

@@ -37,27 +37,36 @@ public class AuthController {
         Gson g = new Gson();
         LoginRequestDto loginRequestDto = g.fromJson(login, LoginRequestDto.class);
 
-        log.info(loginRequestDto.getUsername());
+        //log.info(loginRequestDto.getUsername());
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
                 loginRequestDto.getPassword());
-        log.info(String.valueOf(token));
-        Authentication authentication = authenticationManager
-                .authenticate(token);
-        log.info(String.valueOf(authentication));
+
+        //log.info(String.valueOf(token));
+
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        //log.info(String.valueOf(authentication));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        log.info(jwt);
+
+        //log.info(jwt);
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        log.info(userDetails.toString());
-        return ResponseEntity.ok(new JwtResponseDto(jwt,
+
+        //log.info(userDetails.toString());
+
+        return ResponseEntity.ok(new JwtResponseDto(
+                jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getFirstname(),
                 userDetails.getLastname(),
-                userDetails.getStatus(),
                 userDetails.getTimestamp(),
                 userDetails.getImageId(),
+                userDetails.getStatus(),
                 userDetails.getRole()
         ));
     }
@@ -67,7 +76,7 @@ public class AuthController {
         if (userServiceImpl.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponseDto("Error: Username is exist"));
+                    .body(new MessageResponseDto("Error: Username exists"));
         }
         userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
         return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
