@@ -7,7 +7,7 @@ import java.util.List;
 
 @Component
 public class Paginator {
-    public PaginatedResponse paginate(List<?> list, int pageNo, int perPage) {
+    public PaginatedResponse paginate(List list, int pageNo, int perPage) {
         PaginatedResponse res = new PaginatedResponse(pageNo, perPage);
 
         if (list == null || pageNo <= 0 || perPage <= 0) return res;
@@ -25,14 +25,14 @@ public class Paginator {
         else if (endIndex > lastIndex + 1) {
             endIndex = lastIndex + 1;
         }
-        List<?> pagList = list.subList(startIndex, endIndex);
+        List pagList = list.subList(startIndex, endIndex);
         res.setList(pagList);
         return res;
     }
 
     @Data
     public class PaginatedResponse {
-        List<?> list;
+        List list;
         int pageNo;
         int perPage;
         int pagesTotal;

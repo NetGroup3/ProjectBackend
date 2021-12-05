@@ -1,4 +1,4 @@
-package com.example.NetProjectBackend.models;
+package com.example.NetProjectBackend.models.dto;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;

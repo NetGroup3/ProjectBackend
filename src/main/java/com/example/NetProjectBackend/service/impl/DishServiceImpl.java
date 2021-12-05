@@ -141,7 +141,7 @@ public class DishServiceImpl  implements DishService {
         List<CommentDto> list = dishDao.readCommentRelation(dishId);
         Paginator.PaginatedResponse res = paginator.paginate(list, pageNo, perPage);
         if (res.getList() != null) {
-            Collections.reverse(res.getList());
+            Collections.reverse(res.getList());     //just to not reverse it on frontend
         }
         return res;
     }

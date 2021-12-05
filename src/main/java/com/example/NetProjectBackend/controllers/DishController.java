@@ -14,28 +14,28 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "*")
 @RestController
 @AllArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 @RequestMapping("/dish")
 public class DishController {
 
     private final DishService dishService;
 
-    @PostMapping
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> createDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.createDish(dish));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> deleteDish(@RequestParam int id) {
         return ResponseEntity.ok(dishService.deleteDish(id));
     }
 
-    @PatchMapping
+    @PatchMapping("/")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> updateDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.editDish(dish));
@@ -66,13 +66,13 @@ public class DishController {
         return ResponseEntity.ok(dishService.addKitchenware(dishKitchenwareDto));
     }
 
-    @DeleteMapping(path = "/kitchenware")
+    @DeleteMapping("/kitchenware")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> removeKitchenware(@RequestParam int id) {
         return ResponseEntity.ok(dishService.removeKitchenware(id));
     }
 
-    @GetMapping("/page")
+    @GetMapping("/list")
     public ResponseEntity<?> searchDishList(
             @RequestParam int limit,
             @RequestParam int page,
@@ -85,12 +85,12 @@ public class DishController {
     }
 
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<?> getDish(
             @RequestParam int id,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+            @RequestParam int userId
+            //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
-        log.info(String.valueOf(id));
         return ResponseEntity.ok(dishService.getDish(id, userId));
     }
 
@@ -148,15 +148,13 @@ public class DishController {
     }
 
     @GetMapping("/comments")
-    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getComments(@RequestParam int dishId, int pageNo, int perPage) {
         Paginator.PaginatedResponse res = dishService.getPaginatedComments(dishId, pageNo, perPage);
         return ResponseEntity.ok(res);
     }
 
     @PostMapping("/comment")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createComment (@RequestBody Comment comment) {  //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+    public ResponseEntity<?> createComment (@RequestBody Comment comment) {
         return ResponseEntity.ok(dishService.createComment(comment));
     }
 

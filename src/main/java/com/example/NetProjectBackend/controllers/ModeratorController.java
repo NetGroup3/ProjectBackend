@@ -30,10 +30,11 @@ public class ModeratorController {
         userServiceImpl.delete(id);
     }
 
-    /** Return Arrays of moderator where limit it is size and offset it is start point */
+    /** Return Arrays of moderator where limit it is size and offset it is start point
     @GetMapping("/page")
     public ResponseEntity<?> readModeratorPage(@RequestParam int limit, @RequestParam int offset) {
         return ResponseEntity.ok(userServiceImpl.readPage(limit, offset, ERole.MODERATOR.name()));
     }
+    */
 
 }
