@@ -9,4 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FriendResponseDto {
     private int id;
+    private String firstName;
+    private String imageId;
+
 }

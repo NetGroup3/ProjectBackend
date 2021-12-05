@@ -8,11 +8,13 @@ import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Favourite;
 import com.example.NetProjectBackend.models.entity.Label;
 import com.example.NetProjectBackend.service.DishService;
+import com.example.NetProjectBackend.service.Paginator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,6 +24,7 @@ import java.util.List;
 public class DishServiceImpl  implements DishService {
 
     private final DishDao dishDao;
+    private Paginator paginator;
 
     @Override
     public List<Dish> createDish(Dish dish) {
@@ -133,8 +136,18 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public List<Comment> createComment (Comment comment, int userId) {
-        return dishDao.createComment(comment, userId);
+    public Paginator.PaginatedResponse getPaginatedComments(int dishId, int pageNo, int perPage) {
+        List<CommentDto> list = dishDao.readCommentRelation(dishId);
+        Paginator.PaginatedResponse res = paginator.paginate(list, pageNo, perPage);
+        if (res.getList() != null) {
+            Collections.reverse(res.getList());
+        }
+        return res;
+    }
+
+    @Override
+    public List<Comment> createComment (Comment comment) {//, int userId) {
+        return dishDao.createComment(comment);//, userId);
     }
 
     @Override

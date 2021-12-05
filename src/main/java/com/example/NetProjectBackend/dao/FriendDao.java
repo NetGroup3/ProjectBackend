@@ -14,8 +14,8 @@ public interface FriendDao {
 
     void delete(int id);
 
-    List<FriendResponseDto> readFriends(FriendRequestDto friendRequestDto, int id);
+    List<FriendResponseDto> readFriends(String status, int limit, int offset, int id);
 
-    List<FriendResponseDto> readRequests(FriendRequestDto friendRequestDto, int id);
+    List<FriendResponseDto> readRequests(String status, int limit, int offset, int id);
 
 }
