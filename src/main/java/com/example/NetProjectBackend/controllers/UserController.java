@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.controllers;
 
 import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
+import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
@@ -25,10 +26,8 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
 
     @RequestMapping(method = RequestMethod.GET, path = "/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        log.info("users_GET");
-        User user = userServiceImpl.readById(id);
-
+    public ResponseEntity<?> getUserById(@PathVariable int id) {
+        UserDto user = userServiceImpl.readById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -36,25 +35,22 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/")
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
-        log.info("users_GET");
-        User user = userServiceImpl.readByEmail(email);
-
+    public ResponseEntity<?> getUserByEmail(@RequestParam String email) {
+        UserDto user = userServiceImpl.readByEmail(email);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(user);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userServiceImpl.create(user));
-    }
+    //@RequestMapping(method = RequestMethod.POST)
+    //public ResponseEntity<?> createUser(@RequestBody User user) {
+    //    return ResponseEntity.ok(userServiceImpl.create(user));
+    //}
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        log.info("users_PUT");
-        User userUpdated = userServiceImpl.update(user);
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        UserDto userUpdated = userServiceImpl.update(user);
         if (userUpdated == null) {
             return ResponseEntity.notFound().build();
         }
@@ -62,15 +58,15 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable int id) {
-        log.info("users_DELETE");
-        User userDeleted = userServiceImpl.delete(id);
+    public ResponseEntity<?> deleteUser(@PathVariable int id) {
+        UserDto userDeleted = userServiceImpl.delete(id);
         if (userDeleted == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userDeleted);
     }
 
+    /*
     @GetMapping("/get")
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = new ArrayList<>();
@@ -81,6 +77,7 @@ public class UserController {
         }
         return ResponseEntity.ok(users);
     }
+    */
 
     @PutMapping("/change-password")
     public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {
@@ -98,18 +95,13 @@ public class UserController {
     }
 
     @PutMapping("/personal-information")
-    public void updatePersonalInformation(@RequestBody User userResponse) {
-        log.info("good");
-        User user = userServiceImpl.readById(userResponse.getId());
-        user.setFirstname(userResponse.getFirstname());
-        user.setLastname(userResponse.getLastname());
-        userServiceImpl.update(user);
+    public void updatePersonalInformation(@RequestBody User userData) {
+        userServiceImpl.update(userData);
     }
 
     @PutMapping("/user-image")
-    public void updateImage(@RequestBody UserImageDto response) {
-        log.debug("Controller update user image");
-        userServiceImpl.updateUserImage(response);
+    public void updateImage(@RequestBody UserImageDto obj) {
+        userServiceImpl.updateUserImage(obj);
     }
 
 }

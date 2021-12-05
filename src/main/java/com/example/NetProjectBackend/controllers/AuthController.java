@@ -3,7 +3,9 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.dto.JwtResponseDto;
 import com.example.NetProjectBackend.models.dto.LoginRequestDto;
 import com.example.NetProjectBackend.models.dto.MessageResponseDto;
+import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.entity.User;
+import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
@@ -35,27 +37,36 @@ public class AuthController {
         Gson g = new Gson();
         LoginRequestDto loginRequestDto = g.fromJson(login, LoginRequestDto.class);
 
-        log.info(loginRequestDto.getUsername());
+        //log.info(loginRequestDto.getUsername());
+
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
                 loginRequestDto.getPassword());
-        log.info(String.valueOf(token));
-        Authentication authentication = authenticationManager
-                .authenticate(token);
-        log.info(String.valueOf(authentication));
+
+        //log.info(String.valueOf(token));
+
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        //log.info(String.valueOf(authentication));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        log.info(jwt);
+
+        //log.info(jwt);
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        log.info(userDetails.toString());
-        return ResponseEntity.ok(new JwtResponseDto(jwt,
+
+        //log.info(userDetails.toString());
+
+        return ResponseEntity.ok(new JwtResponseDto(
+                jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getFirstname(),
                 userDetails.getLastname(),
-                userDetails.getStatus(),
                 userDetails.getTimestamp(),
                 userDetails.getImageId(),
+                userDetails.getStatus(),
                 userDetails.getRole()
         ));
     }
@@ -65,16 +76,15 @@ public class AuthController {
         if (userServiceImpl.readByEmail(signupRequest.getEmail()) != null) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponseDto("Error: Username is exist"));
+                    .body(new MessageResponseDto("Error: Username exists"));
         }
-        signupRequest.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        userServiceImpl.create(signupRequest);
+        userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
         return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
-    public ResponseEntity<?> recoveryPassword(@RequestBody String email) {
-        return ResponseEntity.ok(userServiceImpl.recovery(email));
+    public ResponseEntity<?> recoveryPassword(@RequestBody UserDto email) {
+        return ResponseEntity.ok(userServiceImpl.recovery(email.getEmail()));
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/code")

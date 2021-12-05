@@ -58,4 +58,6 @@ public interface DishService {
     List<DishLabelDto> addLabel(DishLabelDto label);
 
     List<DishLabelDto> removeLabel(int id);
+
+    List<Dish> createDishFromList(DishWrapperDto dishWrapperDto);
 }
