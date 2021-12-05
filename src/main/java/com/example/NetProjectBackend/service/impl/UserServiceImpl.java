@@ -88,7 +88,8 @@ public class UserServiceImpl implements UserDetailsService {
         if (Objects.equals(user.getStatus(), EStatus.ACTIVE.getAuthority())) {
             String newPassword = randomPassword();
             if (mail.sendNewPassword(newPassword, user, verify)) {
-                changePassword(user, newPassword);
+                PasswordChangeRequestDto change = new PasswordChangeRequestDto(user.getId(), newPassword, newPassword);
+                changePassword(change);
             } else {
                 mail.confirmationCode(user.getEmail());
             }
@@ -147,9 +148,9 @@ public class UserServiceImpl implements UserDetailsService {
         userDao.changeStatus(status, id);
     }
 
-    public void changePassword(User user, String password) {
-        user.setPassword(HashPassword.getHashPassword(password));
-        userDao.update(user);
+    public void changePassword(PasswordChangeRequestDto passwordCR) {
+        String hashedPassword = hashPassword(passwordCR.getPassword());
+        userDao.updatePassword(hashedPassword, passwordCR.getUserId());
     }
 
     /*
