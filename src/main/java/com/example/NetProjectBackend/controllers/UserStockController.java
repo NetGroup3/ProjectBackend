@@ -51,14 +51,14 @@ public class UserStockController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<UserStockElement> createStockElement(@RequestBody StockAddDto stockAddDto) {
+    public ResponseEntity<?> createStockElement(@RequestBody StockAddDto stockAddDto) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
         String result = userStockService.createStockElement(userId, stockAddDto.getIngredientId(), stockAddDto.getAmount());
-/*        if (result.equals("Not found ingredient"))
+        if (result.equals("Not found ingredient"))
             return ResponseEntity.ok("Not found ingredient");
         else if (result.equals("Already exist in your stock"))
             return ResponseEntity.ok("Already exist in your stock");
-        else*/
+        else
           return ResponseEntity.ok(userStockService.readStockElement(userId, stockAddDto.getIngredientId()));
     }
 
@@ -72,4 +72,15 @@ public class UserStockController {
         else
             return ResponseEntity.ok(userStockService.readStockElement(userId, stockAddDto.getIngredientId()));
     }
+
+    @GetMapping("/search")
+    public List<UserStockElement> readSearchPage(@RequestParam int limit,                            //necessary in request
+                                            @RequestParam int page,                             //necessary in request
+                                            @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
+                                            @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
+                                            @RequestParam(defaultValue = "id") String sortedBy  //necessary(id, title, category)
+    ) {
+        return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy);
+    }
+
 }
