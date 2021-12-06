@@ -61,8 +61,7 @@ public class UserStockServiceImpl implements UserStockService {
     }
 
     @Override
-    public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
-        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+    public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId) {
         return userStockDao.readSearchPage(limit, offset, key, category, sortedBy, userId);
     }
 }

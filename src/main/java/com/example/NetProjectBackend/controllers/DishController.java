@@ -1,7 +1,5 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.Ingredient;
-import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
@@ -92,7 +90,7 @@ public class DishController {
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
             ) {
         return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category, userId));
-    }
+    }//"http://localhost:8081/dish/list?limit=10&page=0&desc=false&key=straw&category=&sortedBy=title&userId=4"
 
 
     @GetMapping("/")
