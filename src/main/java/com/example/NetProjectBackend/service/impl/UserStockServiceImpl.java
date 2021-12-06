@@ -5,6 +5,7 @@ import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
 import com.example.NetProjectBackend.service.UserStockService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,6 @@ public class UserStockServiceImpl implements UserStockService {
     public UserStockServiceImpl(UserStockDao userStockDao) {
         this.userStockDao = userStockDao;
     }
-
 
     @Override
     public List<UserStockElement> readStock(int userId, int limit, int offset) {
@@ -58,5 +58,11 @@ public class UserStockServiceImpl implements UserStockService {
     @Override
     public UserStockElement readStockElement(int userId, int ingredientId) {
         return userStockDao.readStockElement(userId, ingredientId);
+    }
+
+    @Override
+    public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        return userStockDao.readSearchPage(limit, offset, key, category, sortedBy, userId);
     }
 }

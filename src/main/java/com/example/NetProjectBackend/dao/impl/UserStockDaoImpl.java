@@ -100,6 +100,25 @@ public class UserStockDaoImpl implements UserStockDao {
     }
 
     @Override
+    public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId) {
+        List<UserStockElement> stocks = null;
+        try {
+            if (sortedBy.equals("id")) {
+                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageById(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
+            } else if (sortedBy.equals("title")) {
+                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByTitle(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
+            } else if (sortedBy.equals("category")){
+                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByCategory(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
+            } else if (sortedBy.equals("description")){
+                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByDescription(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
+            }
+        } catch (DataAccessException dataAccessException) {
+            log.debug("Couldn't find entity of type stock with limit {} and offset {}", limit, offset);
+        }
+        return stocks;
+    }
+
+    @Override
     public int ingredientExist(String ingredient) {
         Integer ingredientId = -1;
         try {
