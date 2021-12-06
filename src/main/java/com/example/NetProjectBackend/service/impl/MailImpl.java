@@ -40,7 +40,7 @@ public class MailImpl implements Mail {
         this.l = l;
     }
 
-    protected void sendMail(String email, int type, String code, String password) {
+    protected void sendMail(String email, int type, String code, String password, String linkType) {
         MimeMessage message = emailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -49,7 +49,7 @@ public class MailImpl implements Mail {
             if (type == 1) {
                 helper.setText(getBodyPassword(password), true);
             } else {
-                helper.setText(getBody(code), true);
+                helper.setText(getBody(code, linkType), true);
             }
             emailSender.send(message);
         } catch (MessagingException e) {
@@ -57,9 +57,9 @@ public class MailImpl implements Mail {
         }
     }
 
-    protected String getBody(String code) {
+    protected String getBody(String code, String linkType) {
         Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("link", l.getUrl() + code);
+        thymeleafContext.setVariable("link", l.getUrl()+l.getRecoveryUrl() + code);
         return thymeleafTemplateEngine.process("mail-template.html", thymeleafContext);
     }
 
@@ -85,7 +85,7 @@ public class MailImpl implements Mail {
     @Override
     public void confirmationCode(String email) {
         String code = getCode(email);
-        sendMail(email, 0, code, "");
+        sendMail(email, 0, code, "", l.getUrl()+l.getVerifyUrl());
         int user_id = userDao.readByEmail(email).getId();
         verifyDao.delete(user_id);
         verifyDao.create(new Verify(user_id, code, OffsetDateTime.now()));
@@ -107,13 +107,13 @@ public class MailImpl implements Mail {
             confirmationCode(user.getEmail());
             return false;
         }
-        sendMail(user.getEmail(), 1, "", password);
+        sendMail(user.getEmail(), 1, "", password, l.getUrl());
         return true;
     }
 
     @Override
     public boolean sendModeratorPassword(String password, String email) {
-        sendMail(email, 1, "", password);
+        sendMail(email, 1, "", password, l.getUrl()+l.getLogin());
         return true;
     }
 
