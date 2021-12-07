@@ -296,7 +296,7 @@ public class DishDaoImpl implements DishDao {
                     .append(" (")
                     .append(dishId)
                     .append(",")
-                    .append(val.getDish())
+                    .append(val.getIngredient())
                     .append(",")
                     .append(val.getAmount())
                     .append("),");
