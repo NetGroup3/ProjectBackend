@@ -1,7 +1,5 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.Ingredient;
-import com.example.NetProjectBackend.models.Kitchenware;
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
