@@ -115,7 +115,15 @@ public class UserStockDaoImpl implements UserStockDao {
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find entity of type stock with limit {} and offset {}", limit, offset);
         }
-        return stocks;
+        return stocks;//переделать на мапу, ключ
+    }
+
+    @Override
+    public int getPages(int userId) {
+        Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);
+        if(rows!=null)
+        return rows;
+        return -1;
     }
 
     @Override

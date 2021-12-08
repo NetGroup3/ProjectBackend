@@ -3,8 +3,8 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
 import com.example.NetProjectBackend.models.dto.StockAddDto;
-import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserStockService;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
@@ -75,14 +75,21 @@ public class UserStockController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('USER')")
     public List<UserStockElement> readSearchPage(@RequestParam int limit,
-                                                @RequestParam int page,
-                                                @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
-                                                @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
-                                                @RequestParam(defaultValue = "id") String sortedBy,  //necessary(id, title, category, description)
-                                                @CurrentSecurityContext(expression="authentication.principal.id") int userId
-    ) {
-        return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy, userId);
+                                                 @RequestParam int page,
+                                                 @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
+                                                 @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
+                                                 @RequestParam(defaultValue = "id") String sortedBy)  //necessary(id, title, category, description)
+        {
+            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+            return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy, userId);
+    }
+
+    @GetMapping("/pages")
+    @PreAuthorize("hasAuthority('USER')")
+    public int howPages (@RequestParam int limit){
+        return userStockService.getPages(limit);
     }
 
 }
