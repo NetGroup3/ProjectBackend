@@ -18,7 +18,7 @@ public interface UserStockService {
 
     UserStockElement readStockElement(int userId, int ingredientId);
 
-    List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId);
+    List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy);
 
     int getPages(int limit);
 }
