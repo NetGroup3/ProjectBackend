@@ -7,7 +7,6 @@ import com.example.NetProjectBackend.service.UserStockService;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,8 +81,8 @@ public class UserStockController {
                                                  @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
                                                  @RequestParam(defaultValue = "id") String sortedBy)  //necessary(id, title, category, description)
         {
-            int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-            return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy, userId);
+
+            return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy);
     }
 
     @GetMapping("/pages")

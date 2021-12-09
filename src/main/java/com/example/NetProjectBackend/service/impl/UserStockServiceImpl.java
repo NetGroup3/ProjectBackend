@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.lang.Math.ceil;
-
 @Service
 @Transactional
 @Slf4j
@@ -63,7 +61,8 @@ public class UserStockServiceImpl implements UserStockService {
     }
 
     @Override
-    public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId) {
+    public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
         return userStockDao.readSearchPage(limit, offset, key, category, sortedBy, userId);
     }
 
