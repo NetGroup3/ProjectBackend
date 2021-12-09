@@ -41,4 +41,10 @@ public class UserStockQuery {
 
     @Value("${user_stock.select_search_page_order_by_description}")
     private String selectSearchPageByDescription;
+
+    @Value("${user_stock.select_search_page_order_by_amount}")
+    private String selectSearchPageByAmount;
+
+    @Value("${user_stock.stock_row}")
+    private String selectRows;
 }

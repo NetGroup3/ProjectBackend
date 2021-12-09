@@ -111,11 +111,21 @@ public class UserStockDaoImpl implements UserStockDao {
                 stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByCategory(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
             } else if (sortedBy.equals("description")){
                 stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByDescription(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
+            }else if (sortedBy.equals("amount")){
+                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByAmount(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
             }
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find entity of type stock with limit {} and offset {}", limit, offset);
         }
-        return stocks;
+        return stocks;//переделать на мапу, ключ
+    }
+
+    @Override
+    public int getPages(int userId) {
+        Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);
+        if(rows!=null)
+        return rows;
+        return -1;
     }
 
     @Override

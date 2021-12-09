@@ -65,4 +65,12 @@ public class UserStockServiceImpl implements UserStockService {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
         return userStockDao.readSearchPage(limit, offset, key, category, sortedBy, userId);
     }
+
+    @Override
+    public int getPages(int limit) {
+        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        double rows = userStockDao.getPages(userId);
+        return (int) Math.ceil(rows/limit);
+    }
+
 }

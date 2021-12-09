@@ -3,8 +3,8 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
 import com.example.NetProjectBackend.models.dto.StockAddDto;
-import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.UserStockService;
+import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -74,13 +74,21 @@ public class UserStockController {
     }
 
     @GetMapping("/search")
-    public List<UserStockElement> readSearchPage(@RequestParam int limit,                            //necessary in request
-                                            @RequestParam int page,                             //necessary in request
-                                            @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
-                                            @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
-                                            @RequestParam(defaultValue = "id") String sortedBy  //necessary(id, title, category)
-    ) {
-        return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy);
+    @PreAuthorize("hasAuthority('USER')")
+    public List<UserStockElement> readSearchPage(@RequestParam int limit,
+                                                 @RequestParam int page,
+                                                 @RequestParam(defaultValue = "") String key,        //optional(user input), empty field possible
+                                                 @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
+                                                 @RequestParam(defaultValue = "id") String sortedBy)  //necessary(id, title, category, description)
+        {
+
+            return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy);
+    }
+
+    @GetMapping("/pages")
+    @PreAuthorize("hasAuthority('USER')")
+    public int howPages (@RequestParam int limit){
+        return userStockService.getPages(limit);
     }
 
 }

@@ -22,4 +22,6 @@ public interface UserStockDao {
     UserStockElement updateStockElement(int userId, int ingredientId, int amount);
 
     List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId);
+
+    int getPages(int limit);
 }

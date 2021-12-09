@@ -90,7 +90,7 @@ public class DishController {
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
             ) {
         return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category, userId));
-    }
+    }//"http://localhost:8081/dish/list?limit=10&page=0&desc=false&key=straw&category=&sortedBy=title&userId=4"
 
 
     @GetMapping("/")
