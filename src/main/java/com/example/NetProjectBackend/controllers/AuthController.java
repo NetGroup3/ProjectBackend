@@ -61,7 +61,7 @@ public class AuthController {
             throw new EmailAlreadyUseException();
         }
         userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
-        return new ResponseEntity<String>("User CREATED", HttpStatus.OK);
+        return ResponseEntity.ok(true);
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
