@@ -129,4 +129,14 @@ public class DishQuery {
 
     @Value("${dish.label.push.list}")
     private String pushListLabelsIngredient;
+
+    @Value("${dish.ingredient.delete.list}")
+    private String deleteListIngredient;
+
+    @Value("${dish.kitchenware.delete.list}")
+    private String deleteListKitchenware;
+
+
+    @Value("${dish.label.delete.list}")
+    private String deleteListLabel;
 }

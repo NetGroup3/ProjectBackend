@@ -40,6 +40,8 @@ public interface DishDao {
 
     void pushListDishIngredient(List<DishIngredientDto> ingredientsList, int dishId);
 
+    void updateIngredientRelation(List<DishIngredientDto> ingredientsList, int dishId);
+
     List<DishKitchenwareDto> checkKitchenware(DishKitchenwareDto dishKitchenwareDto);
 
     List<DishKitchenwareDto> removeKitchenware(int id);
@@ -48,7 +50,9 @@ public interface DishDao {
 
     List<Kitchenware> readKitchenwareRelation(int id);
 
-    void pushListKitchenwareIngredient(List<Integer> labelsList, int dishId);
+    void pushListKitchenwareIngredient(List<DishKitchenwareDto> labelsList, int dishId);
+
+    void updateListKitchenwareIngredient(List<DishKitchenwareDto> kitchenwareList, int dishId);
 
     List<CommentDto> readCommentRelation(int id);
 
@@ -78,7 +82,9 @@ public interface DishDao {
 
     List<DishLabelDto> removeLabel(int id);
 
-    void pushListLabelsIngredient(List<Integer> labelsList, int dishId);
+    void pushListLabelsIngredient(List<DishLabelDto> labelsList, int dishId);
+
+    void updateListLabelsIngredient(List<DishLabelDto> labelsList, int dishId);
 
     boolean setLike(int dishId);
 }
