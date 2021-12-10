@@ -2,8 +2,6 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.FriendQuery;
 import com.example.NetProjectBackend.dao.FriendDao;
-import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequestDto;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +43,13 @@ public class FriendDaoImp implements FriendDao {
      * addFriend
      */
     @Override
-    public void create(Friend friend) {
+    public void create(int recipientId, int senderId, String status, OffsetDateTime timestamp) {
         jdbcTemplate.update(
                 q.getInsert(),
-                friend.getSenderId(),
-                friend.getRecipientId(),
-                friend.getStatus(),
-                friend.getTimestamp()
+                senderId,
+                recipientId,
+                status,
+                timestamp
         );
     }
 

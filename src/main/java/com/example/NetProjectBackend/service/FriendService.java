@@ -1,13 +1,11 @@
 package com.example.NetProjectBackend.service;
 
-import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequestDto;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 
 import java.util.List;
 
 public interface FriendService {
-    void addFriend(Friend friend);
+    void addFriend(int recipientId);
 
     void acceptInvite(int id);
 
@@ -15,8 +13,8 @@ public interface FriendService {
 
     void removeFriend(int id);
 
-    List<FriendResponseDto> readFriends(int limit, int offset, int id);
+    List<FriendResponseDto> readFriends(int limit, int offset);
 
-    List<FriendResponseDto> readRequests(int limit, int offset, int id);
+    List<FriendResponseDto> readRequests(int limit, int offset);
 
 }

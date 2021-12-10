@@ -3,9 +3,7 @@ package com.example.NetProjectBackend.service.impl;
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.models.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
-import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
-import com.example.NetProjectBackend.models.dto.UserDto;
-import com.example.NetProjectBackend.models.dto.UserImageDto;
+import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
@@ -225,5 +223,13 @@ public class UserServiceImpl implements UserDetailsService {
     public List<UserDto> readPage(int limit, int offset, String role) {
         if (limit > 100) limit = 100;
         return userDao.readPage(limit, offset, role);
+    }
+
+    public List<UserSearchDto> searchUsers(String name){
+        return userDao.readUsers(name);
+    }
+
+    public UserProfileDto searchUser(int id){
+        return userDao.readUser(id);
     }
 }

@@ -1,12 +1,12 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
+import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import com.example.NetProjectBackend.service.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,28 +26,17 @@ public class FriendController {
      * }
      */
     @PostMapping("/send-invite")
-    public void addFriend(@RequestBody Friend friend) {
-        friend.setSenderId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        friendService.addFriend(friend);
+    public void addFriend(@RequestParam int id) {
+        friendService.addFriend(id);
         log.info("Invite sent");
     }
 
-    /**
-     * {
-     * request id
-     * }
-     */
     @PutMapping("/accept-invite")
     public void acceptInvite(@RequestParam int id) {
         friendService.acceptInvite(id);
         log.info("Invite accepted");
     }
 
-    /**
-     * {
-     * request id
-     * }
-     */
     @DeleteMapping("/decline-invite")
     public void declineInvite(@RequestParam int id) {
         friendService.declineInvite(id);
@@ -56,24 +45,20 @@ public class FriendController {
 
     @DeleteMapping("/remove-friend")
     public void removeFriend(@RequestParam int id) {
-            friendService.removeFriend(id);
-            log.info("Friend removed");
+        friendService.removeFriend(id);
+        log.info("Friend removed");
     }
 
     @GetMapping("/friends")
-    public ResponseEntity<?> readFriends(@RequestParam int limit,
-                                         @RequestParam int offset
-    ) {
-        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        return ResponseEntity.ok(friendService.readFriends(limit, offset, userId));
+    public List<FriendResponseDto> readFriends(@RequestParam int limit,
+                                               @RequestParam int offset) {
+        return friendService.readFriends(limit, offset);
     }
 
     @GetMapping("/requests")
-    public ResponseEntity<?> readRequests(@RequestParam int limit,
-                                          @RequestParam int offset
-    ) {
-        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
-        return ResponseEntity.ok(friendService.readRequests(limit, offset, userId));
+    public List<FriendResponseDto> readRequests(@RequestParam int limit,
+                                                @RequestParam int offset) {
+        return friendService.readRequests(limit, offset);
     }
 
 }
