@@ -14,19 +14,27 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@CrossOrigin(origins = "*")
 @RestController
 @AllArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "*")
 @RequestMapping("/dish")
 public class DishController {
 
     private final DishService dishService;
 
-    @PostMapping
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> createDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.createDish(dish));
+    }
+
+    @PostMapping("/full")
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    public ResponseEntity<?> createDishFromList(
+        @RequestBody DishWrapperDto dishWrapperDto
+    ) {
+        return ResponseEntity.ok(dishService.createDishFromList(dishWrapperDto));
     }
 
     @DeleteMapping
@@ -35,13 +43,13 @@ public class DishController {
         return ResponseEntity.ok(dishService.deleteDish(id));
     }
 
-    @PatchMapping
+    @PutMapping
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> updateDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.editDish(dish));
     }
 
-    @PatchMapping("/active")
+    @PutMapping("/active")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> setActiveDish(@RequestBody Dish dish) {
         return ResponseEntity.ok(dishService.setActive(dish.getId(), dish.isActive()));
@@ -66,13 +74,13 @@ public class DishController {
         return ResponseEntity.ok(dishService.addKitchenware(dishKitchenwareDto));
     }
 
-    @DeleteMapping(path = "/kitchenware")
+    @DeleteMapping("/kitchenware")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> removeKitchenware(@RequestParam int id) {
         return ResponseEntity.ok(dishService.removeKitchenware(id));
     }
 
-    @GetMapping("/page")
+    @GetMapping("/list")
     public ResponseEntity<?> searchDishList(
             @RequestParam int limit,
             @RequestParam int page,
@@ -82,15 +90,15 @@ public class DishController {
             @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
             ) {
         return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category, userId));
-    }
+    }//"http://localhost:8081/dish/list?limit=10&page=0&desc=false&key=straw&category=&sortedBy=title&userId=4"
 
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<?> getDish(
             @RequestParam int id,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+            @RequestParam int userId
+            //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
-        log.info(String.valueOf(id));
         return ResponseEntity.ok(dishService.getDish(id, userId));
     }
 
@@ -148,15 +156,13 @@ public class DishController {
     }
 
     @GetMapping("/comments")
-    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> getComments(@RequestParam int dishId, int pageNo, int perPage) {
         Paginator.PaginatedResponse res = dishService.getPaginatedComments(dishId, pageNo, perPage);
         return ResponseEntity.ok(res);
     }
 
     @PostMapping("/comment")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> createComment (@RequestBody Comment comment) {  //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+    public ResponseEntity<?> createComment (@RequestBody Comment comment) {
         return ResponseEntity.ok(dishService.createComment(comment));
     }
 
@@ -175,7 +181,7 @@ public class DishController {
         return ResponseEntity.ok(dishService.createLabel(label));
     }
 
-    @PatchMapping("/label/edit")
+    @PutMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> editLabel (@RequestBody Label label) {
         return ResponseEntity.ok(dishService.editLabel(label));

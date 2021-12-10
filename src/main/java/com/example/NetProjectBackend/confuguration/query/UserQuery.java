@@ -34,6 +34,9 @@ public class UserQuery {
     @Value("${user.update_client}")
     private String updateClient;
 
+    @Value("${user.update_client_image}")
+    private String updateClientImage;
+
     @Value("${user.delete_client}")
     private String deleteClient;
 

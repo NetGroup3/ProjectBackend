@@ -2,11 +2,11 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.UserQuery;
 import com.example.NetProjectBackend.dao.UserDao;
-import com.example.NetProjectBackend.models.UserListRequest;
-import com.example.NetProjectBackend.models.UserListRequest.SortProps;
-import com.example.NetProjectBackend.models.dto.UserDto;
+//import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.dto.UserProfileDto;
 import com.example.NetProjectBackend.models.dto.UserSearchDto;
+import com.example.NetProjectBackend.models.dto.UserListRequest;
+import com.example.NetProjectBackend.models.dto.UserListRequest.SortProps;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import lombok.AllArgsConstructor;
@@ -225,29 +225,32 @@ public class UserDaoImpl implements UserDao {
     public int create(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
-                new PreparedStatementCreator() {
-                    public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                        PreparedStatement ps = connection.prepareStatement(q.getInsertIntoClientValues(), Statement.RETURN_GENERATED_KEYS);
-                        ps.setString(1, user.getPassword());
-                        ps.setString(2, user.getFirstname());
-                        ps.setString(3, user.getLastname());
-                        ps.setString(4, user.getEmail());
-                        ps.setObject(5, user.getTimestamp());
-                        ps.setString(6, user.getStatus());
-                        ps.setString(7, user.getRole());
-                        return ps;
-                    }
-                }, keyHolder);
+            new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                    PreparedStatement ps = connection.prepareStatement(q.getInsertIntoClientValues(), Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, user.getPassword());
+                    ps.setString(2, user.getFirstname());
+                    ps.setString(3, user.getLastname());
+                    ps.setString(4, user.getEmail());
+                    ps.setObject(5, user.getTimestamp());
+                    ps.setString(6, user.getStatus());
+                    ps.setString(7, user.getRole());
+                    return ps;
+                }
+            }, keyHolder);
         return keyHolder.getKey().intValue();
     }
 
-    //                     NEED CHECK
     @Override
     public void update(User user) {
-        jdbcTemplate.update(q.getUpdateClient(), user.getPassword(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getImageId(), user.getId());
+        jdbcTemplate.update(q.getUpdateClient(), user.getFirstname(), user.getLastname(), user.getId());
     }
 
-    //                     NEED CHECK
+    @Override
+    public void updateImageId(int userId, String imageId) {
+        jdbcTemplate.update(q.getUpdateClientImage(), imageId, userId);
+    }
+
     @Override
     public void delete(int id) {
         jdbcTemplate.update(q.getDeleteClient(), id);
@@ -263,6 +266,7 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate.update(q.getUpdatePassword(), password, id);
     }
 
+    /*
     @Override
     public List<UserDto> readPage(int limit, int offset, String role) {
         List<UserDto> users = null;
@@ -287,5 +291,6 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("role")
         );
     }
+    */
 
 }

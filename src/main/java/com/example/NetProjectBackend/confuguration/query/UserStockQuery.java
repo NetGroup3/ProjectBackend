@@ -1,7 +1,7 @@
 package com.example.NetProjectBackend.confuguration.query;
+
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -30,4 +30,21 @@ public class UserStockQuery {
     @Value("${user_stock.select_ingredients_not_present_in_stock}")
     private String selectIngredientNotPresentInStock;
 
+    @Value("${user_stock.select_search_page_order_by_id}")
+    private String selectSearchPageById;
+
+    @Value("${user_stock.select_search_page_order_by_title}")
+    private String selectSearchPageByTitle;
+
+    @Value("${user_stock.select_search_page_order_by_category}")
+    private String selectSearchPageByCategory;
+
+    @Value("${user_stock.select_search_page_order_by_description}")
+    private String selectSearchPageByDescription;
+
+    @Value("${user_stock.select_search_page_order_by_amount}")
+    private String selectSearchPageByAmount;
+
+    @Value("${user_stock.stock_row}")
+    private String selectRows;
 }
