@@ -1,5 +1,8 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.exeptions.EmailAlreadyUseException;
+import com.example.NetProjectBackend.exeptions.EmailNotFoundException;
+import com.example.NetProjectBackend.exeptions.EmptyInputException;
 import com.example.NetProjectBackend.models.dto.JwtResponseDto;
 import com.example.NetProjectBackend.models.dto.LoginRequestDto;
 import com.example.NetProjectBackend.models.dto.MessageResponseDto;
@@ -12,6 +15,7 @@ import com.example.NetProjectBackend.service.jwt.JwtUtils;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +35,7 @@ public class AuthController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     public ResponseEntity<?> authUser(@RequestBody String  login) {
+
         log.info("LOGIN");
         Gson g = new Gson();
         LoginRequestDto loginRequestDto = g.fromJson(login, LoginRequestDto.class);
@@ -57,21 +62,28 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
         if (userServiceImpl.readByEmail(signupRequest.getEmail()) != null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Username exists"));
+            throw new EmailAlreadyUseException();
         }
         userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
-        return ResponseEntity.ok(new MessageResponseDto("User CREATED"));
+        return new ResponseEntity<String>("User CREATED", HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
     public ResponseEntity<?> recoveryPassword(@RequestBody UserDto email) {
+        if(email.getEmail().isEmpty()){
+            throw new EmptyInputException("601", "Input param is empty");
+        }
+        if (userServiceImpl.readByEmail(email.getEmail()) == null){
+            throw new EmailNotFoundException();
+        }
         return ResponseEntity.ok(userServiceImpl.recovery(email.getEmail()));
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/code")
+    @GetMapping("/code")
     public ResponseEntity<?> code(@RequestParam String param) {
+        if(param.isEmpty()){
+            throw new EmptyInputException("601", "Input param is empty");
+        }
         return ResponseEntity.ok(userServiceImpl.code(param));
     }
 

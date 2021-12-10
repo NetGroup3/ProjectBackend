@@ -81,7 +81,6 @@ public class UserStockController {
                                                  @RequestParam(defaultValue = "") String category,   //optional(dish, cooking tool...), empty field possible
                                                  @RequestParam(defaultValue = "id") String sortedBy)  //necessary(id, title, category, description)
         {
-
             return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy);
     }
 
