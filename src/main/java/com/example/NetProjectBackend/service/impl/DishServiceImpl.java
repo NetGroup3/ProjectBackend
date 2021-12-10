@@ -146,7 +146,7 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public List<Comment> createComment (Comment comment) {//, int userId) {
+    public List<Comment> createComment(Comment comment) {//, int userId) {
         return dishDao.createComment(comment);//, userId);
     }
 
@@ -192,6 +192,16 @@ public class DishServiceImpl  implements DishService {
         dishDao.pushListDishIngredient(dishWrapperDto.getIngredients(), dishId);
         dishDao.pushListKitchenwareIngredient(dishWrapperDto.getKitchenware(), dishId);
         dishDao.pushListLabelsIngredient(dishWrapperDto.getLabel(), dishId);
+        return dish;
+    }
+
+    @Override
+    public List<Dish> updateDishFromList(DishWrapperDto dishWrapperDto) {
+        List<Dish> dish = editDish(dishWrapperDto.getDish());
+        int dishId = dish.get(0).getId();
+        dishDao.updateIngredientRelation(dishWrapperDto.getIngredients(), dishId);
+        dishDao.updateListKitchenwareIngredient(dishWrapperDto.getKitchenware(), dishId);
+        dishDao.updateListLabelsIngredient(dishWrapperDto.getLabel(), dishId);
         return dish;
     }
 }

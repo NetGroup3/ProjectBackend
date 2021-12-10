@@ -13,6 +13,6 @@ import java.util.List;
 public class DishWrapperDto {
     Dish dish;
     List<DishIngredientDto> ingredients;
-    List<Integer> kitchenware;
-    List<Integer> label;
+    List<DishKitchenwareDto> kitchenware;
+    List<DishLabelDto> label;
 }
