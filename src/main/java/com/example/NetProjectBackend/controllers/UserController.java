@@ -4,11 +4,13 @@ import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
 import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.dto.UserImageDto;
+import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -85,7 +87,7 @@ public class UserController {
             passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
             userServiceImpl.updatePassword(passwordCR);
             log.info("Password Changed");
-            return ResponseEntity.ok(200);
+            return ResponseEntity.ok(HttpStatus.OK);
         } catch (Exception e) {
             log.error("Incorrect password");
             return ResponseEntity
@@ -104,4 +106,13 @@ public class UserController {
         userServiceImpl.updateUserImage(obj);
     }
 
+    @GetMapping("/user-search")
+    public List<UserSearchDto> searchUsers(@RequestParam String name) {
+        return userServiceImpl.searchUsers(name);
+    }
+
+    @GetMapping("/user-profile/{id}")
+    public UserProfileDto searchUser(@PathVariable int id) {
+        return userServiceImpl.searchUser(id);
+    }
 }
