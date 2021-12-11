@@ -11,7 +11,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @AllArgsConstructor
@@ -101,8 +103,16 @@ public class UserStockDaoImpl implements UserStockDao {
 
     @Override
     public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId) {
+
+        Map<String, String> query = new HashMap<>();
+        query.put("title",userStockQuery.getSelectSearchPageByTitle());
+        query.put("id",userStockQuery.getSelectSearchPageById());
+        query.put("category",userStockQuery.getSelectSearchPageByTitle());
+        query.put("description",userStockQuery.getSelectSearchPageByTitle());
+        query.put("amount",userStockQuery.getSelectSearchPageByTitle());
         List<UserStockElement> stocks = null;
         try {
+            stocks = jdbcTemplate.query(query.get(sortedBy), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
             if (sortedBy.equals("id")) {
                 stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageById(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
             } else if (sortedBy.equals("title")) {

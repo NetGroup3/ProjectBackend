@@ -1,22 +1,13 @@
 package com.example.NetProjectBackend.controllers;
 
-import com.example.NetProjectBackend.exeptions.IncorrectPasswordException;
-import com.example.NetProjectBackend.models.dto.MessageResponseDto;
-import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
-import com.example.NetProjectBackend.models.dto.UserDto;
-import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.entity.User;
-import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,11 +37,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    //@RequestMapping(method = RequestMethod.POST)
-    //public ResponseEntity<?> createUser(@RequestBody User user) {
-    //    return ResponseEntity.ok(userServiceImpl.create(user));
-    //}
-
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         UserDto userUpdated = userServiceImpl.update(user);
@@ -68,19 +54,6 @@ public class UserController {
         }
         return ResponseEntity.ok(userDeleted);
     }
-
-    /*
-    @GetMapping("/get")
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> users = new ArrayList<>();
-        users = userServiceImpl.getAll();
-        log.info(String.valueOf(users));
-        if (users == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(users);
-    }
-    */
 
     @PutMapping("/change-password")
     public void updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {

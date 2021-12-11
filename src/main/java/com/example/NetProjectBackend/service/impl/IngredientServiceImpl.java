@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.IngredientDao;
+import com.example.NetProjectBackend.exeptions.NotFoundItemException;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.service.IngredientService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,9 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public void delete(int id) {
+        if(ingredientDao.read(id)==null){
+            throw new NotFoundItemException();
+        }
         ingredientDao.delete(id);
     }
 
