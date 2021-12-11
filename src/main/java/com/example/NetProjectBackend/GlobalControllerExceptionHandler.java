@@ -1,8 +1,6 @@
 package com.example.NetProjectBackend;
 
-import com.example.NetProjectBackend.exeptions.EmailAlreadyUseException;
-import com.example.NetProjectBackend.exeptions.EmailNotFoundException;
-import com.example.NetProjectBackend.exeptions.EmptyInputException;
+import com.example.NetProjectBackend.exeptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +33,11 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElement(NoSuchElementException noSuchElementException){
         return new ResponseEntity<String>("No value is present in DB, please change your request", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<String> handleIncorrectPassword(){
+        return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
     }
 
     @Override

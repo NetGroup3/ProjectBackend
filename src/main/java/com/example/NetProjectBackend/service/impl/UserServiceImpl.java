@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserDao;
+import com.example.NetProjectBackend.exeptions.IncorrectPasswordException;
 import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.dto.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
@@ -16,6 +17,7 @@ import com.example.NetProjectBackend.service.Paginator;
 import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -128,10 +130,11 @@ public class UserServiceImpl implements UserDetailsService {
                 .toString();
     }
 
-    public void checkOldPassword(PasswordChangeRequestDto passwordCR) throws Exception {
+    public void checkOldPassword(PasswordChangeRequestDto passwordCR) {
         User user = userDao.readById(passwordCR.getUserId());
         if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
-            throw new Exception("Incorrect password");
+            log.info("Incorrect Password");
+            throw new IncorrectPasswordException();
         }
     }
 
@@ -139,7 +142,8 @@ public class UserServiceImpl implements UserDetailsService {
         return passwordEncoder.encode(password);
     }
 
-    public void updatePassword(PasswordChangeRequestDto passwordCR) throws Exception {
+    public void updatePassword(PasswordChangeRequestDto passwordCR) {
+        passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
         checkOldPassword(passwordCR);
         String hashedPassword = hashPassword(passwordCR.getPassword());
         userDao.updatePassword(hashedPassword, passwordCR.getUserId());
