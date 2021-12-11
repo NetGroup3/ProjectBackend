@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.exeptions.IncorrectPasswordException;
 import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
 import com.example.NetProjectBackend.models.dto.UserDto;
@@ -82,18 +83,9 @@ public class UserController {
     */
 
     @PutMapping("/change-password")
-    public ResponseEntity<?> updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {
-        try {
-            passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+    public void updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {
             userServiceImpl.updatePassword(passwordCR);
             log.info("Password Changed");
-            return ResponseEntity.ok(HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Incorrect password");
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponseDto("Error: Incorrect password"));
-        }
     }
 
     @PutMapping("/personal-information")
