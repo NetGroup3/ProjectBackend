@@ -11,7 +11,6 @@ import com.example.NetProjectBackend.models.entity.Label;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -305,6 +304,16 @@ public class DishDaoImpl implements DishDao {
 
     }
 
+    @Override
+    public void updateIngredientRelation(List<DishIngredientDto> ingredientsList, int dishId) {
+        jdbcTemplate.query(
+                q.getDeleteListIngredient(),
+                DishDaoImpl::mapRelationIngredient,
+                dishId
+        );
+        pushListDishIngredient(ingredientsList, dishId);
+    }
+
     //Dish Kitchenware
     @Override
     public List<DishKitchenwareDto> checkKitchenware(DishKitchenwareDto dishKitchenwareDto) {
@@ -335,13 +344,23 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public void pushListKitchenwareIngredient (List<Integer> kitchenwareList, int dishId) {
+    public void pushListKitchenwareIngredient (List<DishKitchenwareDto> kitchenwareList, int dishId) {
         StringBuilder kitchenware = new StringBuilder();
         if (kitchenwareList.size() > 0) {
-            for (int val : kitchenwareList) kitchenware.append(" (").append(dishId).append(",").append(val).append("),");
+            for (DishKitchenwareDto val : kitchenwareList) kitchenware.append(" (").append(dishId).append(",").append(val.getKitchenware()).append("),");
             jdbcTemplate.execute(q.getPushListKitchenwareIngredient() + kitchenware.substring(0,kitchenware.length()-1));
         }
 
+    }
+
+    @Override
+    public void updateListKitchenwareIngredient(List<DishKitchenwareDto> kitchenwareList, int dishId) {
+        jdbcTemplate.query(
+                q.getDeleteListKitchenware(),
+                DishDaoImpl::mapRelationKitchenware,
+                dishId
+        );
+        pushListKitchenwareIngredient(kitchenwareList, dishId);
     }
 
     //Comment
@@ -465,13 +484,23 @@ public class DishDaoImpl implements DishDao {
     }
 
     @Override
-    public void pushListLabelsIngredient(List<Integer> labelsList, int dishId) {
+    public void pushListLabelsIngredient(List<DishLabelDto> labelsList, int dishId) {
         StringBuilder labels = new StringBuilder();
         if (labelsList.size() > 0) {
-            for (int val : labelsList) labels.append(" (").append(dishId).append(",").append(val).append("),");
+            for (DishLabelDto val : labelsList) labels.append(" (").append(dishId).append(",").append(val.getLabel()).append("),");
             jdbcTemplate.execute(q.getPushListLabelsIngredient() + (labels.substring(0,labels.length()-1)));
         }
 
+    }
+
+    @Override
+    public void updateListLabelsIngredient(List<DishLabelDto> labelsList, int dishId) {
+        jdbcTemplate.query(
+                q.getDeleteListLabel(),
+                DishDaoImpl::mapDishLabelRow,
+                dishId
+        );
+        pushListLabelsIngredient(labelsList, dishId);
     }
 
     //Like

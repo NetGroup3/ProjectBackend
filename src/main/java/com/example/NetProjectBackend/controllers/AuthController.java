@@ -33,12 +33,8 @@ public class AuthController {
     private final JwtUtils jwtUtils;
     private final UserServiceImpl userServiceImpl;
 
-    @RequestMapping(method = RequestMethod.POST, path = "/login")
-    public ResponseEntity<?> authUser(@RequestBody String  login) {
-
-        log.info("LOGIN");
-        Gson g = new Gson();
-        LoginRequestDto loginRequestDto = g.fromJson(login, LoginRequestDto.class);
+    @PostMapping(path = "/login")
+    public ResponseEntity<?> authUser(@RequestBody LoginRequestDto  loginRequestDto) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
                 loginRequestDto.getPassword());
@@ -65,7 +61,7 @@ public class AuthController {
             throw new EmailAlreadyUseException();
         }
         userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
-        return new ResponseEntity<String>("User CREATED", HttpStatus.OK);
+        return ResponseEntity.ok(true);
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")

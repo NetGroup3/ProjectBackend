@@ -37,6 +37,14 @@ public class DishController {
         return ResponseEntity.ok(dishService.createDishFromList(dishWrapperDto));
     }
 
+    @PutMapping("/full")
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    public ResponseEntity<?> updateDishFromList(
+            @RequestBody DishWrapperDto dishWrapperDto
+    ) {
+        return ResponseEntity.ok(dishService.updateDishFromList(dishWrapperDto));
+    }
+
     @DeleteMapping
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> deleteDish(@RequestParam int id) {
