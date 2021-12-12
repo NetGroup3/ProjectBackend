@@ -3,11 +3,12 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import com.example.NetProjectBackend.service.FriendService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("hasAuthority('USER')")
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/friend")
@@ -20,11 +21,6 @@ public class FriendController {
         this.friendService = friendService;
     }
 
-    /**
-     * {
-     * "recipientId":
-     * }
-     */
     @PostMapping("/send-invite")
     public void addFriend(@RequestParam int id) {
         friendService.addFriend(id);
