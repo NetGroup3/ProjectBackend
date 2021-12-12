@@ -40,6 +40,16 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NotFoundItemException.class)
+    public ResponseEntity<String> handleNotFoundElement(NotFoundItemException notFoundElement){
+        return new ResponseEntity<String>("This item not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyExistItemException.class)
+    public ResponseEntity<String> handleAlreadyExistItemException(AlreadyExistItemException alreadyExistItem){
+        return new ResponseEntity<String>("This item already exist", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(FriendException.class)
     public ResponseEntity<String> handleFriendException(){
         return new ResponseEntity<>("You can`t add yourself", HttpStatus.BAD_REQUEST);

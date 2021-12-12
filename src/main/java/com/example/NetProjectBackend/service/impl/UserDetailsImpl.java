@@ -23,8 +23,8 @@ public class UserDetailsImpl implements UserDetails {
     private OffsetDateTime timestamp;
     private String imageId;
     @JsonIgnore
-    private String password;
-    private Collection<? extends GrantedAuthority> authoritiesR;
+    private final String password;
+    private final Collection<? extends GrantedAuthority> authoritiesR;
     private String status;
     private String role;
     public UserDetailsImpl(int id, String firstname, String lastname, String email, OffsetDateTime timestamp, String imageId, String password, String role, String status, Collection<? extends GrantedAuthority> authoritiesR) {
