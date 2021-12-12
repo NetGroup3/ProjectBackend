@@ -2,22 +2,17 @@ package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.exeptions.IncorrectPasswordException;
-import com.example.NetProjectBackend.models.dto.UserDto;
-import com.example.NetProjectBackend.models.dto.UserListRequest;
 import com.example.NetProjectBackend.models.Verify;
-import com.example.NetProjectBackend.models.dto.PasswordChangeRequestDto;
-//import com.example.NetProjectBackend.models.dto.UserDto;
-import com.example.NetProjectBackend.models.dto.UserImageDto;
 import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.service.Mail;
 import com.example.NetProjectBackend.service.Paginator;
-import com.example.NetProjectBackend.service.password.HashPassword;
+import com.example.NetProjectBackend.service.UserService;
+import com.example.NetProjectBackend.service.UserSessionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,17 +30,19 @@ import java.util.Random;
 @Transactional
 @Slf4j
 @AllArgsConstructor
-public class UserServiceImpl implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final Mail mail;
     private final PasswordEncoder passwordEncoder;
     private final UserDao userDao;
     private Paginator paginator;
+    private UserSessionService userSessionService;
 
     /**
      * Sign Up
      * @return
      */
+    @Override
     public int create(User user, String role) {
 
         if (userDao.readByEmail(user.getEmail()) != null) {
@@ -67,6 +64,7 @@ public class UserServiceImpl implements UserDetailsService {
      * Recovery Password
      * @return
      */
+    @Override
     public boolean recovery(String email) {
         log.info(email);
         if (userDao.readByEmail(email) == null) { //проверка на ниличие в бд
@@ -82,6 +80,7 @@ public class UserServiceImpl implements UserDetailsService {
      * Code processing
      * @return
      */
+    @Override
     public boolean code(String param) {
         Verify verify = mail.readByCode(param);
         if (verify == null)
@@ -130,7 +129,7 @@ public class UserServiceImpl implements UserDetailsService {
                 .toString();
     }
 
-    public void checkOldPassword(PasswordChangeRequestDto passwordCR) {
+    private void checkOldPassword(PasswordChangeRequestDto passwordCR) {
         User user = userDao.readById(passwordCR.getUserId());
         if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
             log.info("Incorrect Password");
@@ -138,22 +137,24 @@ public class UserServiceImpl implements UserDetailsService {
         }
     }
 
-    public String hashPassword(String password) {
+    private String hashPassword(String password) {
         return passwordEncoder.encode(password);
     }
 
+    @Override
     public void updatePassword(PasswordChangeRequestDto passwordCR) {
-        passwordCR.setUserId(((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        passwordCR.setUserId(userSessionService.getUserIdFromSession());
         checkOldPassword(passwordCR);
         String hashedPassword = hashPassword(passwordCR.getPassword());
         userDao.updatePassword(hashedPassword, passwordCR.getUserId());
     }
 
+    @Override
     public void changeStatus(EStatus status, int id) {
         userDao.changeStatus(status, id);
     }
 
-    public void changePassword(PasswordChangeRequestDto passwordCR) {
+    private void changePassword(PasswordChangeRequestDto passwordCR) {
         String hashedPassword = hashPassword(passwordCR.getPassword());
         userDao.updatePassword(hashedPassword, passwordCR.getUserId());
     }
@@ -164,6 +165,7 @@ public class UserServiceImpl implements UserDetailsService {
     }
     */
 
+    @Override
     public Paginator.PaginatedResponse getAllSuitable(UserListRequest req) {
         List<User> list = userDao.getAllSuitable(req);
         Paginator.PaginatedResponse res = paginator.paginate(list, req.getPageNo(), req.getPerPage());
@@ -171,6 +173,7 @@ public class UserServiceImpl implements UserDetailsService {
         return res;
     }
 
+    @Override
     public UserDto update(User user) {
         if (userDao.readById(user.getId()) == null) {
             return null;
@@ -179,6 +182,7 @@ public class UserServiceImpl implements UserDetailsService {
         return UserDto.transform(userDao.readById(user.getId()));
     }
 
+    @Override
     public UserDto delete(int id) {
         UserDto user = UserDto.transform(userDao.readById(id));
         if (user == null) {
@@ -188,10 +192,12 @@ public class UserServiceImpl implements UserDetailsService {
         return user;
     }
 
+    @Override
     public UserDto readById(int id) {
         return UserDto.transform(userDao.readById(id));
     }
 
+    @Override
     public UserDto readByEmail(String email) {
         return UserDto.transform(userDao.readByEmail(email));
     }
@@ -202,6 +208,7 @@ public class UserServiceImpl implements UserDetailsService {
     }
     */
 
+    @Override
     public void updateUserImage(UserImageDto obj) {
         User user = userDao.readById(obj.getId());
         if (user != null) {
@@ -209,6 +216,7 @@ public class UserServiceImpl implements UserDetailsService {
         }
     }
 
+    @Override
     public boolean createModerator(User user) {
         if (userDao.readByEmail(user.getEmail()) != null) {
             return false;
@@ -234,10 +242,12 @@ public class UserServiceImpl implements UserDetailsService {
     }
     */
 
+    @Override
     public List<UserSearchDto> searchUsers(String name){
         return userDao.readUsers(name);
     }
 
+    @Override
     public UserProfileDto searchUser(int id){
         return userDao.readUser(id);
     }
