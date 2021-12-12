@@ -3,7 +3,6 @@ package com.example.NetProjectBackend.controllers;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import com.example.NetProjectBackend.service.FriendService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +19,6 @@ public class FriendController {
         this.friendService = friendService;
     }
 
-    /**
-     * {
-     * "recipientId":
-     * }
-     */
     @PostMapping("/send-invite")
     public void addFriend(@RequestParam int id) {
         friendService.addFriend(id);

@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.FriendQuery;
 import com.example.NetProjectBackend.dao.FriendDao;
+import com.example.NetProjectBackend.exeptions.FriendAlreadyAddedException;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,23 +40,21 @@ public class FriendDaoImp implements FriendDao {
         );
     }
 
-    /**
-     * addFriend
-     */
     @Override
     public void create(int recipientId, int senderId, String status, OffsetDateTime timestamp) {
-        jdbcTemplate.update(
-                q.getInsert(),
-                senderId,
-                recipientId,
-                status,
-                timestamp
-        );
+        try{
+            jdbcTemplate.update(
+                    q.getInsert(),
+                    senderId,
+                    recipientId,
+                    status,
+                    timestamp
+            );
+        } catch (DataAccessException e) {
+            throw new FriendAlreadyAddedException();
+        }
     }
 
-    /**
-     * acceptInvite
-     */
     @Override
     public void update(String status, int id) {
         jdbcTemplate.update(
@@ -65,9 +64,6 @@ public class FriendDaoImp implements FriendDao {
         );
     }
 
-    /**
-     * removeFriend, declineInvite
-     */
     @Override
     public void delete(int id) {
         jdbcTemplate.update(

@@ -1,6 +1,8 @@
 package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.FriendDao;
+import com.example.NetProjectBackend.exeptions.FriendAlreadyAddedException;
+import com.example.NetProjectBackend.exeptions.FriendException;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import com.example.NetProjectBackend.models.enums.EFriendStatus;
 import com.example.NetProjectBackend.service.FriendService;
@@ -22,6 +24,9 @@ public class FriendServiceImp implements FriendService {
     @Override
     public void addFriend(int recipientId) {
         int senderId = ((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
+        if (senderId == recipientId) {
+            throw new FriendException();
+        }
         String status = EFriendStatus.AWAITING.name();
         OffsetDateTime timestamp = OffsetDateTime.now();
         friendDao.create(recipientId, senderId, status, timestamp);
@@ -45,14 +50,14 @@ public class FriendServiceImp implements FriendService {
 
     @Override
     public List<FriendResponseDto> readFriends(int limit, int offset) {
-        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        int userId = ((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
         String status = EFriendStatus.FRIEND.name();
         return friendDao.readFriends(status, limit, offset, userId);
     }
 
     @Override
     public List<FriendResponseDto> readRequests(int limit, int offset) {
-        int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
+        int userId = ((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId();
         String status = EFriendStatus.AWAITING.name();
         return friendDao.readRequests(status, limit, offset, userId);
     }
