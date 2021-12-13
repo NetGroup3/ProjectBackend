@@ -120,7 +120,6 @@ public class EventDaoImpl implements EventDao {
     public List<Event> createEvent(Event event) {
         return jdbcTemplate.query(q.getEventCreate(),
                 EventDaoImpl::mapEventRow,
-                event.getCreation_timestamp(),
                 event.getEvent_timestamp(),
                 event.getTitle(),
                 event.getDescription(),
@@ -134,6 +133,17 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public void updateEvent(Event event) {
+        System.out.println(jdbcTemplate.update(
+                q.getEventUpdate(),
+                event.getEvent_timestamp(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getImage_id(),
+                event.getStatus(),
+                event.getLocation_lat(),
+                event.getLocation_lon(),
+                event.getId()
+        ));
         jdbcTemplate.update(q.getEventUpdate(),
                 event.getEvent_timestamp(),
                 event.getTitle(),
@@ -147,11 +157,8 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void declineEvent(int id) {
-        jdbcTemplate.update(q.getEventDecline(),
-                "DECLINE",
-                id
-        );
+    public void declineEvent(int id, String status) {
+        jdbcTemplate.update(q.getEventDecline(), status, id);
     }
 
     @Override
@@ -171,8 +178,8 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public Event readById(int id) {
-        return (Event) jdbcTemplate.query(q.getEventSelectById(),
+    public List<Event> readById(int id) {
+        return  jdbcTemplate.query(q.getEventSelectById(),
                 EventDaoImpl::mapEventRow, id);
     }
 
