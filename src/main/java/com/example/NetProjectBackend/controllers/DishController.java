@@ -45,9 +45,10 @@ public class DishController {
         return ResponseEntity.ok(dishService.updateDishFromList(dishWrapperDto));
     }
 
-    @DeleteMapping
+    @DeleteMapping()
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> deleteDish(@RequestParam int id) {
+        System.out.println(id);
         return ResponseEntity.ok(dishService.deleteDish(id));
     }
 

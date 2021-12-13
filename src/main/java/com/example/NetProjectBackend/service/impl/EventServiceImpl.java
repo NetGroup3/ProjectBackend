@@ -27,13 +27,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void createEventUsersDishes(Event event, EventMember eventMember, EventDish eventDish) {
+    public int createEventUsersDishes(Event event, EventMember eventMember, EventDish eventDish) {
         List<Event> newEvent = eventDao.createEvent(event);
         int eventId = newEvent.get(0).getId();
         eventMember.setEvent_id(eventId);
         eventDish.setEvent_id(eventId);
         eventDao.createEventMember(eventMember);
         eventDao.createEventDish(eventDish);
+        return newEvent.get(0).getId();
     }
 
     @Override
@@ -43,7 +44,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void declineEvent(int id) {
-        eventDao.declineEvent(id);
+        String status = "DECLINE";
+        eventDao.declineEvent(id, status);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event eventReadById(int id) {
-        return eventDao.readById(id);
+        return eventDao.readById(id).get(0);
     }
 
     @Override
@@ -64,8 +66,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void updateEventMember(String status, int user_id, int event_id) {
-        eventDao.updateEventMember(status, user_id, event_id);
+    public void updateEventMember(EventMember eventMember) {
+        eventDao.updateEventMember(eventMember.getStatus(), eventMember.getUser_id(), eventMember.getEvent_id());
     }
 
     @Override

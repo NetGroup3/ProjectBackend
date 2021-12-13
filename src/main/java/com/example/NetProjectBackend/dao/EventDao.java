@@ -10,9 +10,9 @@ import java.util.List;
 public interface EventDao {
     List<Event> createEvent(Event event);
     void updateEvent(Event event);
-    void declineEvent(int id);
+    void declineEvent(int id, String status);
     List<Event> readEventSearch (int user_id, boolean is_owner, String title, String sortedBy, int limit, int offset);
-    Event readById (int id);
+    List<Event> readById (int id);
 
     void createEventMember (EventMember eventMember);
     void updateEventMember (String status, int user_id, int event_id);
