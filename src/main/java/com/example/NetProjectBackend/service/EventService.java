@@ -9,14 +9,14 @@ import java.util.List;
 
 public interface EventService {
     void createEvent(Event event);
-    void createEventUsersDishes(Event event, EventMember eventMember, EventDish eventDish);
+    int createEventUsersDishes(Event event, EventMember eventMember, EventDish eventDish);
     void updateEvent(Event event);
     void declineEvent(int id);
     List<Event> readEventSearch (int user_id, boolean is_owner, String title, String sortedBy, int limit, int page);
     Event eventReadById (int id);
 
     void createEventMember (EventMember eventMember);
-    void updateEventMember (String status, int user_id, int event_id);
+    void updateEventMember (EventMember eventMember);
     void deleteEventMember (int user_id, int event_id);
     List<UserEventDto> readUsersFromEvent (int event_id, String first_name, int limit, int page);
 
