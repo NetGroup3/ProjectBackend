@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.UserStockQuery;
 import com.example.NetProjectBackend.dao.UserStockDao;
+import com.example.NetProjectBackend.exeptions.BadInputException;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
 import lombok.AllArgsConstructor;
@@ -9,11 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @AllArgsConstructor
@@ -75,8 +75,6 @@ public class UserStockDaoImpl implements UserStockDao {
         return ingredients;
     }
 
-
-
     @Override
     public void deleteStockElement(int userId, int ingredientId) {
         jdbcTemplate.update(userStockQuery.getDelete(), userId, ingredientId);
@@ -93,8 +91,6 @@ public class UserStockDaoImpl implements UserStockDao {
         return userStockElement;
     }
 
-
-
     @Override
     public UserStockElement updateStockElement(int userId, int ingredientId, int amount) {
         jdbcTemplate.update(userStockQuery.getUpdateByUserIdAndIngredientId(), amount, userId, ingredientId);
@@ -103,39 +99,28 @@ public class UserStockDaoImpl implements UserStockDao {
 
     @Override
     public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId) {
-
-        Map<String, String> query = new HashMap<>();
-        query.put("title",userStockQuery.getSelectSearchPageByTitle());
-        query.put("id",userStockQuery.getSelectSearchPageById());
-        query.put("category",userStockQuery.getSelectSearchPageByTitle());
-        query.put("description",userStockQuery.getSelectSearchPageByTitle());
-        query.put("amount",userStockQuery.getSelectSearchPageByTitle());
         List<UserStockElement> stocks = null;
-        try {
-            stocks = jdbcTemplate.query(query.get(sortedBy), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-            if (sortedBy.equals("id")) {
-                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageById(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-            } else if (sortedBy.equals("title")) {
-                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByTitle(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-            } else if (sortedBy.equals("category")){
-                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByCategory(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-            } else if (sortedBy.equals("description")){
-                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByDescription(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-            }else if (sortedBy.equals("amount")){
-                stocks = jdbcTemplate.query(userStockQuery.getSelectSearchPageByAmount(), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-            }
-        } catch (DataAccessException dataAccessException) {
-            log.debug("Couldn't find entity of type stock with limit {} and offset {}", limit, offset);
+        String query = userStockQuery.getQuery().get(sortedBy);
+        if (query == null){
+            throw new BadInputException();
         }
-        return stocks;//переделать на мапу, ключ
+        try {
+            stocks = jdbcTemplate.query(userStockQuery.getQuery().get(sortedBy), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
+        } catch (DataAccessException dataAccessException) {
+            log.error("Couldn't find entity of type stock with limit {} and offset {}", limit, offset);
+        }
+        return stocks;
     }
 
     @Override
     public int getPages(int userId) {
         Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);
-        if(rows!=null)
-        return rows;
-        return -1;
+        if(rows!=null) {
+            return rows;
+        } else {
+            log.error("Couldn't find rows of type stock with user {}", userId);
+            throw new DataAccessException("count of rows from DB is null") {};
+        }
     }
 
     @Override

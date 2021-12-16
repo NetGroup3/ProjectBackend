@@ -15,6 +15,11 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(BadInputException.class)
+    public ResponseEntity<String> handleBadInput(BadInputException badInputException){
+        return new ResponseEntity<String>("Input field is bad, Please look into it", HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(EmailAlreadyUseException.class)
     public ResponseEntity<String> handleEmailAlreadyUse(EmailAlreadyUseException emailAlreadyUseException){
         return new ResponseEntity<String>("This email is already in use", HttpStatus.BAD_REQUEST);
