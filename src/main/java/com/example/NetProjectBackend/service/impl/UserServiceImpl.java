@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         int id = userDao.create(user);
         if (id > 0) {
-            mail.confirmationCode(user.getEmail());
+            mail.confirmationCode(user.getEmail(), false);
             return id;
         }
         return 0;
@@ -93,13 +93,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 PasswordChangeRequestDto change = new PasswordChangeRequestDto(user.getId(), newPassword, newPassword);
                 changePassword(change);
             } else {
-                mail.confirmationCode(user.getEmail());
+                mail.confirmationCode(user.getEmail(), false);
             }
         } else {
             if (mail.checkData(verify)) {
                 changeStatus(EStatus.ACTIVE, user.getId());
             } else {
-                mail.confirmationCode(user.getEmail());
+                mail.confirmationCode(user.getEmail(), false);
             }
 
         }
