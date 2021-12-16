@@ -3,7 +3,6 @@ package com.example.NetProjectBackend.service;
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
-import com.example.NetProjectBackend.models.entity.Favourite;
 import com.example.NetProjectBackend.models.entity.Label;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public interface DishService {
 
     boolean addFavourite(int userId, int dishId);
 
-    List<Favourite> removeFavourite(int userId, int dishId);
+    boolean removeFavourite(int userId, int dishId);
 
     boolean setLike(int dishId);
 
