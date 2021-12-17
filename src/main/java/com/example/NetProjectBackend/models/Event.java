@@ -11,13 +11,13 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Event {
     private int id;
-    private Timestamp creation_timestamp;
-    private Timestamp event_timestamp;
+    private Timestamp creationTimestamp;
+    private Timestamp eventTimestamp;
     private String title;
     private String description;
-    private String image_id;
+    private String imageId;
     private String status;
-    private double location_lat;
-    private double location_lon;
+    private double locationLat;
+    private double locationLon;
 
 }
