@@ -16,17 +16,17 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
-    private int id;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private OffsetDateTime timestamp;
-    private String imageId;
+    private final int id;
+    private final String firstname;
+    private final String lastname;
+    private final String email;
+    private final OffsetDateTime timestamp;
+    private final String imageId;
     @JsonIgnore
     private final String password;
     private final Collection<? extends GrantedAuthority> authoritiesR;
-    private String status;
-    private String role;
+    private final String status;
+    private final String role;
     public UserDetailsImpl(int id, String firstname, String lastname, String email, OffsetDateTime timestamp, String imageId, String password, String role, String status, Collection<? extends GrantedAuthority> authoritiesR) {
         this.id = id;
         this.firstname = firstname;
