@@ -15,4 +15,5 @@ public class UserProfileDto {
     private String lastName;
     private String imageId;
     private OffsetDateTime timestamp;
+    private boolean checkUser;
 }

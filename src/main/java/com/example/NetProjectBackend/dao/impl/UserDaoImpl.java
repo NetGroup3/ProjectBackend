@@ -58,7 +58,8 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("image_id"),
-                rs.getObject("timestamp", OffsetDateTime.class)
+                rs.getObject("timestamp", OffsetDateTime.class),
+                rs.getBoolean("check_user")
         );
     }
 
@@ -188,45 +189,29 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<UserSearchDto> readUsers(String name) {
-        List<UserSearchDto> users = new ArrayList<>();
-        try {
-            users =
-                    jdbcTemplate.query(
-                            q.getSelectUserByName(),
-                            UserDaoImpl::mapUserSearchRow,
-                            "%" + name + "%",
-                            "%" + name + "%"
-                    );
-            log.info(String.valueOf(users));
-        } catch (DataAccessException dataAccessException) {
-            log.error(String.valueOf(dataAccessException));
-        }
-        return users;
+        return jdbcTemplate.query(
+                q.getSelectUserByName(),
+                UserDaoImpl::mapUserSearchRow,
+                "%" + name + "%",
+                "%" + name + "%"
+        );
     }
 
     @Override
-    public UserProfileDto readUser(int id) {
-        UserProfileDto user = new UserProfileDto();
-        try {
-            user =
-                    jdbcTemplate.queryForObject(
-                            q.getSelectUserById(),
-                            UserDaoImpl::mapUserProfileRow,
-                            id
-                    );
-            log.info(String.valueOf(user));
-        } catch (DataAccessException dataAccessException) {
-            log.error(String.valueOf(dataAccessException));
-        }
-        return user;
+    public UserProfileDto readUser(int id, boolean checkUser) {
+        return jdbcTemplate.queryForObject(
+                q.getSelectUserById(),
+                UserDaoImpl::mapUserProfileRow,
+                checkUser,
+                id
+        );
     }
 
     @Override
     public int create(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(
-            new PreparedStatementCreator() {
-                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                connection -> {
                     PreparedStatement ps = connection.prepareStatement(q.getInsertIntoClientValues(), Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, user.getPassword());
                     ps.setString(2, user.getFirstname());
@@ -236,8 +221,7 @@ public class UserDaoImpl implements UserDao {
                     ps.setString(6, user.getStatus());
                     ps.setString(7, user.getRole());
                     return ps;
-                }
-            }, keyHolder);
+                }, keyHolder);
         return keyHolder.getKey().intValue();
     }
 
