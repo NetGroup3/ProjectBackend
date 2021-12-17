@@ -22,6 +22,12 @@ public class UserQuery {
     @Value("${user.select_by_name}")
     private String selectByName;
 
+    @Value("${user.select_user_by_name}")
+    private String selectUserByName;
+
+    @Value("${user.select_user_by_id}")
+    private String selectUserById;
+
     @Value("${user.insert_into_client_values}")
     private String insertIntoClientValues;
 

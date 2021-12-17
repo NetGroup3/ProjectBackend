@@ -2,9 +2,11 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.UserQuery;
 import com.example.NetProjectBackend.dao.UserDao;
+//import com.example.NetProjectBackend.models.dto.UserDto;
+import com.example.NetProjectBackend.models.dto.UserProfileDto;
+import com.example.NetProjectBackend.models.dto.UserSearchDto;
 import com.example.NetProjectBackend.models.dto.UserListRequest;
 import com.example.NetProjectBackend.models.dto.UserListRequest.SortProps;
-//import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -42,6 +45,24 @@ public class UserDaoImpl implements UserDao {
         );
     }
 
+    private static UserSearchDto mapUserSearchRow(ResultSet rs, int rowNum) throws SQLException {
+        return new UserSearchDto(
+                rs.getInt("id"),
+                rs.getString("full_name")
+        );
+    }
+
+    private static UserProfileDto mapUserProfileRow(ResultSet rs, int rowNum) throws SQLException {
+        return new UserProfileDto(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("image_id"),
+                rs.getObject("timestamp", OffsetDateTime.class)
+        );
+    }
+
+
     private String generateOrderByPart(UserListRequest req) {
 
         StringBuilder ORDER_BY = new StringBuilder();
@@ -53,8 +74,7 @@ public class UserDaoImpl implements UserDao {
 
                     if (ORDER_BY.toString().equals("")) {
                         ORDER_BY.append(" ORDER BY ");
-                    }
-                    else {
+                    } else {
                         ORDER_BY.append(", ");
                     }
 
@@ -62,8 +82,7 @@ public class UserDaoImpl implements UserDao {
 
                     if (sp.getAsc() != null && !sp.getAsc()) {
                         ORDER_BY.append(" DESC");
-                    }
-                    else {
+                    } else {
                         ORDER_BY.append(" ASC");
                     }
                 }
@@ -82,15 +101,13 @@ public class UserDaoImpl implements UserDao {
             if (req.getFilterTimestampAfter() != null) {
                 if (!req.getFilterTimestampAfter()) {
                     SELECT_SUITABLE_USERS += "<= ?";
-                }
-                else {
+                } else {
                     SELECT_SUITABLE_USERS += ">= ?";
                 }
-            }
-            else {
+            } else {
                 SELECT_SUITABLE_USERS += ">= ?";
             }
-            
+
         }
 
         SELECT_SUITABLE_USERS += generateOrderByPart(req);
@@ -109,23 +126,21 @@ public class UserDaoImpl implements UserDao {
         try {
             if (req.getFilterTimestamp() == null) {
                 users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
-                    "%" + req.getSearchFirstname() + "%",
-                    "%" + req.getSearchLastname() + "%",
-                    "%" + req.getSearchEmail() + "%",
-                    "%" + req.getSearchRole() + "%"
+                        "%" + req.getSearchFirstname() + "%",
+                        "%" + req.getSearchLastname() + "%",
+                        "%" + req.getSearchEmail() + "%",
+                        "%" + req.getSearchRole() + "%"
                 );
-            }
-            else {
+            } else {
                 users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
-                    "%" + req.getSearchFirstname() + "%",
-                    "%" + req.getSearchLastname() + "%",
-                    "%" + req.getSearchEmail() + "%",
-                    "%" + req.getSearchRole() + "%",
-                    req.getFilterTimestamp()
+                        "%" + req.getSearchFirstname() + "%",
+                        "%" + req.getSearchLastname() + "%",
+                        "%" + req.getSearchEmail() + "%",
+                        "%" + req.getSearchRole() + "%",
+                        req.getFilterTimestamp()
                 );
             }
-        }
-        catch (DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             log.debug("WARNING\n\n" + dataAccessException);
         }
 
@@ -167,6 +182,41 @@ public class UserDaoImpl implements UserDao {
             user = jdbcTemplate.queryForObject(q.getSelectByName(), new Object[]{name}, UserDaoImpl::mapClientRow);
         } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find entity of type Person with name {}", name);
+        }
+        return user;
+    }
+
+    @Override
+    public List<UserSearchDto> readUsers(String name) {
+        List<UserSearchDto> users = new ArrayList<>();
+        try {
+            users =
+                    jdbcTemplate.query(
+                            q.getSelectUserByName(),
+                            UserDaoImpl::mapUserSearchRow,
+                            "%" + name + "%",
+                            "%" + name + "%"
+                    );
+            log.info(String.valueOf(users));
+        } catch (DataAccessException dataAccessException) {
+            log.error(String.valueOf(dataAccessException));
+        }
+        return users;
+    }
+
+    @Override
+    public UserProfileDto readUser(int id) {
+        UserProfileDto user = new UserProfileDto();
+        try {
+            user =
+                    jdbcTemplate.queryForObject(
+                            q.getSelectUserById(),
+                            UserDaoImpl::mapUserProfileRow,
+                            id
+                    );
+            log.info(String.valueOf(user));
+        } catch (DataAccessException dataAccessException) {
+            log.error(String.valueOf(dataAccessException));
         }
         return user;
     }
@@ -222,8 +272,7 @@ public class UserDaoImpl implements UserDao {
         List<UserDto> users = null;
         try {
             users = jdbcTemplate.query(q.getSelectPage(), UserDaoImpl::mapUserRow, role, limit, offset);
-        }
-        catch (DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             log.debug("Couldn't find entity of type Users with status {}, limit {} and offset {}", role, limit, offset);
         }
 

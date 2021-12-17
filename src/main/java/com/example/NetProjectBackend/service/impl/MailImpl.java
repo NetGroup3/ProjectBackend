@@ -40,7 +40,7 @@ public class MailImpl implements Mail {
         this.l = l;
     }
 
-    protected void sendMail(String email, int type, String code, String password, String linkType) {
+    protected void sendMail(String email, int type, String code, String password, String link) {
         MimeMessage message = emailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -49,7 +49,7 @@ public class MailImpl implements Mail {
             if (type == 1) {
                 helper.setText(getBodyPassword(password), true);
             } else {
-                helper.setText(getBody(code, linkType), true);
+                helper.setText(getBody(code, link), true);
             }
             emailSender.send(message);
         } catch (MessagingException e) {
@@ -57,9 +57,9 @@ public class MailImpl implements Mail {
         }
     }
 
-    protected String getBody(String code, String linkType) {
+    protected String getBody(String code, String link) {
         Context thymeleafContext = new Context();
-        thymeleafContext.setVariable("link", l.getUrl()+l.getRecoveryUrl() + code);
+        thymeleafContext.setVariable("link", link + code);
         return thymeleafTemplateEngine.process("mail-template.html", thymeleafContext);
     }
 
@@ -83,9 +83,11 @@ public class MailImpl implements Mail {
     }
 
     @Override
-    public void confirmationCode(String email) {
+    public void confirmationCode(String email, boolean recovery) {
         String code = getCode(email);
-        sendMail(email, 0, code, "", l.getUrl()+l.getVerifyUrl());
+        String link = l.getUrl()+l.getVerifyUrl();
+        if (recovery) link = l.getUrl()+l.getRecoveryUrl();
+        sendMail(email, 0, code, "", link);
         int user_id = userDao.readByEmail(email).getId();
         verifyDao.delete(user_id);
         verifyDao.create(new Verify(user_id, code, OffsetDateTime.now()));
@@ -97,14 +99,14 @@ public class MailImpl implements Mail {
         if (Objects.equals(user.getStatus(), EStatus.NOT_VERIFY.getAuthority())) {
             return false;
         }
-        confirmationCode(email);
+        confirmationCode(email, true);
         return true;
     }
 
     @Override
     public boolean sendNewPassword(String password, User user, Verify verify) {
         if (!checkData(verify)) {
-            confirmationCode(user.getEmail());
+            confirmationCode(user.getEmail(), false);
             return false;
         }
         sendMail(user.getEmail(), 1, "", password, l.getUrl());
