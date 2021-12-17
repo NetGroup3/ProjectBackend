@@ -5,7 +5,6 @@ import com.example.NetProjectBackend.dao.UserStockDao;
 import com.example.NetProjectBackend.exeptions.BadInputException;
 import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.models.UserStockElement;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,11 +15,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-@AllArgsConstructor
 @Slf4j
 public class UserStockDaoImpl implements UserStockDao {
     private final JdbcTemplate jdbcTemplate;
     private final UserStockQuery userStockQuery;
+
+    UserStockDaoImpl (JdbcTemplate jdbcTemplate, UserStockQuery userStockQuery){
+        this.userStockQuery = userStockQuery;
+        this.jdbcTemplate = jdbcTemplate;
+        userStockQuery.setUserSearchPageQuery();
+    }
 
     private static UserStockElement mapUserStockRow(ResultSet rs, int rowNum) throws SQLException {
         return new UserStockElement(
@@ -99,19 +103,15 @@ public class UserStockDaoImpl implements UserStockDao {
 
     @Override
     public List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId) {
-        List<UserStockElement> stocks = null;
+        if("".equals(sortedBy)){
+            sortedBy = "id";
+        }
         String query = userStockQuery.getQuery().get(sortedBy);
         if (query == null){
             throw new BadInputException();
         }
-        try {
-            stocks = jdbcTemplate.query(userStockQuery.getQuery().get(sortedBy), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
-        } catch (DataAccessException dataAccessException) {
-            log.error("Couldn't find entity of type stock with limit {} and offset {}", limit, offset);
-        }
-        return stocks;
+        return jdbcTemplate.query(userStockQuery.getQuery().get(sortedBy), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
     }
-
     @Override
     public int getPages(int userId) {
         Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);

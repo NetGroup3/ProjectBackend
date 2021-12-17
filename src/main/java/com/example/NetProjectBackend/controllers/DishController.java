@@ -190,15 +190,6 @@ public class DishController {
         return ResponseEntity.ok(dishService.createComment(comment));
     }
 
-    /*@DeleteMapping("/comment")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deleteComment (
-            @RequestParam int comment,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
-    ) {
-        return ResponseEntity.ok(dishService.deleteComment(comment, userId));
-    }*/
-
     @PostMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> createLabel (@RequestBody Label label) {

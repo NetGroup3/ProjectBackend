@@ -54,11 +54,7 @@ public class UserStockQuery {
     @Value("${user_stock.stock_row}")
     private String selectRows;
 
-    UserStockQuery(){
-        setUserSearchPageQuery();
-    }
-
-    void setUserSearchPageQuery() {
+    public void setUserSearchPageQuery() {
         query.put("title", this.getSelectSearchPageByTitle());
         query.put("id", this.getSelectSearchPageById());
         query.put("category", this.getSelectSearchPageByCategory());
