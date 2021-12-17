@@ -25,9 +25,6 @@ public class FriendServiceImp implements FriendService {
     @Override
     public void addFriend(int recipientId) {
         int senderId = userSessionService.getUserIdFromSession();
-        if (senderId == recipientId) {
-            throw new FriendException();
-        }
         String status = EFriendStatus.AWAITING.name();
         OffsetDateTime timestamp = OffsetDateTime.now();
         friendDao.create(recipientId, senderId, status, timestamp);

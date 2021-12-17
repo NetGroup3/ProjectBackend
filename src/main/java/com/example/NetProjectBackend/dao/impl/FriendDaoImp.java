@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -42,7 +41,7 @@ public class FriendDaoImp implements FriendDao {
 
     @Override
     public void create(int recipientId, int senderId, String status, OffsetDateTime timestamp) {
-        try{
+        try {
             jdbcTemplate.update(
                     q.getInsert(),
                     senderId,
@@ -74,43 +73,27 @@ public class FriendDaoImp implements FriendDao {
 
     @Override
     public List<FriendResponseDto> readFriends(String status, int limit, int offset, int id) {
-        List<FriendResponseDto> friends = new ArrayList<>();
-        try {
-            friends =
-                    jdbcTemplate.query(
-                            q.getSelectFriendId(),
-                            FriendDaoImp::mapFriendRow,
-                            id,
-                            id,
-                            status,
-                            limit,
-                            offset
-                    );
-            log.info(String.valueOf(friends));
-        } catch (DataAccessException dataAccessException) {
-            log.error(String.valueOf(dataAccessException));
-        }
-        return friends;
+        return jdbcTemplate.query(
+                q.getSelectFriendId(),
+                FriendDaoImp::mapFriendRow,
+                id,
+                id,
+                status,
+                limit,
+                offset
+        );
     }
 
     @Override
     public List<FriendResponseDto> readRequests(String status, int limit, int offset, int id) {
-        List<FriendResponseDto> requests = new ArrayList<>();
-        try {
-            requests =
-                    jdbcTemplate.query(
-                            q.getSelectRequest(),
-                            FriendDaoImp::mapRequestRow,
-                            status,
-                            id,
-                            limit,
-                            offset
-                    );
-            log.info(String.valueOf(requests));
-        } catch (DataAccessException dataAccessException) {
-            log.error(String.valueOf(dataAccessException));
-        }
-        return requests;
+        return jdbcTemplate.query(
+                q.getSelectRequest(),
+                FriendDaoImp::mapRequestRow,
+                status,
+                id,
+                limit,
+                offset
+        );
     }
 
 }
