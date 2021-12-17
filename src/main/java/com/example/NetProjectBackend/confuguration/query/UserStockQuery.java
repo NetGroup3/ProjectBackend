@@ -5,16 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Getter
 @Component
 @PropertySource("classpath:query.properties")
 public class UserStockQuery {
-
-    private final Map<String, String> query = new HashMap<>();
-
     @Value("${user_stock.select}")
     private String select;
 
@@ -53,13 +47,4 @@ public class UserStockQuery {
 
     @Value("${user_stock.stock_row}")
     private String selectRows;
-
-    public void setUserSearchPageQuery() {
-        query.put("title", this.getSelectSearchPageByTitle());
-        query.put("id", this.getSelectSearchPageById());
-        query.put("category", this.getSelectSearchPageByCategory());
-        query.put("description", this.getSelectSearchPageByDescription());
-        query.put("amount", this.getSelectSearchPageByAmount());
-    }
-
 }

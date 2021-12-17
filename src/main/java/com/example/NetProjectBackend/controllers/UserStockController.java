@@ -6,7 +6,6 @@ import com.example.NetProjectBackend.models.dto.StockAddDto;
 import com.example.NetProjectBackend.service.UserStockService;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +74,7 @@ public class UserStockController {
     }
 
     @GetMapping("/search")
-    @Secured("USER")
+    @PreAuthorize("hasAuthority('USER')")
     public List<UserStockElement> readSearchPage(@RequestParam int limit,
                                                  @RequestParam int page,
                                                  @RequestParam(defaultValue = "") String key,
