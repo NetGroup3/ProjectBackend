@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserDetailsService {
     public void checkOldPassword(PasswordChangeRequestDto passwordCR) throws Exception {
         User user = userDao.readById(passwordCR.getUserId());
         if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
-            throw new Exception("Incorrect password");
+            throw new IncorrectPasswordException();
         }
     }
 
@@ -203,7 +203,6 @@ public class UserServiceImpl implements UserDetailsService {
         return false;
     }
 
-
     public JwtResponseDto authentication(LoginRequestDto loginRequestDto){
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 loginRequestDto.getUsername(),
@@ -223,5 +222,19 @@ public class UserServiceImpl implements UserDetailsService {
                 userDetails.getStatus(),
                 userDetails.getRole()
         );
+
+    @Override
+    public List<UserSearchDto> searchUsers(String name) {
+        return userDao.readUsers(name);
+    }
+
+    @Override
+    public UserProfileDto searchUser(int id) {
+        boolean checkUser = true;
+        if (id == userSessionService.getUserIdFromSession()){
+        checkUser = false;
+        }
+        return userDao.readUser(id, checkUser);
+
     }
 }

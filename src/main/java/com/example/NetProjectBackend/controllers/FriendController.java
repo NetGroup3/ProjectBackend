@@ -24,25 +24,21 @@ public class FriendController {
     @PostMapping("/send-invite")
     public void addFriend(@RequestParam int id) {
         friendService.addFriend(id);
-        log.info("Invite sent");
     }
 
     @PutMapping("/accept-invite")
     public void acceptInvite(@RequestParam int id) {
         friendService.acceptInvite(id);
-        log.info("Invite accepted");
     }
 
     @DeleteMapping("/decline-invite")
     public void declineInvite(@RequestParam int id) {
         friendService.declineInvite(id);
-        log.info("Invite declined");
     }
 
     @DeleteMapping("/remove-friend")
     public void removeFriend(@RequestParam int id) {
         friendService.removeFriend(id);
-        log.info("Friend removed");
     }
 
     @GetMapping("/friends")

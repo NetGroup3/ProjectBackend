@@ -50,14 +50,9 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return new ResponseEntity<String>("This item already exist", HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(FriendException.class)
-    public ResponseEntity<String> handleFriendException(){
-        return new ResponseEntity<>("You can`t add yourself", HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(FriendAlreadyAddedException.class)
     public ResponseEntity<String> handleFriendAlreadyAddedException(){
-        return new ResponseEntity<>("Friend Already Added", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Friend already added", HttpStatus.BAD_REQUEST);
     }
 
     @Override
