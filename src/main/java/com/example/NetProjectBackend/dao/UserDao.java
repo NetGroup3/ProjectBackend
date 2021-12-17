@@ -17,7 +17,7 @@ public interface UserDao {
     User readByEmail(String Email);
     User readByName(String name);
     List<UserSearchDto> readUsers(String name);
-    UserProfileDto readUser(int id);
+    UserProfileDto readUser(int id, boolean checkUser);
     void update(User client);
     void updateImageId(int userId, String imageId);
     void delete(int id);

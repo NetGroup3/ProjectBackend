@@ -58,7 +58,6 @@ public class UserController {
     @PutMapping("/change-password")
     public void updatePassword(@RequestBody PasswordChangeRequestDto passwordCR) {
         userService.updatePassword(passwordCR);
-            log.info("Password Changed");
     }
 
     @PutMapping("/personal-information")

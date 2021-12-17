@@ -132,7 +132,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private void checkOldPassword(PasswordChangeRequestDto passwordCR) {
         User user = userDao.readById(passwordCR.getUserId());
         if (!passwordEncoder.matches(passwordCR.getOldPassword(), user.getPassword())) {
-            log.info("Incorrect Password");
             throw new IncorrectPasswordException();
         }
     }
@@ -243,12 +242,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     */
 
     @Override
-    public List<UserSearchDto> searchUsers(String name){
+    public List<UserSearchDto> searchUsers(String name) {
         return userDao.readUsers(name);
     }
 
     @Override
-    public UserProfileDto searchUser(int id){
-        return userDao.readUser(id);
+    public UserProfileDto searchUser(int id) {
+        boolean checkUser = true;
+        if (id == userSessionService.getUserIdFromSession()){
+        checkUser = false;
+        }
+        return userDao.readUser(id, checkUser);
     }
 }
