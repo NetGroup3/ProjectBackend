@@ -120,13 +120,13 @@ public class EventDaoImpl implements EventDao {
     public List<Event> createEvent(Event event) {
         return jdbcTemplate.query(q.getEventCreate(),
                 EventDaoImpl::mapEventRow,
-                event.getEventTimestamp(),
+                event.getEvent_timestamp(),
                 event.getTitle(),
                 event.getDescription(),
-                event.getImageId(),
+                event.getImage_id(),
                 event.getStatus(),
-                event.getLocationLat(),
-                event.getLocationLon()
+                event.getLocation_lat(),
+                event.getLocation_lon()
         );
 
     }
@@ -135,23 +135,23 @@ public class EventDaoImpl implements EventDao {
     public void updateEvent(Event event) {
         System.out.println(jdbcTemplate.update(
                 q.getEventUpdate(),
-                event.getEventTimestamp(),
+                event.getEvent_timestamp(),
                 event.getTitle(),
                 event.getDescription(),
-                event.getImageId(),
+                event.getImage_id(),
                 event.getStatus(),
-                event.getLocationLat(),
-                event.getLocationLon(),
+                event.getLocation_lat(),
+                event.getLocation_lon(),
                 event.getId()
         ));
         jdbcTemplate.update(q.getEventUpdate(),
-                event.getEventTimestamp(),
+                event.getEvent_timestamp(),
                 event.getTitle(),
                 event.getDescription(),
-                event.getImageId(),
+                event.getImage_id(),
                 event.getStatus(),
-                event.getLocationLat(),
-                event.getLocationLon(),
+                event.getLocation_lat(),
+                event.getLocation_lon(),
                 event.getId()
         );
     }
@@ -162,24 +162,24 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public List<Event> readEventSearch(int userId, boolean isOwner, String title, String sortedBy, int limit, int offset) {
+    public List<Event> readEventSearch(int user_id, boolean is_owner, String title, String sortedBy, int limit, int offset) {
         if (Objects.equals(sortedBy, "title")) {
             return jdbcTemplate.query(q.getEventSearchOrderByTitle(),
                     EventDaoImpl::mapEventRow,
-                    userId, isOwner, title, limit, offset);
+                    user_id, is_owner, title, limit, offset);
         } else if (Objects.equals(sortedBy, "event_timestamp")) {
             return jdbcTemplate.query(q.getEventSearchOrderByDate(),
                     EventDaoImpl::mapEventRow,
-                    userId, isOwner, title, limit, offset);
+                    user_id, is_owner, title, limit, offset);
         }
         return jdbcTemplate.query(q.getEventSelectPageOwmMember(),
                 EventDaoImpl::mapEventRow,
-                userId, isOwner, title, limit, offset);
+                user_id, is_owner, title, limit, offset);
     }
 
     @Override
-    public Event readById(int id) {
-        return  jdbcTemplate.queryForObject(q.getEventSelectById(),
+    public List<Event> readById(int id) {
+        return  jdbcTemplate.query(q.getEventSelectById(),
                 EventDaoImpl::mapEventRow, id);
     }
 
@@ -195,25 +195,25 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void updateEventMember(String status, int userId, int eventId) {
+    public void updateEventMember(String status, int user_id, int event_id) {
         jdbcTemplate.update(q.getEventMemberUpdate(),
-                status, userId, eventId
+                status, user_id, event_id
         );
     }
 
     @Override
-    public void deleteEventMember(int userId, int eventId) {
+    public void deleteEventMember(int user_id, int event_id) {
         jdbcTemplate.query(q.getEventMemberDelete(),
                 EventDaoImpl::mapEventMemberRow,
-                userId, eventId
+                user_id, event_id
         );
     }
 
     @Override
-    public List<UserEventDto> readUsersFromEvent(int eventId, String firstName, int limit, int offset) {
+    public List<UserEventDto> readUsersFromEvent(int event_id, String first_name, int limit, int offset) {
         return jdbcTemplate.query(q.getMembersOfEvent(),
                 EventDaoImpl::mapUserEventDtoRow,
-                eventId, firstName, limit, offset);
+                event_id, first_name, limit, offset);
     }
 
     @Override
@@ -228,10 +228,10 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public void deleteEventDish(int userId, int eventId, int dishId) {
+    public void deleteEventDish(int user_id, int event_id, int dish_id) {
         jdbcTemplate.query(q.getEventDishDelete(),
                 EventDaoImpl::mapEventDishRow,
-                userId, eventId, dishId
+                user_id, event_id, dish_id
         );
     }
 
@@ -274,10 +274,10 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public List<Message> readMessageFromEvent(int eventId, String text, int limit, int offset) {
+    public List<Message> readMessageFromEvent(int event_id, String text, int limit, int offset) {
         return jdbcTemplate.query(q.getMessagesOfEvent(),
                 EventDaoImpl::mapMessageRow,
-                eventId, text, limit, offset);
+                event_id, text, limit, offset);
     }
 
     @Override
@@ -292,9 +292,9 @@ public class EventDaoImpl implements EventDao {
     }
 
     @Override
-    public List<EventIngredientDto> readUserIngredientsFromEvent(int userId, int eventId, int limit, int offset) {
+    public List<EventIngredientDto> readUserIngredientsFromEvent(int user_id, int event_id, int limit, int offset) {
         return jdbcTemplate.query(q.getUserIngredientsOfEvent(),
                 EventDaoImpl::mapEventIngredientDtoRow,
-                userId, eventId, limit, offset);
+                user_id, event_id, limit, offset);
     }
 }

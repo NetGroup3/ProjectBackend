@@ -27,18 +27,32 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthController {
 
-    private final UserServiceImpl userServiceImpl;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private final UserService userService;
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> authUser(@RequestBody LoginRequestDto  loginRequestDto) {
-
-        return ResponseEntity.ok(userServiceImpl.authentication(loginRequestDto));
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                loginRequestDto.getUsername(),
+                loginRequestDto.getPassword());
+        Authentication authentication = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(new JwtResponseDto(
+                jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getFirstname(),
+                userDetails.getLastname(),
+                userDetails.getTimestamp(),
+                userDetails.getImageId(),
+                userDetails.getStatus(),
+                userDetails.getRole()
+        ));
     }
 
-    //<?>
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
         if (userService.readByEmail(signupRequest.getEmail()) != null) {
