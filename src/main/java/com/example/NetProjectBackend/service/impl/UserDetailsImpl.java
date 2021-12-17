@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;
-    private int id;
-    private String firstname;
-    private String lastname;
+    private final int id;
+    private final String firstname;
+    private final String lastname;
     private String email;
     private OffsetDateTime timestamp;
     private String imageId;

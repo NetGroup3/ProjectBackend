@@ -30,39 +30,22 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
     private final UserServiceImpl userServiceImpl;
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> authUser(@RequestBody LoginRequestDto  loginRequestDto) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                loginRequestDto.getUsername(),
-                loginRequestDto.getPassword());
-        Authentication authentication = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok(new JwtResponseDto(
-                jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getFirstname(),
-                userDetails.getLastname(),
-                userDetails.getTimestamp(),
-                userDetails.getImageId(),
-                userDetails.getStatus(),
-                userDetails.getRole()
-        ));
+
+        return ResponseEntity.ok(userServiceImpl.authentication(loginRequestDto));
     }
 
+    //<?>
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
         if (userServiceImpl.readByEmail(signupRequest.getEmail()) != null) {
             throw new EmailAlreadyUseException();
         }
         userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
-        return new ResponseEntity<String>("User CREATED", HttpStatus.OK);
+        return new ResponseEntity("User CREATED", HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")

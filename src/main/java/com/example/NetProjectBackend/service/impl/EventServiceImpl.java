@@ -57,7 +57,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event eventReadById(int id) {
-        return eventDao.readById(id).get(0);
+        return eventDao.readById(id);
     }
 
     @Override
