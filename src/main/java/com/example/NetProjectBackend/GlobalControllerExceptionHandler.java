@@ -1,6 +1,7 @@
 package com.example.NetProjectBackend;
 
 import com.example.NetProjectBackend.exeptions.*;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,16 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<String> handleDataAccess(){
+        return new ResponseEntity<>("something went wrong ..", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadInputException.class)
+    public ResponseEntity<String> handleBadInput(BadInputException badInputException){
+        return new ResponseEntity<String>("Input field is bad, Please look into it", HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(EmailAlreadyUseException.class)
     public ResponseEntity<String> handleEmailAlreadyUse(EmailAlreadyUseException emailAlreadyUseException){
