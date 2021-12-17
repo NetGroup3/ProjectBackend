@@ -234,13 +234,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return false;
     }
 
-    /*
-    public List<UserDto> readPage(int limit, int offset, String role) {
-        if (limit > 100) limit = 100;
-        return userDao.readPage(limit, offset, role);
-    }
-    */
-
     @Override
     public List<UserSearchDto> searchUsers(String name) {
         return userDao.readUsers(name);
