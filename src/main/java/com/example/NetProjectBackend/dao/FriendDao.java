@@ -1,14 +1,13 @@
 package com.example.NetProjectBackend.dao;
 
-import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequestDto;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface FriendDao {
 
-    void create(Friend friend);
+    void create(int recipientId, int senderId, String status, OffsetDateTime timestamp);
 
     void update(String status, int id);
 

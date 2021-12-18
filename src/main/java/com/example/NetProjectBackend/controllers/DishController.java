@@ -6,6 +6,8 @@ import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.entity.Label;
 import com.example.NetProjectBackend.service.DishService;
 import com.example.NetProjectBackend.service.Paginator;
+import com.example.NetProjectBackend.service.UserSessionService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 public class DishController {
 
     private final DishService dishService;
+    private final UserSessionService userSessionService;
 
     @PostMapping("/")
     @PreAuthorize("hasAuthority('MODERATOR')")
@@ -95,19 +98,31 @@ public class DishController {
             @RequestParam int page,
             @RequestParam(required = false) boolean desc,
             @RequestParam(required = false) String title,
-            @RequestParam(required = false) String category,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
+            @RequestParam(required = false) String category
+            //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
             ) {
+        int userId;
+        try {
+            userId = userSessionService.getUserIdFromSession();
+        } catch (ExpiredJwtException | ClassCastException ignored) {
+            userId = 0;
+        }
         return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category, userId));
     }//"http://localhost:8081/dish/list?limit=10&page=0&desc=false&key=straw&category=&sortedBy=title&userId=4"
 
 
     @GetMapping("/")
     public ResponseEntity<?> getDish(
-            @RequestParam int id,
-            @RequestParam int userId
+            @RequestParam int id
+            //@RequestParam int userId
             //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
+        int userId;
+        try {
+            userId = userSessionService.getUserIdFromSession();
+        } catch (ExpiredJwtException | ClassCastException ignored) {
+            userId = 0;
+        }
         return ResponseEntity.ok(dishService.getDish(id, userId));
     }
 
@@ -174,15 +189,6 @@ public class DishController {
     public ResponseEntity<?> createComment (@RequestBody Comment comment) {
         return ResponseEntity.ok(dishService.createComment(comment));
     }
-
-    /*@DeleteMapping("/comment")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<?> deleteComment (
-            @RequestParam int comment,
-            @CurrentSecurityContext(expression="authentication.principal.id") Integer userId
-    ) {
-        return ResponseEntity.ok(dishService.deleteComment(comment, userId));
-    }*/
 
     @PostMapping("/label/edit")
     @PreAuthorize("hasAuthority('MODERATOR')")

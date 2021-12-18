@@ -2,8 +2,7 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.FriendQuery;
 import com.example.NetProjectBackend.dao.FriendDao;
-import com.example.NetProjectBackend.models.Friend;
-import com.example.NetProjectBackend.models.dto.FriendRequestDto;
+import com.example.NetProjectBackend.exeptions.FriendAlreadyAddedException;
 import com.example.NetProjectBackend.models.dto.FriendResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
@@ -40,23 +39,21 @@ public class FriendDaoImp implements FriendDao {
         );
     }
 
-    /**
-     * addFriend
-     */
     @Override
-    public void create(Friend friend) {
-        jdbcTemplate.update(
-                q.getInsert(),
-                friend.getSenderId(),
-                friend.getRecipientId(),
-                friend.getStatus(),
-                friend.getTimestamp()
-        );
+    public void create(int recipientId, int senderId, String status, OffsetDateTime timestamp) {
+        try {
+            jdbcTemplate.update(
+                    q.getInsert(),
+                    senderId,
+                    recipientId,
+                    status,
+                    timestamp
+            );
+        } catch (DataAccessException e) {
+            throw new FriendAlreadyAddedException();
+        }
     }
 
-    /**
-     * acceptInvite
-     */
     @Override
     public void update(String status, int id) {
         jdbcTemplate.update(
@@ -66,9 +63,6 @@ public class FriendDaoImp implements FriendDao {
         );
     }
 
-    /**
-     * removeFriend, declineInvite
-     */
     @Override
     public void delete(int id) {
         jdbcTemplate.update(
@@ -79,43 +73,27 @@ public class FriendDaoImp implements FriendDao {
 
     @Override
     public List<FriendResponseDto> readFriends(String status, int limit, int offset, int id) {
-        List<FriendResponseDto> friends = new ArrayList<>();
-        try {
-            friends =
-                    jdbcTemplate.query(
-                            q.getSelectFriendId(),
-                            FriendDaoImp::mapFriendRow,
-                            id,
-                            id,
-                            status,
-                            limit,
-                            offset
-                    );
-            log.info(String.valueOf(friends));
-        } catch (DataAccessException dataAccessException) {
-            log.error(String.valueOf(dataAccessException));
-        }
-        return friends;
+        return jdbcTemplate.query(
+                q.getSelectFriendId(),
+                FriendDaoImp::mapFriendRow,
+                id,
+                id,
+                status,
+                limit,
+                offset
+        );
     }
 
     @Override
     public List<FriendResponseDto> readRequests(String status, int limit, int offset, int id) {
-        List<FriendResponseDto> requests = new ArrayList<>();
-        try {
-            requests =
-                    jdbcTemplate.query(
-                            q.getSelectRequest(),
-                            FriendDaoImp::mapRequestRow,
-                            status,
-                            id,
-                            limit,
-                            offset
-                    );
-            log.info(String.valueOf(requests));
-        } catch (DataAccessException dataAccessException) {
-            log.error(String.valueOf(dataAccessException));
-        }
-        return requests;
+        return jdbcTemplate.query(
+                q.getSelectRequest(),
+                FriendDaoImp::mapRequestRow,
+                status,
+                id,
+                limit,
+                offset
+        );
     }
 
 }

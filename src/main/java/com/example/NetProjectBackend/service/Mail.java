@@ -4,7 +4,7 @@ import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.Verify;
 
 public interface Mail {
-    void confirmationCode(String email);
+    void confirmationCode(String email, boolean recovery);
 
     boolean recoveryCode(String email);
 

@@ -5,7 +5,6 @@ import com.example.NetProjectBackend.dao.DishDao;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.dto.dish.*;
-import com.example.NetProjectBackend.models.entity.Favourite;
 import com.example.NetProjectBackend.models.entity.Label;
 import com.example.NetProjectBackend.service.DishService;
 import com.example.NetProjectBackend.service.Paginator;
@@ -126,8 +125,8 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public List<Favourite> removeFavourite(int userId, int dishId) {
-        return dishDao.removeFavourite(dishId, userId);
+    public boolean removeFavourite(int userId, int dishId) {
+        return dishDao.removeFavourite(dishId, userId).size() > 0;
     }
 
     @Override

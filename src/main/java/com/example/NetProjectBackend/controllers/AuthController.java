@@ -9,6 +9,7 @@ import com.example.NetProjectBackend.models.dto.MessageResponseDto;
 import com.example.NetProjectBackend.models.dto.UserDto;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
+import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.service.impl.UserDetailsImpl;
 import com.example.NetProjectBackend.service.impl.UserServiceImpl;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
@@ -31,6 +32,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserServiceImpl userServiceImpl;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final UserService userService;
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> authUser(@RequestBody LoginRequestDto  loginRequestDto) {
@@ -38,14 +42,13 @@ public class AuthController {
         return ResponseEntity.ok(userServiceImpl.authentication(loginRequestDto));
     }
 
-    //<?>
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-        if (userServiceImpl.readByEmail(signupRequest.getEmail()) != null) {
+        if (userService.readByEmail(signupRequest.getEmail()) != null) {
             throw new EmailAlreadyUseException();
         }
-        userServiceImpl.create(signupRequest, ERole.USER.getAuthority());
-        return new ResponseEntity("User CREATED", HttpStatus.OK);
+        userService.create(signupRequest, ERole.USER.getAuthority());
+        return ResponseEntity.ok(true);
     }
 
     @RequestMapping(method = RequestMethod.POST, path="/recovery")
@@ -53,10 +56,10 @@ public class AuthController {
         if(email.getEmail().isEmpty()){
             throw new EmptyInputException("601", "Input param is empty");
         }
-        if (userServiceImpl.readByEmail(email.getEmail()) == null){
+        if (userService.readByEmail(email.getEmail()) == null){
             throw new EmailNotFoundException();
         }
-        return ResponseEntity.ok(userServiceImpl.recovery(email.getEmail()));
+        return ResponseEntity.ok(userService.recovery(email.getEmail()));
     }
 
     @GetMapping("/code")
@@ -64,7 +67,7 @@ public class AuthController {
         if(param.isEmpty()){
             throw new EmptyInputException("601", "Input param is empty");
         }
-        return ResponseEntity.ok(userServiceImpl.code(param));
+        return ResponseEntity.ok(userService.code(param));
     }
 
 }

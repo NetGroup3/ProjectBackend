@@ -1,8 +1,7 @@
 package com.example.NetProjectBackend;
 
-import com.example.NetProjectBackend.exeptions.EmailAlreadyUseException;
-import com.example.NetProjectBackend.exeptions.EmailNotFoundException;
-import com.example.NetProjectBackend.exeptions.EmptyInputException;
+import com.example.NetProjectBackend.exeptions.*;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,16 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<String> handleDataAccess(){
+        return new ResponseEntity<>("something went wrong ..", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadInputException.class)
+    public ResponseEntity<String> handleBadInput(BadInputException badInputException){
+        return new ResponseEntity<String>("Input field is bad, Please look into it", HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(EmailAlreadyUseException.class)
     public ResponseEntity<String> handleEmailAlreadyUse(EmailAlreadyUseException emailAlreadyUseException){
@@ -35,6 +44,26 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElement(NoSuchElementException noSuchElementException){
         return new ResponseEntity<String>("No value is present in DB, please change your request", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<String> handleIncorrectPassword(){
+        return new ResponseEntity<>("Incorrect password", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundItemException.class)
+    public ResponseEntity<String> handleNotFoundElement(NotFoundItemException notFoundElement){
+        return new ResponseEntity<String>("This item not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyExistItemException.class)
+    public ResponseEntity<String> handleAlreadyExistItemException(AlreadyExistItemException alreadyExistItem){
+        return new ResponseEntity<String>("This item already exist", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FriendAlreadyAddedException.class)
+    public ResponseEntity<String> handleFriendAlreadyAddedException(){
+        return new ResponseEntity<>("Friend already added", HttpStatus.BAD_REQUEST);
     }
 
     @Override
