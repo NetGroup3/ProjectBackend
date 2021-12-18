@@ -111,7 +111,7 @@ public class DishController {
     }//"http://localhost:8081/dish/list?limit=10&page=0&desc=false&key=straw&category=&sortedBy=title&userId=4"
 
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<?> getDish(
             @RequestParam int id
             //@RequestParam int userId
