@@ -11,6 +11,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
@@ -227,6 +228,12 @@ public class DishController {
     @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> removeLabel (@RequestParam int id) {
         return ResponseEntity.ok(dishService.removeLabel(id));
+    }
+
+    @Secured("USER")
+    @GetMapping("/pages")
+    public int howPages (@RequestParam int limit){
+        return dishService.getPages(limit);
     }
 
 }

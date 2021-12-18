@@ -61,4 +61,6 @@ public interface DishService {
     List<Dish> createDishFromList(DishWrapperDto dishWrapperDto);
 
     List<Dish> updateDishFromList(DishWrapperDto dishWrapperDto);
+
+    int getPages(int limit);
 }

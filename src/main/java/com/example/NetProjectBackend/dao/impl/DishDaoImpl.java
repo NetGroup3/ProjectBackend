@@ -10,6 +10,7 @@ import com.example.NetProjectBackend.models.entity.Favourite;
 import com.example.NetProjectBackend.models.entity.Label;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -509,4 +510,19 @@ public class DishDaoImpl implements DishDao {
         jdbcTemplate.query(q.getLikeSetLike(), DishDaoImpl::mapDishRow, dishId);
         return true;
     }
+
+    @Override
+    public double getRows() {
+
+        return 0;
+    }
+
+/*    Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);
+        if(rows!=null) {
+        return rows;
+    } else {
+        log.error("Couldn't find rows of type stock with user {}", userId);
+        throw new DataAccessException("count of rows from DB is null") {};
+    }*/
+
 }
