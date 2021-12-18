@@ -513,16 +513,13 @@ public class DishDaoImpl implements DishDao {
 
     @Override
     public double getRows() {
-
-        return 0;
-    }
-
-/*    Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);
+        Integer rows = jdbcTemplate.queryForObject(q.getRows(), Integer.class);
         if(rows!=null) {
-        return rows;
-    } else {
-        log.error("Couldn't find rows of type stock with user {}", userId);
-        throw new DataAccessException("count of rows from DB is null") {};
-    }*/
+            return rows;
+        } else {
+            log.error("Couldn't find rows of type dish");
+            throw new DataAccessException("count of rows from DB is null") {};
+        }
+    }
 
 }
