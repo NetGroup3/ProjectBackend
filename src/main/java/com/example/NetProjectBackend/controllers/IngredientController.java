@@ -4,6 +4,7 @@ import com.example.NetProjectBackend.models.Ingredient;
 import com.example.NetProjectBackend.service.IngredientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
@@ -24,17 +25,20 @@ public class IngredientController {
     }
 
     @PostMapping("/ingredient")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public ResponseEntity<?> createIngredient(@RequestBody Ingredient ingredient) {
         ingredient.setActive(true);
         return ResponseEntity.ok(ingredientService.create(ingredient));
     }
 
     @PutMapping("/ingredient")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public void updateIngredient(@RequestBody Ingredient ingredient) {
         ingredientService.update(ingredient);
     }
 
     @DeleteMapping("/ingredient")
+    @PreAuthorize("hasAuthority('MODERATOR')")
     public void deleteIngredient(@RequestParam int id) {
         ingredientService.delete(id);
     }
