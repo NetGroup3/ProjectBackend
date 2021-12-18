@@ -32,14 +32,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserServiceImpl userServiceImpl;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
     private final UserService userService;
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> authUser(@RequestBody LoginRequestDto  loginRequestDto) {
 
-        return ResponseEntity.ok(userServiceImpl.authentication(loginRequestDto));
+        return ResponseEntity.ok(userService.authentication(loginRequestDto));
     }
 
     @PostMapping("/signup")

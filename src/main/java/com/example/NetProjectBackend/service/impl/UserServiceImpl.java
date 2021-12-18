@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final Paginator paginator;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private Paginator paginator;
     private UserSessionService userSessionService;
 
     /**
