@@ -23,5 +23,6 @@ public interface UserService {
     boolean createModerator(User user);
     List<UserSearchDto> searchUsers(String name);
     UserProfileDto searchUser(int id);
+    JwtResponseDto authentication(LoginRequestDto loginRequestDto);
 
 }
