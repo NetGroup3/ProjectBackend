@@ -1,7 +1,6 @@
 package com.example.NetProjectBackend.service.jwt;
 
 import com.example.NetProjectBackend.service.impl.UserDetailsServiceImpl;
-import com.sun.istack.internal.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,7 +46,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String headerAuth = request.getHeader("Authorization");
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+            return headerAuth.substring(7, headerAuth.length());
         }
 
         return null;
