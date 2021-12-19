@@ -18,6 +18,7 @@ public interface UserDao {
     List<UserSearchDto> readUsers(String name);
     UserProfileDto readUser(int id, boolean checkUser);
     void update(User client);
+    void updateFull(User user);
     void updateImageId(int userId, String imageId);
     void delete(int id);
     void changeStatus(EStatus status, int id);

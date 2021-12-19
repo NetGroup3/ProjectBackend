@@ -28,7 +28,7 @@ public class ModeratorController {
     @PutMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public void updateModerator(@RequestBody User user) {
-        userService.update(user);
+        userService.updateFull(user);
     }
 
     @DeleteMapping("/{id}")

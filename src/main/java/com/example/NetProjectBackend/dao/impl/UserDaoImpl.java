@@ -193,6 +193,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void updateFull(User user) {
+        jdbcTemplate.update(q.getUpdateFullClient(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getId());
+    }
+
+    @Override
     public void updateImageId(int userId, String imageId) {
         jdbcTemplate.update(q.getUpdateClientImage(), imageId, userId);
     }

@@ -41,9 +41,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
-        if (userService.readByEmail(signupRequest.getEmail()) != null) {
-            throw new EmailAlreadyUseException();
-        }
         userService.create(signupRequest, ERole.USER.getAuthority());
         return ResponseEntity.ok(true);
     }

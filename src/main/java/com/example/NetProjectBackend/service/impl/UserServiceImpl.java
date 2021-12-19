@@ -162,11 +162,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDto update(User user) {
-        if (userDao.readById(user.getId()) == null) {
-            return null;
-        }
         userDao.update(user);
         return UserDto.transform(userDao.readById(user.getId()));
+    }
+
+    @Override
+    public void updateFull(User user) {
+        userDao.updateFull(user);
     }
 
     @Override

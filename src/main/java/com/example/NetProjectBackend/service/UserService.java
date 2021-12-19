@@ -16,6 +16,7 @@ public interface UserService {
     void changeStatus(EStatus status, int id);
     List<UserPaginatedDto> getAllSuitable(UserListRequest req);
     UserDto update(User user);
+    void updateFull(User user);
     UserDto delete(int id);
     UserDto readById(int id);
     UserDto readByEmail(String email);
