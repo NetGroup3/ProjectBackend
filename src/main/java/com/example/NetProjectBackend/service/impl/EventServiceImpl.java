@@ -1,12 +1,13 @@
 package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.EventDao;
+import com.example.NetProjectBackend.exeptions.NotFoundItemException;
 import com.example.NetProjectBackend.models.*;
 import com.example.NetProjectBackend.models.dto.EventIngredientDto;
 import com.example.NetProjectBackend.models.dto.UserEventDto;
 import com.example.NetProjectBackend.models.entity.Dish;
+import com.example.NetProjectBackend.models.enums.EStatusEvent;
 import com.example.NetProjectBackend.service.EventService;
-import com.example.NetProjectBackend.service.Paginator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,8 +45,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void declineEvent(int id) {
-        String status = "DECLINE";
-        eventDao.declineEvent(id, status);
+        if(eventReadById(id) != null) {
+            eventDao.declineEvent(id, EStatusEvent.DECLINE.getStatus());
+        }
+        else {
+            throw new NotFoundItemException();
+        }
     }
 
     @Override
@@ -57,7 +62,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event eventReadById(int id) {
-        return eventDao.readById(id);
+        Event e = eventDao.readById(id);
+        if(e != null){
+            return e;
+        }
+        else {
+            throw new NotFoundItemException();
+        }
     }
 
     @Override
@@ -67,7 +78,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void updateEventMember(EventMember eventMember) {
-        eventDao.updateEventMember(eventMember.getStatus(), eventMember.getUser_id(), eventMember.getEvent_id());
+        if(eventReadById(eventMember.getId()) != null) {
+            eventDao.updateEventMember(eventMember.getStatus(), eventMember.getUser_id(), eventMember.getEvent_id());
+        }
+        else {
+            throw new NotFoundItemException();
+        }
     }
 
     @Override
