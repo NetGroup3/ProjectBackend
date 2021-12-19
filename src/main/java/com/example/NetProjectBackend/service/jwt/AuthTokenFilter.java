@@ -1,7 +1,6 @@
 package com.example.NetProjectBackend.service.jwt;
 
 import com.example.NetProjectBackend.service.impl.UserDetailsServiceImpl;
-import com.sun.istack.internal.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
