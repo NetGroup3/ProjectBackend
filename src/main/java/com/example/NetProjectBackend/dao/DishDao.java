@@ -87,4 +87,6 @@ public interface DishDao {
     void updateListLabelsIngredient(List<DishLabelDto> labelsList, int dishId);
 
     boolean setLike(int dishId);
+
+    double getRows();
 }

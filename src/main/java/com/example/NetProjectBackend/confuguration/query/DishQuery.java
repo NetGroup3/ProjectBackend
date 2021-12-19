@@ -139,4 +139,7 @@ public class DishQuery {
 
     @Value("${dish.label.delete.list}")
     private String deleteListLabel;
+
+    @Value("${dish.rows}")
+    private String rows;
 }

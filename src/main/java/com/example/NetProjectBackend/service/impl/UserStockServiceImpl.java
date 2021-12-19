@@ -68,7 +68,7 @@ public class UserStockServiceImpl implements UserStockService {
 
     @Override
     public int getPages(int limit) {
-        double rows = userStockDao.getPages(userSessionService.getUserIdFromSession());
+        double rows = userStockDao.getRows(userSessionService.getUserIdFromSession());
         return (int) Math.ceil(rows/limit);
     }
 

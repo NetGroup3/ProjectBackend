@@ -9,6 +9,7 @@ import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Label;
 import com.example.NetProjectBackend.service.DishService;
 import com.example.NetProjectBackend.service.Paginator;
+import com.example.NetProjectBackend.service.UserSessionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -206,5 +207,10 @@ public class DishServiceImpl  implements DishService {
         dishDao.updateListKitchenwareIngredient(dishWrapperDto.getKitchenware(), dishId);
         dishDao.updateListLabelsIngredient(dishWrapperDto.getLabel(), dishId);
         return dish;
+    }
+
+    public int getPages(int limit){
+        double rows = dishDao.getRows();
+        return (int) Math.ceil(rows/limit);
     }
 }

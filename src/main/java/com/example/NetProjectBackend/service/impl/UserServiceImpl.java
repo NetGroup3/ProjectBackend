@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public boolean createModerator(User user) {
+    public void createModerator(User user) {
         user.setRole(ERole.MODERATOR.getAuthority());
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.ACTIVE.getAuthority());
@@ -209,9 +209,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         if (userDao.create(user) > 0) {
             mail.sendModeratorPassword(password, user.getEmail());
-            return true;
+            return;
         }
-        return false;
+        return;
     }
 
     @Override

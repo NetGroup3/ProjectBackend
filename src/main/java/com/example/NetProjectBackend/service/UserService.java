@@ -21,7 +21,7 @@ public interface UserService {
     UserDto readById(int id);
     UserDto readByEmail(String email);
     void updateUserImage(UserImageDto obj);
-    boolean createModerator(User user);
+    void createModerator(User user);
     List<UserSearchDto> searchUsers(String name);
     UserProfileDto searchUser(int id);
     JwtResponseDto authentication(LoginRequestDto loginRequestDto);

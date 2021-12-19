@@ -23,5 +23,5 @@ public interface UserStockDao {
 
     List<UserStockElement> readSearchPage(int limit, int offset, String key, String category, String sortedBy, int userId);
 
-    int getPages(int limit);
+    int getRows(int limit);
 }
