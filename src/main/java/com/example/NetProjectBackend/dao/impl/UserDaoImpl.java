@@ -2,23 +2,20 @@ package com.example.NetProjectBackend.dao.impl;
 
 import com.example.NetProjectBackend.confuguration.query.UserQuery;
 import com.example.NetProjectBackend.dao.UserDao;
-//import com.example.NetProjectBackend.models.dto.UserDto;
-import com.example.NetProjectBackend.models.dto.UserProfileDto;
-import com.example.NetProjectBackend.models.dto.UserSearchDto;
-import com.example.NetProjectBackend.models.dto.UserListRequest;
-import com.example.NetProjectBackend.models.dto.UserListRequest.SortProps;
+import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +39,20 @@ public class UserDaoImpl implements UserDao {
                 rs.getString("image_id"),
                 rs.getString("status"),
                 rs.getString("role")
+        );
+    }
+
+    private static UserPaginated mapUserPaginated(ResultSet rs, int rowNum) throws SQLException {
+        return new UserPaginated(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("email"),
+                rs.getObject("timestamp", OffsetDateTime.class),
+                rs.getString("image_id"),
+                rs.getString("status"),
+                rs.getString("role"),
+                rs.getInt("total")
         );
     }
 
@@ -71,7 +82,12 @@ public class UserDaoImpl implements UserDao {
         if (req.getSortProps() != null) {
             for (SortProps sp : req.getSortProps()) {
                 String column = sp.getColumn();
-                if (column != null && (column.equals("first_name") || column.equals("last_name") || column.equals("email") || column.equals("timestamp")) && !ORDER_BY.toString().contains(column)) {
+                if (column != null && (
+                   column.equals("first_name") ||
+                   column.equals("last_name") ||
+                   column.equals("email") ||
+                   column.equals("timestamp")
+                ) && !ORDER_BY.toString().contains(column)) {
 
                     if (ORDER_BY.toString().equals("")) {
                         ORDER_BY.append(" ORDER BY ");
@@ -95,96 +111,42 @@ public class UserDaoImpl implements UserDao {
 
     private String generateSelectSuitableQuery(UserListRequest req) {
 
-        String SELECT_SUITABLE_USERS = "SELECT * FROM client WHERE LOWER(first_name) LIKE LOWER(?) AND LOWER(last_name) LIKE LOWER(?) AND LOWER(email) LIKE LOWER(?) AND LOWER(role) LIKE LOWER(?)";
-
-        if (req.getFilterTimestamp() != null) {
-            SELECT_SUITABLE_USERS += " AND timestamp ";
-            if (req.getFilterTimestampAfter() != null) {
-                if (!req.getFilterTimestampAfter()) {
-                    SELECT_SUITABLE_USERS += "<= ?";
-                } else {
-                    SELECT_SUITABLE_USERS += ">= ?";
-                }
-            } else {
-                SELECT_SUITABLE_USERS += ">= ?";
-            }
-
-        }
-
+        String SELECT_SUITABLE_USERS = q.getSelectAllSuitablePart();
         SELECT_SUITABLE_USERS += generateOrderByPart(req);
-
+        SELECT_SUITABLE_USERS += " LIMIT ? OFFSET ?";
         return SELECT_SUITABLE_USERS;
-
     }
 
     @Override
-    public List<User> getAllSuitable(UserListRequest req) {
+    public List<UserPaginated> getAllSuitable(UserListRequest req) {
 
         String SELECT_SUITABLE_USERS = generateSelectSuitableQuery(req);
 
-        List<User> users = null;
+        List<Object> args = new ArrayList<>();
 
-        try {
-            if (req.getFilterTimestamp() == null) {
-                users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
-                        "%" + req.getSearchFirstname() + "%",
-                        "%" + req.getSearchLastname() + "%",
-                        "%" + req.getSearchEmail() + "%",
-                        "%" + req.getSearchRole() + "%"
-                );
-            } else {
-                users = jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapClientRow,
-                        "%" + req.getSearchFirstname() + "%",
-                        "%" + req.getSearchLastname() + "%",
-                        "%" + req.getSearchEmail() + "%",
-                        "%" + req.getSearchRole() + "%",
-                        req.getFilterTimestamp()
-                );
-            }
-        } catch (DataAccessException dataAccessException) {
-            log.debug("WARNING\n\n" + dataAccessException);
-        }
+        args.add(req.getSearchFirstname());
+        args.add(req.getSearchLastname());
+        args.add(req.getSearchEmail());
+        args.add(req.getSearchRole());
+        args.add(req.getPerPage());
+        args.add((req.getPageNo() - 1) * req.getPerPage());
 
-        return users;
-    }
-
-
-    @Override
-    public List<User> getAll() {
-        return jdbcTemplate.query(q.getSelectAllFromClient(), UserDaoImpl::mapClientRow);
+        return jdbcTemplate.query(SELECT_SUITABLE_USERS, UserDaoImpl::mapUserPaginated, args.toArray());
     }
 
     @Override
     public User readById(int id) {
-        User user = null;
-        try {
-            user = jdbcTemplate.queryForObject(q.getSelectById(), UserDaoImpl::mapClientRow, id);
-        } catch (DataAccessException dataAccessException) {
-            log.debug("Couldn't find entity of type Person with id {}", id);
-        }
-        return user;
+        return jdbcTemplate.queryForObject(q.getSelectById(), UserDaoImpl::mapClientRow, id);
     }
 
     @Override
     public User readByEmail(String email) {
-        User user = null;
-        try {
-            user = jdbcTemplate.queryForObject(q.getSelectByEmail(), UserDaoImpl::mapClientRow, email);
-        } catch (DataAccessException dataAccessException) {
-            log.debug("Couldn't find entity of type Person with email {}", email);
-        }
-        return user;
+        return jdbcTemplate.queryForObject(q.getSelectByEmail(), UserDaoImpl::mapClientRow, email);
     }
 
     @Override
     public User readByName(String name) {
-        User user = null;
-        try {
-            user = jdbcTemplate.queryForObject(q.getSelectByName(), new Object[]{name}, UserDaoImpl::mapClientRow);
-        } catch (DataAccessException dataAccessException) {
-            log.debug("Couldn't find entity of type Person with name {}", name);
-        }
-        return user;
+        return jdbcTemplate.queryForObject(q.getSelectByName(), new Object[]{name}, UserDaoImpl::mapClientRow);
     }
 
     @Override
@@ -249,32 +211,4 @@ public class UserDaoImpl implements UserDao {
     public void updatePassword(String password, int id) {
         jdbcTemplate.update(q.getUpdatePassword(), password, id);
     }
-
-    /*
-    @Override
-    public List<UserDto> readPage(int limit, int offset, String role) {
-        List<UserDto> users = null;
-        try {
-            users = jdbcTemplate.query(q.getSelectPage(), UserDaoImpl::mapUserRow, role, limit, offset);
-        } catch (DataAccessException dataAccessException) {
-            log.debug("Couldn't find entity of type Users with status {}, limit {} and offset {}", role, limit, offset);
-        }
-
-        return users;
-    }
-
-    private static UserDto mapUserRow(ResultSet rs, int rowNum) throws SQLException {
-        return new UserDto(
-                rs.getInt("id"),
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("email"),
-                rs.getObject("timestamp", OffsetDateTime.class),
-                rs.getString("image_id"),
-                rs.getString("status"),
-                rs.getString("role")
-        );
-    }
-    */
-
 }

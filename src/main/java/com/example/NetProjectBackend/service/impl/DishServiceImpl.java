@@ -2,6 +2,7 @@ package com.example.NetProjectBackend.service.impl;
 
 
 import com.example.NetProjectBackend.dao.DishDao;
+import com.example.NetProjectBackend.models.dto.PaginatedResponse;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
 import com.example.NetProjectBackend.models.dto.dish.*;
@@ -95,7 +96,7 @@ public class DishServiceImpl  implements DishService {
                 dishDao.soloReadDish(id, userId),
                 dishDao.readIngredientsRelation(id),
                 dishDao.readKitchenwareRelation(id),
-                dishDao.readCommentRelation(id),
+                null,//dishDao.readCommentRelation(id),
                 dishDao.readLabelRelation(id)
         );
     }
@@ -135,18 +136,21 @@ public class DishServiceImpl  implements DishService {
     }
 
     @Override
-    public Paginator.PaginatedResponse getPaginatedComments(int dishId, int pageNo, int perPage) {
-        List<CommentDto> list = dishDao.readCommentRelation(dishId);
-        Paginator.PaginatedResponse res = paginator.paginate(list, pageNo, perPage);
-        if (res.getList() != null) {
-            Collections.reverse(res.getList());     //just to not reverse it on frontend
+    public List<CommentPaginatedDto> getPaginatedComments(int dishId, int pageNo, int perPage) {
+        List<CommentPaginated> list = dishDao.readCommentRelation(dishId, pageNo, perPage);
+        for (CommentPaginated comment : list) {
+            comment.setPagesTotal((int)Math.ceil((float)comment.getPagesTotal() / perPage));
+        }
+        List<CommentPaginatedDto> res = CommentPaginatedDto.transformList(list);
+        if (res != null) {
+            Collections.reverse(res);     //just to not reverse it on frontend
         }
         return res;
     }
 
     @Override
-    public List<Comment> createComment(Comment comment) {//, int userId) {
-        return dishDao.createComment(comment);//, userId);
+    public List<Comment> createComment(Comment comment) {
+        return dishDao.createComment(comment);
     }
 
     @Override

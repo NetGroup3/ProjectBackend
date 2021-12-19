@@ -13,6 +13,9 @@ public class UserQuery {
     @Value("${user.select_all_from_client}")
     private String selectAllFromClient;
 
+    @Value("${user.select_all_suitable_part}")
+    private String selectAllSuitablePart;
+
     @Value("${user.select_by_id}")
     private String selectById;
 

@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.service;
 
+import com.example.NetProjectBackend.models.dto.PaginatedResponse;
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
@@ -40,9 +41,9 @@ public interface DishService {
 
     boolean setLike(int dishId);
 
-    Paginator.PaginatedResponse getPaginatedComments(int dishId, int pageNo, int perPage);
+    List<CommentPaginatedDto> getPaginatedComments(int dishId, int pageNo, int perPage);
 
-    List<Comment> createComment(Comment comment);//, int userId);
+    List<Comment> createComment(Comment comment);
 
     List<Comment> deleteComment(int comment, int userId);
 

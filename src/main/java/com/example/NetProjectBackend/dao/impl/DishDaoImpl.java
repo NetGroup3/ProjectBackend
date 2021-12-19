@@ -79,15 +79,16 @@ public class DishDaoImpl implements DishDao {
         );
     }
 
-    private static CommentDto mapCommentViewRow(ResultSet rs, int rowNum) throws SQLException {
-        return new CommentDto(
+    private static CommentPaginated mapCommentPagRow(ResultSet rs, int rowNum) throws SQLException {
+        return new CommentPaginated(
                 rs.getInt("id"),
                 rs.getInt("user_id"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("image_id"),
                 rs.getString("text"),
-                rs.getObject("timestamp", OffsetDateTime.class)
+                rs.getObject("timestamp", OffsetDateTime.class),
+                rs.getInt("total")
         );
     }
 
@@ -365,8 +366,9 @@ public class DishDaoImpl implements DishDao {
 
     //Comment
     @Override
-    public List<CommentDto> readCommentRelation(int id) {
-        return jdbcTemplate.query(q.getCommentRead(), DishDaoImpl::mapCommentViewRow, id);
+    public List<CommentPaginated> readCommentRelation(int dishId, int pageNo, int perPage) {
+        return jdbcTemplate.query(q.getCommentRead(), DishDaoImpl::mapCommentPagRow,
+                dishId, perPage, (pageNo - 1) * perPage);
     }
 
     @Override

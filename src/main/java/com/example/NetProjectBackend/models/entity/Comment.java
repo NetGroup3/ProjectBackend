@@ -10,9 +10,9 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
-    int id;
-    int userId;
-    int dishId;
+    Integer id;
+    Integer userId;
+    Integer dishId;
     String text;
     OffsetDateTime timestamp;
 }
