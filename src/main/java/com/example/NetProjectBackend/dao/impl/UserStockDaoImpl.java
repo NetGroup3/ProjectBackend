@@ -113,7 +113,7 @@ public class UserStockDaoImpl implements UserStockDao {
         return jdbcTemplate.query(userStockQuery.getQuery().get(sortedBy), UserStockDaoImpl::mapUserStockRow, userId, key, category, limit, offset);
     }
     @Override
-    public int getPages(int userId) {
+    public int getRows(int userId) {
         Integer rows = jdbcTemplate.queryForObject(userStockQuery.getSelectRows(), Integer.class, userId);
         if(rows!=null) {
             return rows;

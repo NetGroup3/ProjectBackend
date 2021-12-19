@@ -44,10 +44,6 @@ public class UserStockController {
     public void deleteStockElement(@RequestParam int ingredientId) {
         int userId = (((UserDetailsImpl) (SecurityContextHolder.getContext().getAuthentication().getPrincipal())).getId());
         userStockService.deleteStockElement(userId, ingredientId);
-/*        if (userStockService.deleteStockElement(userId, ingredientId) == "Not found")
-            return ResponseEntity.ok("Not found in your stock");
-        else
-            return ResponseEntity.ok("Successfully deleted from the stock");*/
     }
 
     @PostMapping
@@ -74,8 +70,8 @@ public class UserStockController {
             return ResponseEntity.ok(userStockService.readStockElement(userId, stockAddDto.getIngredientId()));
     }
 
-    @GetMapping("/search")
     @Secured("USER")
+    @GetMapping("/search")
     public List<UserStockElement> readSearchPage(@RequestParam int limit,
                                                  @RequestParam int page,
                                                  @RequestParam(defaultValue = "") String key,
@@ -84,8 +80,8 @@ public class UserStockController {
             return userStockService.readSearchPage(limit, limit * page, key, category, sortedBy);
     }
 
+    @Secured("USER")
     @GetMapping("/pages")
-    @PreAuthorize("hasAuthority('USER')")
     public int howPages (@RequestParam int limit){
         return userStockService.getPages(limit);
     }
