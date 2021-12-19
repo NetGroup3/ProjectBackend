@@ -1,5 +1,6 @@
 package com.example.NetProjectBackend.controllers;
 
+import com.example.NetProjectBackend.models.dto.PaginatedResponse;
 import com.example.NetProjectBackend.models.dto.dish.*;
 import com.example.NetProjectBackend.models.entity.Comment;
 import com.example.NetProjectBackend.models.entity.Dish;
@@ -100,7 +101,6 @@ public class DishController {
             @RequestParam(required = false) boolean desc,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String category
-            //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
             ) {
         int userId;
         try {
@@ -109,14 +109,12 @@ public class DishController {
             userId = 0;
         }
         return ResponseEntity.ok(dishService.readList(limit, page, desc, title, category, userId));
-    }//"http://localhost:8081/dish/list?limit=10&page=0&desc=false&key=straw&category=&sortedBy=title&userId=4"
+    }
 
 
     @GetMapping()
     public ResponseEntity<?> getDish(
             @RequestParam int id
-            //@RequestParam int userId
-            //@CurrentSecurityContext(expression="authentication.principal.id") Integer userId
     ) {
         int userId;
         try {
@@ -138,7 +136,6 @@ public class DishController {
     }
 
 
-    //http://localhost:8081/dish/ingredients?limit=20&page=0&values=1,2,3,4
     @GetMapping(path="/ingredients")
     public ResponseEntity<?> getWithIngredients (
             @RequestParam List<Integer> values,
@@ -182,12 +179,17 @@ public class DishController {
 
     @GetMapping("/comments")
     public ResponseEntity<?> getComments(@RequestParam int dishId, int pageNo, int perPage) {
-        Paginator.PaginatedResponse res = dishService.getPaginatedComments(dishId, pageNo, perPage);
-        return ResponseEntity.ok(res);
+        List<CommentPaginatedDto> list = dishService.getPaginatedComments(dishId, pageNo, perPage);
+        return ResponseEntity.ok(list);
     }
 
     @PostMapping("/comment")
     public ResponseEntity<?> createComment (@RequestBody Comment comment) {
+        Integer userId = null;
+        try {
+            userId = userSessionService.getUserIdFromSession();
+        } catch (ExpiredJwtException | ClassCastException ignored) {}
+        comment.setUserId(userId);
         return ResponseEntity.ok(dishService.createComment(comment));
     }
 

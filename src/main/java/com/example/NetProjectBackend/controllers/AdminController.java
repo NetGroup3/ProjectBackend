@@ -46,12 +46,4 @@ public class AdminController {
         }
         return ResponseEntity.ok(userDeleted);
     }
-
-    @PostMapping("/moderators")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> getModerators(@RequestBody UserListRequest req) {
-        req.setSearchRole("moderator");
-        Paginator.PaginatedResponse res = userService.getAllSuitable(req);
-        return ResponseEntity.ok(res);
-    }
 }

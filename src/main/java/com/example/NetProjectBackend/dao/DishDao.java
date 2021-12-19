@@ -54,7 +54,7 @@ public interface DishDao {
 
     void updateListKitchenwareIngredient(List<DishKitchenwareDto> kitchenwareList, int dishId);
 
-    List<CommentDto> readCommentRelation(int id);
+    List<CommentPaginated> readCommentRelation(int dishId, int pageNo, int perPage);
 
     List<Comment> createComment(Comment comment);//, int userId);
 

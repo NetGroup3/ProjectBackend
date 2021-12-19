@@ -1,9 +1,9 @@
 package com.example.NetProjectBackend.service;
 
-import lombok.Data;
+import com.example.NetProjectBackend.models.dto.PaginatedResponse;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
+
 
 @Component
 public class Paginator {
@@ -28,22 +28,5 @@ public class Paginator {
         List pagList = list.subList(startIndex, endIndex);
         res.setList(pagList);
         return res;
-    }
-
-    @Data
-    public class PaginatedResponse {
-        List list;
-        int pageNo;
-        int perPage;
-        int pagesTotal;
-
-        PaginatedResponse() {}
-
-        PaginatedResponse(int pageNo, int perPage) {
-            this.pageNo = pageNo;
-            this.perPage = perPage;
-            this.pagesTotal = 0;
-            this.list = null;
-        }
     }
 }

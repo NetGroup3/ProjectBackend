@@ -14,8 +14,9 @@ public interface UserService {
     UserDetails loadUserByUsername(String login);
     void updatePassword(PasswordChangeRequestDto passwordCR);
     void changeStatus(EStatus status, int id);
-    Paginator.PaginatedResponse getAllSuitable(UserListRequest req);
+    List<UserPaginatedDto> getAllSuitable(UserListRequest req);
     UserDto update(User user);
+    void updateFull(User user);
     UserDto delete(int id);
     UserDto readById(int id);
     UserDto readByEmail(String email);

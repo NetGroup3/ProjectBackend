@@ -2,14 +2,12 @@ package com.example.NetProjectBackend.service.impl;
 
 import com.example.NetProjectBackend.dao.UserDao;
 import com.example.NetProjectBackend.exeptions.IncorrectPasswordException;
-import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.Verify;
-//import com.example.NetProjectBackend.models.dto.UserDto;
+import com.example.NetProjectBackend.models.dto.*;
 import com.example.NetProjectBackend.models.entity.User;
 import com.example.NetProjectBackend.models.enums.ERole;
 import com.example.NetProjectBackend.models.enums.EStatus;
 import com.example.NetProjectBackend.service.Mail;
-import com.example.NetProjectBackend.service.Paginator;
 import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.service.UserSessionService;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
@@ -41,25 +39,18 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final Mail mail;
     private final PasswordEncoder passwordEncoder;
     private final UserDao userDao;
-    private final Paginator paginator;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
     private UserSessionService userSessionService;
 
-    /**
-     * Sign Up
-     * @return
-     */
+
     @Override
     public int create(User user, String role) {
-
-        if (userDao.readByEmail(user.getEmail()) != null) {
-            return 0;
-        }
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.NOT_VERIFY.name());
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         int id = userDao.create(user);
         if (id > 0) {
             mail.confirmationCode(user.getEmail(), false);
@@ -68,10 +59,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return 0;
     }
     
-    /**
-     * Recovery Password
-     * @return
-     */
+
     @Override
     public boolean recovery(String email) {
         log.info(email);
@@ -84,10 +72,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return true;
     }
 
-    /**
-     * Code processing
-     * @return
-     */
+
     @Override
     public boolean code(String param) {
         Verify verify = mail.readByCode(param);
@@ -166,20 +151,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         userDao.updatePassword(hashedPassword, passwordCR.getUserId());
     }
     
-    public Paginator.PaginatedResponse getAllSuitable(UserListRequest req) {
-        List<User> list = userDao.getAllSuitable(req);
-        Paginator.PaginatedResponse res = paginator.paginate(list, req.getPageNo(), req.getPerPage());
-        res.setList(UserDto.transformList(res.getList()));
+    public List<UserPaginatedDto> getAllSuitable(UserListRequest req) {
+        List<UserPaginated> list = userDao.getAllSuitable(req);
+        for (UserPaginated user : list) {
+            user.setPagesTotal((int)Math.ceil((float)user.getPagesTotal() / req.getPerPage()));
+        }
+        List<UserPaginatedDto> res = UserPaginatedDto.transformList(list);
         return res;
     }
 
     @Override
     public UserDto update(User user) {
-        if (userDao.readById(user.getId()) == null) {
-            return null;
-        }
         userDao.update(user);
         return UserDto.transform(userDao.readById(user.getId()));
+    }
+
+    @Override
+    public void updateFull(User user) {
+        userDao.updateFull(user);
     }
 
     @Override
@@ -201,12 +190,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public UserDto readByEmail(String email) {
         return UserDto.transform(userDao.readByEmail(email));
     }
-    
-    /*
-    public User readByName(String name) {
-            return userDao.readByName(name);
-    }
-    */
 
     @Override
     public void updateUserImage(UserImageDto obj) {
@@ -218,10 +201,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public void createModerator(User user) {
-        if (userDao.readByEmail(user.getEmail()) != null) {
-            return;
-        }
-
         user.setRole(ERole.MODERATOR.getAuthority());
         user.setTimestamp(OffsetDateTime.now());
         user.setStatus(EStatus.ACTIVE.getAuthority());
