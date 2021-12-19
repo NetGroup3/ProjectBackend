@@ -13,10 +13,8 @@ import com.example.NetProjectBackend.service.Paginator;
 import com.example.NetProjectBackend.service.UserService;
 import com.example.NetProjectBackend.service.UserSessionService;
 import com.example.NetProjectBackend.service.jwt.JwtUtils;
-import com.example.NetProjectBackend.service.password.HashPassword;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -219,9 +217,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public boolean createModerator(User user) {
+    public void createModerator(User user) {
         if (userDao.readByEmail(user.getEmail()) != null) {
-            return false;
+            return;
         }
 
         user.setRole(ERole.MODERATOR.getAuthority());
@@ -232,9 +230,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
         if (userDao.create(user) > 0) {
             mail.sendModeratorPassword(password, user.getEmail());
-            return true;
+            return;
         }
-        return false;
+        return;
     }
 
     @Override

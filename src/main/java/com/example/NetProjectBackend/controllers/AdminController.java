@@ -22,9 +22,9 @@ public class AdminController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> createModerator(@RequestBody User user) {
+    public void createModerator(@RequestBody User user) {
         user.setRole(ERole.MODERATOR.getAuthority());
-        return ResponseEntity.ok(userService.createModerator(user));
+        userService.createModerator(user);
     }
 
     @PutMapping("/update")
