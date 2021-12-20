@@ -31,8 +31,8 @@ public class EventServiceImpl implements EventService {
     public int createEventUsersDishes(Event event, EventMember eventMember, EventDish eventDish) {
         List<Event> newEvent = eventDao.createEvent(event);
         int eventId = newEvent.get(0).getId();
-        eventMember.setEvent_id(eventId);
-        eventDish.setEvent_id(eventId);
+        eventMember.setEventId(eventId);
+        eventDish.setEventId(eventId);
         eventDao.createEventMember(eventMember);
         eventDao.createEventDish(eventDish);
         return newEvent.get(0).getId();
@@ -79,7 +79,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void updateEventMember(EventMember eventMember) {
         if(eventReadById(eventMember.getId()) != null) {
-            eventDao.updateEventMember(eventMember.getStatus(), eventMember.getUser_id(), eventMember.getEvent_id());
+            eventDao.updateEventMember(eventMember.getStatus(), eventMember.getUserId(), eventMember.getEventId());
         }
         else {
             throw new NotFoundItemException();

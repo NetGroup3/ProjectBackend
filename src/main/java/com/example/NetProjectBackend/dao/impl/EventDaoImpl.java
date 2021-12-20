@@ -187,10 +187,10 @@ public class EventDaoImpl implements EventDao {
     public void createEventMember(EventMember eventMember) {
         jdbcTemplate.query(q.getEventMemberCreate(),
                 EventDaoImpl::mapEventMemberRow,
-                eventMember.getUser_id(),
-                eventMember.getEvent_id(),
+                eventMember.getUserId(),
+                eventMember.getEventId(),
                 eventMember.getStatus(),
-                eventMember.getUser_id()
+                eventMember.getUserId()
         );
     }
 
@@ -220,9 +220,9 @@ public class EventDaoImpl implements EventDao {
     public void createEventDish(EventDish eventDish) {
         jdbcTemplate.query(q.getEventDishCreate(),
                 EventDaoImpl::mapEventDishRow,
-                eventDish.getUser_id(),
-                eventDish.getEvent_id(),
-                eventDish.getDish_id(),
+                eventDish.getUserId(),
+                eventDish.getEventId(),
+                eventDish.getDishId(),
                 eventDish.getQuantity()
         );
     }
@@ -284,9 +284,9 @@ public class EventDaoImpl implements EventDao {
     public void createEventIngredient(EventIngredient eventIngredient) {
         jdbcTemplate.query(q.getEventIngredientCreate(),
                 EventDaoImpl::mapEventIngredientRow,
-                eventIngredient.getUser_id(),
-                eventIngredient.getEvent_id(),
-                eventIngredient.getIngredient_id(),
+                eventIngredient.getUserId(),
+                eventIngredient.getEventId(),
+                eventIngredient.getIngredientId(),
                 eventIngredient.getAmount()
         );
     }
