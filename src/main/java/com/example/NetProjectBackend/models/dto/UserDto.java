@@ -1,16 +1,10 @@
 package com.example.NetProjectBackend.models.dto;
 
 import com.example.NetProjectBackend.models.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
     private int id;
@@ -21,6 +15,26 @@ public class UserDto {
     private String imageId;
     private String status;
     private String role;
+
+    public UserDto(
+            int id,
+            String firstname,
+            String lastname,
+            String email,
+            String timestamp,
+            String imageId,
+            String status,
+            String role
+    ) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.timestamp = timestamp;
+        this.imageId = imageId;
+        this.status = status;
+        this.role = role;
+    }
 
     public static UserDto transform(User user) {
         if (user == null) return null;
@@ -35,15 +49,5 @@ public class UserDto {
         newUser.setStatus(user.getStatus());
         newUser.setRole(user.getRole());
         return newUser;
-    }
-
-    public static List<UserDto> transformList(List<User> list) {
-        if (list == null) return null;
-
-        List<UserDto> dtoList = new ArrayList<>();
-        for (User user : list) {
-            dtoList.add(UserDto.transform(user));
-        }
-        return dtoList;
     }
 }
