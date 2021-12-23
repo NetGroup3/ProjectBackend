@@ -1,7 +1,5 @@
 package com.example.NetProjectBackend.models.dto.dish;
 
-import com.example.NetProjectBackend.models.dto.UserPaginated;
-import com.example.NetProjectBackend.models.dto.UserPaginatedDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

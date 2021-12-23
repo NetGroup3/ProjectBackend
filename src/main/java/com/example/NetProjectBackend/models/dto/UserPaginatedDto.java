@@ -10,17 +10,24 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPaginatedDto {
+public class UserPaginatedDto extends UserDto{
 
-    private int id;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String timestamp;
-    private String imageId;
-    private String status;
-    private String role;
     private int pagesTotal;
+
+    public UserPaginatedDto(
+            int id,
+            String firstname,
+            String lastname,
+            String email,
+            String timestamp,
+            String imageId,
+            String status,
+            String role,
+            int pagesTotal
+    ) {
+        super(id, firstname, lastname, email, timestamp, imageId, status, role);
+        this.pagesTotal = pagesTotal;
+    }
 
     public static UserPaginatedDto transform(UserPaginated user) {
         if (user == null) return null;
