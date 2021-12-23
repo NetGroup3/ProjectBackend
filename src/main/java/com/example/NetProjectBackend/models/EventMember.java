@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EventMember {
     private int id;
-    private int user_id;
-    private int event_id;
+    private int userId;
+    private int eventId;
     private String status;
     private boolean is_owner;
 }

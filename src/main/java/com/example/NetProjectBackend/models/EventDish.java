@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EventDish {
     private int id;
-    private int user_id;
-    private int event_id;
-    private int dish_id;
+    private int userId;
+    private int eventId;
+    private int dishId;
     private int quantity;
 }
